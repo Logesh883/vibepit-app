@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VibePit Setup Guide</title>
+<meta name="description" content="How to install and set up VibePit, step by step: what you need, the first open, adding your projects, your first voice command, and what to do if something goes wrong.">
+<meta property="og:title" content="VibePit Setup Guide">
+<meta property="og:description" content="Set up VibePit in about 15 minutes: install it, follow Get started, add your projects and say “Hey Pit”.">
+<meta property="og:image" content="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Atkinson+Hyperlegible+Next:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* The same look as release-notes.html: one column of steps, with the list of sections beside it on wide screens. */
+:root {
+  --ink: #f4f5fb; --panel: #ffffff; --panel2: #eceef7; --line: #dcdfec;
+  --text: #121528; --muted: #575e7d; --signal: #3c5ce6; --violet: #7a43d6; --ok: #16865a; --warn: #a86a00;
+  --on-signal: #ffffff;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Atkinson Hyperlegible Next", -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ink: #0c0e16; --panel: #141826; --panel2: #1a1f30; --line: #262c40;
+  --text: #e8eaf4; --muted: #959cb5; --signal: #7690ff; --violet: #a874f7; --ok: #3ecf8e; --warn: #f2b14a;
+  --on-signal: #0c0e16; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --ink: #0c0e16; --panel: #141826; --panel2: #1a1f30; --line: #262c40;
+  --text: #e8eaf4; --muted: #959cb5; --signal: #7690ff; --violet: #a874f7; --ok: #3ecf8e; --warn: #f2b14a;
+  --on-signal: #0c0e16; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--ink); color: var(--text); font: 17px/1.6 var(--body); }
+a { color: var(--signal); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -.02em; }
+p { margin: 0; text-wrap: pretty; }
+.eyebrow { font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); max-width: 62ch; }
+
+/* top bar */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 700 18px var(--display); color: var(--text); text-decoration: none; letter-spacing: -.01em; }
+.brand img { width: 34px; height: 34px; border-radius: 9px; }
+.bar nav { display: flex; align-items: center; gap: 22px; font-size: 15px; }
+.bar nav a { color: var(--muted); text-decoration: none; }
+.bar nav a:hover, .bar nav a[aria-current] { color: var(--text); }
+.bar nav .btn { color: var(--on-signal); }
+.btn { display: inline-flex; align-items: center; gap: 10px; background: var(--signal); color: var(--on-signal); font: 700 16px var(--display); text-decoration: none; padding: 13px 22px; border-radius: 12px; border: 0; cursor: pointer; transition: transform .15s, filter .15s; }
+.btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn.small { font-size: 14px; padding: 8px 14px; border-radius: 10px; }
+.btn svg { width: 20px; height: 20px; flex: none; }
+
+/* page head */
+.top { padding-block: clamp(32px, 6vw, 72px) clamp(28px, 5vw, 48px); display: grid; gap: 16px; }
+.top h1 { font-size: clamp(38px, 6vw, 64px); line-height: 1.02; font-weight: 800; letter-spacing: -.035em; }
+.top h1 em { font-style: normal; color: var(--signal); }
+.top .lede { font-size: 19px; }
+.get { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 8px; }
+.get .meta { font: 13px var(--mono); color: var(--muted); }
+.get .meta a { color: var(--muted); }
+
+/* layout: versions | notes */
+.layout { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; padding-bottom: clamp(56px, 8vw, 96px); border-top: 1px solid var(--line); padding-top: 40px; }
+.toc { position: sticky; top: 24px; display: grid; gap: 4px; font-size: 15px; }
+.toc .eyebrow { margin-bottom: 8px; }
+.toc a { color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 8px; display: flex; justify-content: space-between; gap: 8px; }
+.toc a:hover { background: var(--panel2); color: var(--text); }
+.toc a span { font: 12px var(--mono); }
+.toc .sub { padding-left: 22px; font-size: 14px; }
+
+article.ver { display: grid; gap: 28px; }
+article.ver + article.ver { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--line); }
+.vhead { display: grid; gap: 10px; }
+.vhead .tag { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font: 13px var(--mono); color: var(--muted); }
+.vhead .tag b { color: var(--on-signal); background: var(--signal); padding: 2px 9px; border-radius: 6px; font-weight: 600; }
+.vhead h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; font-weight: 800; }
+.vhead p { color: var(--muted); max-width: 66ch; }
+
+/* highlights */
+.glance { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.glance div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; display: grid; gap: 6px; align-content: start; }
+.glance svg { width: 26px; height: 26px; color: var(--signal); }
+.glance p { color: var(--muted); font-size: 15.5px; }
+
+/* a group of changes */
+.group { display: grid; gap: 14px; scroll-margin-top: 24px; }
+.group > h3 { font-size: 22px; font-weight: 700; }
+.group > p { color: var(--muted); max-width: 66ch; }
+.items { display: grid; gap: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.items div { padding: 16px 22px; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.items div:first-child { border-top: 0; }
+.items b { font-family: var(--display); font-size: 17px; letter-spacing: -.01em; }
+.items p { color: var(--muted); font-size: 15.5px; max-width: 70ch; }
+.items q, .glance q { color: var(--text); quotes: "“" "”"; font-family: var(--mono); font-size: .92em; }
+
+.list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.list li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; color: var(--muted); font-size: 15.5px; }
+.list li::before { content: "✓"; color: var(--ok); font-weight: 700; }
+.list li b { color: var(--text); font-weight: 600; }
+.list.known li::before { content: "!"; color: var(--warn); text-align: center; font-family: var(--mono); }
+
+.steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 14px; align-items: start; color: var(--muted); font-size: 15.5px; }
+.steps li::before { content: counter(s); font: 700 13px var(--mono); color: var(--signal); width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--signal); display: grid; place-items: center; }
+.steps li b { color: var(--text); }
+.note { background: var(--panel2); border-radius: var(--r); padding: 18px 22px; color: var(--muted); font-size: 15.5px; }
+.note b { color: var(--text); }
+code { font: 14px var(--mono); background: var(--panel2); padding: 1px 6px; border-radius: 5px; overflow-wrap: anywhere; }
+.note code { background: var(--panel); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+footer a { color: var(--muted); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .toc { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .toc .eyebrow { grid-column: 1 / -1; }
+  .toc .sub { display: none; }
+  .bar nav a:not(.btn):not([aria-current]) { display: none; }
+}
+@media (max-width: 620px) {
+  .glance { grid-template-columns: minmax(0, 1fr); }
+  .items div { padding: 14px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+
+/* setup guide only */
+.items p b, .need p b { font: inherit; font-weight: 600; color: var(--text); letter-spacing: 0; }
+.need { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.need div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px 22px; display: grid; gap: 4px; align-content: start; }
+.need b { font-family: var(--display); font-size: 17px; }
+.need p { color: var(--muted); font-size: 15.5px; }
+.steps q, .group > p q, .faq q { color: var(--text); quotes: "“" "”"; font-family: var(--mono); font-size: .92em; }
+.faq { display: grid; gap: 10px; }
+.faq details { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
+.faq summary { cursor: pointer; font: 700 17px var(--display); letter-spacing: -.01em; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--muted); font-weight: 500; }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { color: var(--muted); margin-top: 10px; font-size: 15.5px; }
+.faq details p b { color: var(--text); }
+.path { font: 14px var(--mono); color: var(--text); overflow-wrap: anywhere; }
+@media (max-width: 620px) { .need { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<header class="wrap bar">
+  <a class="brand" href="index.html"><img src="icon.png" alt="">VibePit</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="setup.html" aria-current="page">Setup guide</a>
+    <a href="release-notes.html">Release notes</a>
+    <a class="btn small dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap top">
+    <p class="eyebrow">Setup guide</p>
+    <h1>Set up VibePit. <em>Then just talk.</em></h1>
+    <p class="lede">This guide takes you from the download to your first finished task with Claude Code. It explains each step in simple words, so you do not need any earlier experience with Claude Code. Most people are ready in about 15 minutes. You can also find this guide inside the app, under <b>Setup guide</b>.</p>
+    <div class="get">
+      <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
+        Download VibePit 1.0
+      </a>
+      <p class="meta"><span id="dlChip">Apple silicon</span> · macOS 12 or later · free · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
+    </div>
+  </div>
+
+  <div class="wrap layout">
+    <nav class="toc" aria-label="On this page">
+      <p class="eyebrow">On this page</p>
+      <a href="#need">Before you begin</a>
+      <a href="#install">1. Install VibePit</a>
+      <a href="#start">2. Get started</a>
+      <a href="#projects">3. Add your projects</a>
+      <a href="#listen">4. Start listening</a>
+      <a href="#first">5. Your first task</a>
+      <a href="#daily">Everyday use</a>
+      <a href="#say">Useful phrases</a>
+      <a href="#extras">Optional extras</a>
+      <a href="#privacy">Your privacy</a>
+      <a href="#help">If something goes wrong</a>
+      <a href="#update">Updates and uninstalling</a>
+    </nav>
+
+    <div>
+      <article class="ver">
+
+        <section class="group" id="need">
+          <h3>Before you begin</h3>
+          <p>Please check that you have the following. VibePit installs Claude Code for you if it is missing.</p>
+          <div class="need">
+            <div><b>A Mac</b><p>macOS 12 or later, with a microphone. A Mac with Apple silicon (M1 or later) runs the speech models fastest.</p></div>
+            <div><b>A Claude account</b><p>An account that can use Claude Code: Pro, Max, Team or Enterprise, or an API key. VibePit uses your own account.</p></div>
+            <div><b>VS Code</b><p>Recommended. Each project opens in a VS Code window, with Claude in its terminal panel. You can use Terminal instead.</p></div>
+            <div><b>About 15 minutes</b><p>Most of this time is the first download of the speech models. It happens only once.</p></div>
+          </div>
+          <p class="note"><b>Which download do I need?</b> Open the Apple menu and choose <b>About This Mac</b>. If the line <b>Chip</b> says Apple M1, M2, M3 or later, choose Apple silicon. If it says <b>Processor</b> and Intel, choose the Intel download.</p>
+        </section>
+
+        <section class="group" id="install">
+          <h3>1. Install VibePit</h3>
+          <ol class="steps">
+            <li><span><b>Download the disk image</b> for your Mac from the button above. The file is called VibePit-arm64.dmg (Apple silicon) or VibePit-x86_64.dmg (Intel).</span></li>
+            <li><span><b>Open the disk image</b> from your Downloads folder, and drag VibePit into the Applications folder.</span></li>
+            <li><span><b>Open VibePit</b> from Applications or Launchpad.</span></li>
+            <li><span><b>Allow it to open, the first time only.</b> macOS may say that it cannot check VibePit for malicious software. This is expected. Open <span class="path">System Settings → Privacy &amp; Security</span>, scroll down, press <b>Open Anyway</b> next to VibePit, and confirm. You only need to do this once.</span></li>
+          </ol>
+        </section>
+
+        <section class="group" id="start">
+          <h3>2. Follow the Get started card</h3>
+          <p>When VibePit opens, the Overview page shows a <b>Get started</b> card. It has one button for each remaining step. Each step ticks itself off when it is done, so you always know what is left.</p>
+          <div class="items">
+            <div><b>Install Claude Code</b><p>If Claude Code is not on your Mac yet, press the button and VibePit installs it for you.</p></div>
+            <div><b>Log in to Claude Code</b><p>Press the button to log in with your Claude account. Your browser opens so that you can sign in safely with Claude. VibePit never sees your password.</p></div>
+            <div><b>Get VS Code</b><p>If VS Code is not installed, the button takes you to its download. VibePit then adds a small extension to VS Code, which lets it open named Claude tabs. If you prefer Terminal, choose <b>Use Terminal instead</b>.</p></div>
+            <div><b>Spoken alerts</b><p>VibePit adds a small setting to Claude Code, so that it can tell you when Claude is done or needs you. If the Overview says the alerts are missing, press <b>Install alerts</b> there.</p></div>
+            <div><b>Add your projects</b><p>The last step takes you to the Projects page. The next section explains it.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="projects">
+          <h3>3. Add your projects</h3>
+          <p>A project is a folder on your Mac with code in it. Each project gets a short name that you say, such as <q>abc</q>.</p>
+          <div class="items">
+            <div><b>Set up with Claude</b><p>On the Projects page, press <b>Set up with Claude</b>. VibePit finds the projects on your Mac and suggests a short, easy name to say for each one. Tick the ones you want and press <b>Add</b>. Claude sees only the project names, their top-level files and their READMEs, and it cannot change anything.</p></div>
+            <div><b>Add one yourself</b><p>Press <b>+ New project</b>, type a name, and choose its folder.</p></div>
+            <div><b>Names that are easy to hear</b><p>Short, distinct names work best. You can add <b>aliases</b>, other ways of saying the same name, and <b>vocabulary</b>, words that Claude often hears in that project, such as Prisma or Next.js.</p></div>
+            <div><b>Settings for each project</b><p>For each project you can choose which Claude account it uses, the mode new Claude sessions start in, and terminals that open with it, such as a dev server.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="listen">
+          <h3>4. Start listening</h3>
+          <ol class="steps">
+            <li><span><b>Press Start</b> on the Overview.</span></li>
+            <li><span><b>Allow the microphone.</b> macOS asks once whether VibePit may use the microphone. Please press Allow, or VibePit cannot hear you.</span></li>
+            <li><span><b>Wait for the speech models.</b> The first time, the speech models download. This can take a few minutes. On macOS 26, VibePit uses the Mac’s own speech recognition; on older versions it uses Whisper, which runs on your Mac.</span></li>
+            <li><span><b>Look for the menu bar icon.</b> A small waveform appears in the menu bar. It shows that VibePit is listening, and you can start and stop listening from it.</span></li>
+          </ol>
+        </section>
+
+        <section class="group" id="first">
+          <h3>5. Your first task</h3>
+          <ol class="steps">
+            <li><span><b>Open a project.</b> Say <q>Hey Pit, open abc</q>, using the name of one of your projects. VS Code opens the project with a Claude tab called abc-claude.</span></li>
+            <li><span><b>Tell Claude what to do.</b> Say it in your own words, for example <q>why is the login test failing?</q> You can also type it in the Chat.</span></li>
+            <li><span><b>Follow along, or walk away.</b> The Chat shows what Claude is doing while it works. You do not need to watch it.</span></li>
+            <li><span><b>Answer when Claude asks.</b> If Claude needs your permission, you hear <q>abc-claude needs you</q>. Answer with one click in the Chat, or say <q>approve</q> or <q>reject</q>.</span></li>
+            <li><span><b>Hear the result.</b> When Claude finishes, you hear <q>abc-claude is done</q> and a short summary of what it did.</span></li>
+          </ol>
+        </section>
+
+        <section class="group" id="daily">
+          <h3>Everyday use</h3>
+          <div class="items">
+            <div><b>Talk or type</b><p>Start with <q>Hey Pit</q>. For 30 seconds after each command, you can keep talking without the name. Everything you can say, you can also type in the Chat. Press ⌘K to jump to the message box.</p></div>
+            <div><b>Command or message?</b><p>VibePit works out whether you gave a command or wrote a message for Claude. To be sure, begin with <q>Pit, …</q> for a command, or with <q>Claude, …</q> for a message. If a sentence could mean two things, VibePit asks you.</p></div>
+            <div><b>Several projects at once</b><p>Say <q>in abc, …</q> to send a message to a project that is already open, while you keep working in another one.</p></div>
+            <div><b>The Chat</b><p>The Chat shows each Claude tab’s conversation, what Claude is doing right now, and its answers. Questions, permission requests and plans appear there with buttons to answer.</p></div>
+            <div><b>Modes</b><p>Each Claude tab has a mode. In <b>plan</b> mode, Claude researches and proposes a plan before it changes any files. In <b>accept edits</b> mode, it edits files without asking each time. You can change the mode from the Chat.</p></div>
+            <div><b>Floating panel</b><p>While VibePit is in the background, a small panel shows whether each Claude tab is ready, working or needs you. Click it to go back to that conversation.</p></div>
+            <div><b>Usage</b><p>The Chat shows how much of your 5-hour and weekly Claude limits you have used, and how full the conversation is.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="say">
+          <h3>Useful phrases</h3>
+          <p>You do not need to learn fixed phrases, but these are a good start. The app’s <b>Voice commands</b> page lists everything you can say.</p>
+          <div class="items">
+            <div><b><q>open abc</q></b><p>Opens the project in VS Code, with its Claude tab.</p></div>
+            <div><b><q>in abc, check my last change</q></b><p>Sends the message to that project’s Claude tab.</p></div>
+            <div><b><q>plan the Prisma upgrade</q></b><p>Claude first researches and proposes a plan, before it edits anything.</p></div>
+            <div><b><q>approve</q> · <q>always allow</q> · <q>reject</q></b><p>Answers Claude’s permission request.</p></div>
+            <div><b><q>is abc done?</q></b><p>Tells you what that Claude tab is doing.</p></div>
+            <div><b><q>what did abc change?</q></b><p>Tells you which files are not committed, and whether commits are waiting to be pushed.</p></div>
+            <div><b><q>review PR 42</q></b><p>Claude reviews that pull request with your review instructions.</p></div>
+            <div><b><q>resume abc</q></b><p>Continues that tab’s last Claude conversation.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="extras">
+          <h3>Optional extras</h3>
+          <div class="items">
+            <div><b>Only my voice</b><p>Say <q>Hey Pit, learn my voice</q> and read five short sentences. VibePit then ignores other people speaking near you. It helps, but it is not a lock: a recording of you, or a very similar voice, can still pass.</p></div>
+            <div><b>A second Claude account</b><p>Add it on the Claude accounts page, then choose it for the projects that should use it. If one account is close to its limit, VibePit offers to move the conversation to the other.</p></div>
+            <div><b>Dictation</b><p>Say <q>dictate</q> to type into any app, such as Slack or your browser. This needs the Accessibility permission: <span class="path">System Settings → Privacy &amp; Security → Accessibility</span>.</p></div>
+            <div><b>Better hearing</b><p>Add your own Deepgram key under <b>Voice &amp; listening</b> for faster and more accurate speech recognition.</p></div>
+            <div><b>Check before sending</b><p>If you prefer, what you say is placed in the message box first. You can correct any misheard words and then press Return.</p></div>
+            <div><b>A different name</b><p>Say <q>Hey Pit, change your name to Friday</q>, or change it in the settings. Short, distinct names are recognised best.</p></div>
+            <div><b>Theme</b><p>Choose Dark, Light or System in the settings.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="privacy">
+          <h3>Your privacy</h3>
+          <p class="note">Your speech is turned into text on your Mac, and a small model on your Mac works out what you meant. No audio or words leave your Mac, unless you add your own Deepgram key; then only what you say to VibePit is sent to Deepgram, after it hears its name. There is no VibePit account. The app only talks to itself on <code>127.0.0.1</code>, and every request needs a secret token. Your messages to Claude go through your own Claude Code, as they would if you typed them.</p>
+        </section>
+
+        <section class="group" id="help">
+          <h3>If something goes wrong</h3>
+          <div class="faq">
+            <details><summary>It does not hear me, or it reacts to noise</summary><p>Check that the microphone is allowed in <span class="path">System Settings → Privacy &amp; Security → Microphone</span>. The <b>Mic threshold</b> setting in Voice &amp; listening changes how loud speech must be before VibePit listens.</p></details>
+            <details><summary>It mishears a project name</summary><p>Right after it says that it does not know a project, say <q>I meant abc</q>. VibePit remembers the misheard words for next time. You can also add aliases to the project.</p></details>
+            <details><summary>I do not hear “is done” alerts</summary><p>Restart your Claude tabs after you install VibePit. If the Overview says the alerts are missing, press <b>Install alerts</b> there. Alerts work in the Claude tabs that VibePit opened, while VibePit is running.</p></details>
+            <details><summary>Claude opens in Terminal, not in VS Code</summary><p>In VS Code, open the command palette with ⌘⇧P and run <b>Developer: Reload Window</b>. Then try again.</p></details>
+            <details><summary>VibePit stopped listening</summary><p>On the Overview, press <b>Show log</b> to see why, and then press <b>Start again</b>.</p></details>
+            <details><summary>macOS says it cannot check the app</summary><p>Open <span class="path">System Settings → Privacy &amp; Security</span>, scroll down, and press <b>Open Anyway</b> next to VibePit. You only need to do this once.</p></details>
+          </div>
+        </section>
+
+        <section class="group" id="update">
+          <h3>Updates and uninstalling</h3>
+          <div class="items">
+            <div><b>Updates</b><p>When a new version is available, VibePit tells you. Press <b>Update now</b>. The app installs the update and opens again, and your projects and settings are kept. The <a href="release-notes.html">release notes</a> explain what is new in each version, and the app’s <b>What’s new</b> page shows them too.</p></div>
+            <div><b>Uninstalling</b><p>Quit VibePit. In Terminal, run <code>~/.vibepit/app/.venv/bin/python ~/.vibepit/app/install_hooks.py --remove</code> to remove the spoken alerts from Claude Code. Then drag VibePit to the Trash, and delete the <code>~/.vibepit</code> folder.</p></div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>VibePit · Not affiliated with Anthropic</span>
+    <span><a href="release-notes.html">Release notes</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
+  </div>
+</footer>
+
+<script>
+// Intel Macs get the Intel download first (as on index.html). Chrome and Edge can tell; Safari
+// and Firefox can't, so they keep Apple silicon with the Intel link beside it.
+(async () => {
+  const base = "https://github.com/Logesh883/vibepit-app/releases/latest/download/";
+  try {
+    const ua = navigator.userAgentData;
+    if (!ua || !ua.getHighEntropyValues) return;
+    const { architecture, platform } = await ua.getHighEntropyValues(["architecture"]);
+    if (platform !== "macOS" || architecture !== "x86") return;
+    document.querySelectorAll("a.dl").forEach((a) => { a.href = base + "VibePit-x86_64.dmg"; });
+    document.getElementById("dlChip").textContent = "Intel";
+    const other = document.getElementById("dlOther");
+    other.textContent = "Apple silicon?"; other.href = base + "VibePit-arm64.dmg";
+  } catch (e) { /* keep the default */ }
+})();
+</script>
+</body>
+</html>

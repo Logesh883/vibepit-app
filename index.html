@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Jarvis Voice</title>
+<title>VibePit</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Talk to Claude Code on your Mac. Say “Hi Jarvis, open abc” and VS Code opens with Claude ready. Hear “abc-claude is done” when it finishes. Speech stays on your Mac.">
-<meta property="og:title" content="Jarvis Voice">
-<meta property="og:description" content="Talk to Claude Code on your Mac, and hear when it’s done.">
+<meta name="description" content="VibePit is one window for your Claude Code sessions on the Mac. Say “Hey Pit, open abc” and VS Code opens with Claude ready. Answer Claude in one place, and hear when it is done. Speech stays on your Mac.">
+<meta property="og:title" content="VibePit">
+<meta property="og:description" content="The pit wall for vibe coders: one window for your Claude Code sessions, by voice or by typing.">
 <meta property="og:image" content="icon.png">
 <link rel="icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,14 +68,16 @@ section .head { display: grid; gap: 12px; margin-bottom: 36px; }
 .hero h1 em { font-style: normal; color: var(--signal); }
 .hero .lede { margin-top: 22px; font-size: 19px; }
 .get { margin-top: 32px; display: grid; gap: 12px; justify-items: start; }
+.get > * { max-width: 100%; }
 .get .meta { font: 13px var(--mono); color: var(--muted); }
 .get .meta a { color: var(--muted); }
 .allow { margin-top: 6px; display: flex; gap: 12px; align-items: flex-start; max-width: 520px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); font-size: 15px; color: var(--muted); }
 .allow svg { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--warn); }
 .allow b { color: var(--text); }
 .allow .path { font-family: var(--mono); font-size: 13.5px; color: var(--text); white-space: nowrap; }
+@media (max-width: 480px) { .allow .path { white-space: normal; } }
 
-/* the transcript: what Jarvis heard and said, as in its own window */
+/* the transcript: what VibePit heard and said, as in its own window */
 .term { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; box-shadow: 0 30px 80px -40px rgba(30, 40, 110, .45); min-width: 0; }
 .term .top { display: flex; align-items: center; gap: 7px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--panel2); }
 .term .top i { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
@@ -96,6 +98,11 @@ section .head { display: grid; gap: 12px; margin-bottom: 36px; }
 .wave s:nth-child(2) { animation-delay: -.2s; } .wave s:nth-child(3) { animation-delay: -.45s; }
 .wave s:nth-child(4) { animation-delay: -.7s; } .wave s:nth-child(5) { animation-delay: -.9s; }
 @keyframes wv { 0%, 100% { height: 30%; } 50% { height: 100%; } }
+
+/* features */
+.feat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.feat div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 22px 24px; display: grid; gap: 8px; align-content: start; }
+.feat p { color: var(--muted); font-size: 15.5px; }
 
 /* install steps: a real sequence */
 .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; counter-reset: s; }
@@ -137,11 +144,11 @@ footer a { color: var(--muted); }
 
 @media (max-width: 860px) {
   .hero, .split { grid-template-columns: minmax(0, 1fr); }
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps, .feat { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bar nav a:not(.btn) { display: none; }
 }
 @media (max-width: 620px) {
-  .say, .steps { grid-template-columns: minmax(0, 1fr); }
+  .say, .steps, .feat { grid-template-columns: minmax(0, 1fr); }
   .say div:nth-child(2) { border-top: 1px solid var(--line); }
   .say div:nth-child(odd) { border-right: 0; }
   .log { font-size: 12.5px; padding-inline: 14px; }
@@ -153,66 +160,89 @@ footer a { color: var(--muted); }
 <body>
 
 <header class="wrap bar">
-  <a class="brand" href="#top"><img src="icon.png" alt="">Jarvis Voice</a>
+  <a class="brand" href="#top"><img src="icon.png" alt="">VibePit</a>
   <nav>
+    <a href="#features">Features</a>
     <a href="#how">How it works</a>
     <a href="#say">What you can say</a>
     <a href="#privacy">Privacy</a>
-    <a class="btn small dl" href="https://github.com/Logesh883/jarvis-voice-app/releases/latest/download/Jarvis-arm64.dmg">Download</a>
+    <a href="setup.html">Setup guide</a>
+    <a href="release-notes.html">Release notes</a>
+    <a class="btn small dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
   </nav>
 </header>
 
 <main id="top">
   <div class="wrap hero">
     <div>
-      <p class="eyebrow">For Claude Code on the Mac</p>
-      <h1 style="margin-top:16px">Talk to Claude Code. <em>Hear when it’s done.</em></h1>
-      <p class="lede">Say “Hi Jarvis, open abc” and your project opens in VS Code with Claude ready. Keep talking to give it work. When it finishes, Jarvis tells you which tab is done and what it did, so you can step away from the screen.</p>
+      <p class="eyebrow">The pit wall for vibe coders</p>
+      <h1 style="margin-top:16px">One window for Claude Code. <em>Hear when it’s done.</em></h1>
+      <p class="lede">VibePit sits beside VS Code and looks after your Claude Code sessions. Say “Hey Pit, open abc”, and your project opens with Claude ready. Give Claude work by voice or by typing, answer its questions in one place, and hear when it is done or needs you.</p>
       <div class="get">
-        <a class="btn dl" id="dlMain" href="https://github.com/Logesh883/jarvis-voice-app/releases/latest/download/Jarvis-arm64.dmg">
+        <a class="btn dl" id="dlMain" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
           <span id="dlLabel">Download for Mac</span>
         </a>
-        <p class="meta"><span id="dlChip">Apple silicon</span> · macOS 12 or later · free · <a id="dlOther" href="https://github.com/Logesh883/jarvis-voice-app/releases/latest/download/Jarvis-x86_64.dmg">Intel Mac?</a></p>
+        <p class="meta"><span id="dlChip">Apple silicon</span> · macOS 12 or later · free · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
         <div class="allow" role="note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-          <p><b>The first time you open it, macOS asks you to allow it.</b> If it says it can’t check Jarvis, open <span class="path">System Settings → Privacy &amp; Security</span>, scroll down and press <b>Open Anyway</b> next to Jarvis. You only do this once.</p>
+          <p><b>The first time you open it, macOS asks you to allow it.</b> If it says it cannot check VibePit, open <span class="path">System Settings → Privacy &amp; Security</span>, scroll down and press <b>Open Anyway</b> next to VibePit. You only do this once.</p>
         </div>
       </div>
     </div>
 
-    <div class="term" role="img" aria-label="The Jarvis window: it hears “Hi Jarvis, open abc”, opens VS Code with a Claude tab, then announces “abc-claude is done” with a one-line summary.">
-      <div class="top"><i></i><i></i><i></i><span>Jarvis — abc</span></div>
+    <div class="term" role="img" aria-label="The VibePit log: it hears “Hey Pit, open abc”, opens VS Code with a Claude tab, then announces “abc-claude is done” with a one-line summary.">
+      <div class="top"><i></i><i></i><i></i><span>VibePit — abc</span></div>
       <div class="log">
-        <div class="ln heard"><time>09:41</time><span>👂</span><q>Hi Jarvis, open abc</q></div>
+        <div class="ln heard"><time>09:41</time><span>👂</span><q>Hey Pit, open abc</q></div>
         <div class="ln act"><time>09:41</time><span>›</span><span>VS Code → ~/code/abc · tab abc-claude</span></div>
         <div class="ln heard"><time>09:42</time><span>👂</span><q>why is the login test failing?</q></div>
         <div class="ln act"><time>09:42</time><span>›</span><span>sent to abc-claude</span></div>
         <div class="ln said"><time>09:47</time><span>🗣</span><span><span class="done">abc-claude is done.</span> The token check compared expiry in seconds with milliseconds. I fixed the conversion and the test passes.</span></div>
         <div class="ln heard"><time>09:48</time><span>👂</span><q>approve</q></div>
       </div>
-      <div class="status"><b>JARVIS</b><span>abc → abc-claude</span><span class="sep">│</span><span>Claude: working… · plan mode</span><span class="sep">│</span><span class="live"><span class="wave" aria-hidden="true"><s></s><s></s><s></s><s></s><s></s></span>hearing you</span></div>
+      <div class="status"><b>VIBEPIT</b><span>abc → abc-claude</span><span class="sep">│</span><span>Claude: working… · plan mode</span><span class="sep">│</span><span class="live"><span class="wave" aria-hidden="true"><s></s><s></s><s></s><s></s><s></s></span>hearing you</span></div>
     </div>
   </div>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Features</p>
+        <h2>Everything Claude Code needs from you, in one place</h2>
+        <p class="lede">Work in several projects at once without losing track. VibePit shows what each Claude tab is doing and brings you back only when you are needed.</p>
+      </div>
+      <div class="feat">
+        <div><h3>Answer Claude from the app</h3><p>Questions, permission requests and plans appear in the Chat. Answer them with one click, without switching to the terminal.</p></div>
+        <div><h3>Speak in your own words</h3><p>No fixed phrases to learn. A small model on your Mac works out whether you gave a command or a message for Claude.</p></div>
+        <div><h3>Live progress</h3><p>See what Claude is doing while it works, and know that each message you sent has reached it.</p></div>
+        <div><h3>Your usage at a glance</h3><p>See how much of your 5-hour and weekly Claude limits you have used, and how full each conversation is.</p></div>
+        <div><h3>Notes and reminders</h3><p>Pin answers, keep checklists and set reminders beside your work. Claude can suggest them; you decide what is saved.</p></div>
+        <div><h3>Always in view</h3><p>A floating panel and a menu bar icon show which Claude tabs are ready, working or waiting for you.</p></div>
+      </div>
+    </div>
+  </section>
 
   <section id="how">
     <div class="wrap">
       <div class="head">
         <p class="eyebrow">Install</p>
         <h2>Download, open, start talking</h2>
-        <p class="lede">No terminal commands and nothing to clone. The app brings its own speech engine and sets the rest up the first time you open it. Later, macOS asks once to let Jarvis control Terminal and to use the microphone: press Allow / OK.</p>
+        <p class="lede">No terminal commands and nothing to clone. The app brings its own speech engine and sets the rest up the first time you open it. macOS asks once to let VibePit use the microphone: press Allow.</p>
       </div>
       <div class="steps">
-        <div class="step"><h3>Open the download</h3><p>Open <b>Jarvis.dmg</b> and drag Jarvis into Applications. If you open it straight from the disk image, it offers to move itself.</p></div>
-        <div class="step"><h3>Allow it to open</h3><p>The first time, macOS may say it can’t check the app. Go to <b>System Settings → Privacy &amp; Security</b>, scroll down, press <b>Open Anyway</b> next to Jarvis and confirm.</p></div>
-        <div class="step"><h3>Follow Get started</h3><p>The first window walks you through the rest, one button per step: install Claude Code, log in, get VS Code, and pick your projects.</p></div>
-        <div class="step"><h3>Say “Hi Jarvis”</h3><p>Press Start and allow the microphone. Then say “Hi Jarvis, open” and one of your project names.</p></div>
+        <div class="step"><h3>Open the download</h3><p>Open the VibePit disk image and drag VibePit into Applications.</p></div>
+        <div class="step"><h3>Allow it to open</h3><p>The first time, macOS may say it cannot check the app. Go to <b>System Settings → Privacy &amp; Security</b>, scroll down, press <b>Open Anyway</b> next to VibePit and confirm.</p></div>
+        <div class="step"><h3>Follow Get started</h3><p>The first window guides you through the rest, one button per step: install Claude Code, log in, get VS Code, and add your projects.</p></div>
+        <div class="step"><h3>Say “Hey Pit”</h3><p>Press Start and allow the microphone. Then say “Hey Pit, open” and the name of one of your projects.</p></div>
       </div>
       <div class="handled">
-        <div>Speech recognition, built in (Whisper, runs on your Mac)</div>
+        <div>Speech recognition, built in, running on your Mac</div>
         <div>Spoken “is done” alerts added to Claude Code</div>
         <div>The VS Code extension that opens Claude tabs</div>
         <div>Claude suggests your projects and how to say them</div>
+        <div><span>A step-by-step <a href="setup.html">Setup guide</a>, in the app and on this website</span></div>
+        <div>Updates install from inside the app</div>
       </div>
     </div>
   </section>
@@ -222,17 +252,17 @@ footer a { color: var(--muted); }
       <div class="head">
         <p class="eyebrow">Voice commands</p>
         <h2>What you can say</h2>
-        <p class="lede">Start with “Hi Jarvis”. For 30 seconds after each command you can just keep talking. Anything that isn’t a command goes word for word to the Claude tab you used last.</p>
+        <p class="lede">Start with “Hey Pit”. For 30 seconds after each command, you can keep talking without the name. Begin with “Claude, …” to send a message to Claude, or with “Pit, …” for a command. Everything you can say, you can also type.</p>
       </div>
       <div class="say">
-        <div><q>open abc</q><span>VS Code on the repo, with its Claude tab</span></div>
-        <div><q>in abc, check my last worked item</q><span>Types it into abc’s Claude tab and presses Enter</span></div>
+        <div><q>open abc</q><span>VS Code on the project, with its Claude tab</span></div>
+        <div><q>in abc, check my last worked item</q><span>Sends the message to abc’s Claude tab</span></div>
         <div><q>plan the Prisma upgrade</q><span>Plan mode: Claude researches and proposes before it edits</span></div>
         <div><q>approve · always allow · reject</q><span>Answers Claude’s permission question</span></div>
-        <div><q>run tests</q><span>Runs the project’s test command; you hear “finished” or “failed”</span></div>
-        <div><q>switch to orbit</q><span>Your messages go to another project from now on</span></div>
-        <div><q>resume abc</q><span>Picks up that tab’s last Claude conversation</span></div>
-        <div><q>dictate</q><span>Speak freely; the text is pasted into the front window</span></div>
+        <div><q>review PR 42</q><span>Claude reviews the pull request with your instructions</span></div>
+        <div><q>what did abc change?</q><span>Which files are not committed, and what waits to be pushed</span></div>
+        <div><q>resume abc</q><span>Continues that tab’s last Claude conversation</span></div>
+        <div><q>dictate</q><span>Speak freely; the text is pasted into the app in front</span></div>
       </div>
     </div>
   </section>
@@ -242,12 +272,13 @@ footer a { color: var(--muted); }
       <div class="head" style="margin:0">
         <p class="eyebrow">Privacy</p>
         <h2>Your voice stays on your Mac</h2>
-        <p class="lede">Jarvis transcribes speech with a local Whisper model. No audio is uploaded, and there’s no account to make. The only things that leave your Mac are the messages you send to Claude, through your own Claude Code.</p>
+        <p class="lede">VibePit turns your speech into text on your Mac, and a small model on your Mac works out what you meant. No audio is uploaded, and there is no account to create. The only things that leave your Mac are the messages you send to Claude, through your own Claude Code.</p>
       </div>
       <div class="facts">
-        <div><h3>Local speech model</h3><p>Downloaded once on first start, 150 to 500 MB depending on the accuracy you choose.</p></div>
+        <div><h3>Local speech models</h3><p>The Mac’s own speech recognition on macOS 26, or Whisper on older versions. Models download once, on first start.</p></div>
+        <div><h3>Your own key, only if you want</h3><p>For faster hearing you can add your own Deepgram key. Only what you say to VibePit is sent, after it hears its name.</p></div>
         <div><h3>Nothing listening on the network</h3><p>The app talks to itself on <code>127.0.0.1</code> only, and every request needs a secret token.</p></div>
-        <div><h3>Project suggestions on request</h3><p>“Find my projects” shows Claude your repo names, top-level files and READMEs, only when you press it. Claude gets no tools, so it can’t read or change anything else.</p></div>
+        <div><h3>Project suggestions on request</h3><p>“Set up with Claude” shows Claude your project names, top-level files and READMEs, only when you press it. Claude gets no tools, so it cannot read or change anything else.</p></div>
       </div>
     </div>
   </section>
@@ -256,12 +287,12 @@ footer a { color: var(--muted); }
     <div class="wrap">
       <div class="head"><p class="eyebrow">Questions</p><h2>Before you download</h2></div>
       <div class="faq">
-        <details><summary>What do I need?</summary><p>A Mac with macOS 12 or later, and a Claude account for Claude Code (Pro, Max, Team or Enterprise, or an API key). Apple silicon runs the speech model fastest. If Claude Code isn’t installed, the app installs it for you.</p></details>
-        <details><summary>Do I need VS Code?</summary><p>It’s recommended: each project gets a VS Code window with its Claude tabs in the terminal panel. If you’d rather not, choose “Use Terminal instead” and Claude opens in Terminal windows.</p></details>
-        <details><summary>macOS says it can’t check the app for malicious software</summary><p>Open System Settings → Privacy &amp; Security, scroll down, and press <b>Open Anyway</b> next to Jarvis. You only need to do this once.</p></details>
-        <details><summary>Why does it ask about Terminal and the microphone?</summary><p>The assistant runs in a Terminal window so you can see what it heard and said. macOS asks once to let Jarvis control Terminal, and once to let Terminal use the microphone.</p></details>
-        <details><summary>Can I call it something other than Jarvis?</summary><p>Yes. Say “Hi Jarvis, change your name to Friday”, or change it in Settings. Short, distinct names are recognised best.</p></details>
-        <details><summary>How do I update or uninstall?</summary><p>To update, download the new version and replace the app; your projects and settings stay. To uninstall, drag Jarvis to the Trash and delete the <code>~/.jarvis</code> folder.</p></details>
+        <details><summary>What do I need?</summary><p>A Mac with macOS 12 or later, and a Claude account for Claude Code (Pro, Max, Team or Enterprise, or an API key). Apple silicon runs the speech models fastest. If Claude Code is not installed, the app installs it for you.</p></details>
+        <details><summary>Do I need VS Code?</summary><p>It is recommended: each project gets a VS Code window with its Claude tabs in the terminal panel. If you prefer, choose “Use Terminal instead” and Claude opens in Terminal windows.</p></details>
+        <details><summary>macOS says it cannot check the app for malicious software</summary><p>Open System Settings → Privacy &amp; Security, scroll down, and press <b>Open Anyway</b> next to VibePit. You only need to do this once.</p></details>
+        <details><summary>Why does it ask for the microphone and Accessibility?</summary><p>The microphone lets VibePit hear you. Accessibility is needed only to open project windows in full screen and to paste dictated text. You can say no to Accessibility and use everything else.</p></details>
+        <details><summary>Can I call it something other than Pit?</summary><p>Yes. Say “Hey Pit, change your name to Friday”, or change it in the settings. Short, distinct names are recognised best.</p></details>
+        <details><summary>How do I update or uninstall?</summary><p>When a new version is available, the app tells you: press <b>Update now</b>, and your projects and settings are kept. To uninstall, quit VibePit, run <code>~/.vibepit/app/.venv/bin/python ~/.vibepit/app/install_hooks.py --remove</code> in Terminal, drag VibePit to the Trash, and delete the <code>~/.vibepit</code> folder.</p></details>
       </div>
     </div>
   </section>
@@ -269,16 +300,18 @@ footer a { color: var(--muted); }
   <section>
     <div class="wrap cta">
       <img src="icon.png" alt="" width="88" height="88" style="border-radius:22px">
-      <h2>Give Claude Code a voice</h2>
-      <a class="btn dl" href="https://github.com/Logesh883/jarvis-voice-app/releases/latest/download/Jarvis-arm64.dmg">Download for Mac</a>
+      <h2>Your pit wall for Claude Code</h2>
+      <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download for Mac</a>
+      <a href="setup.html">Read the Setup guide</a>
+      <a href="release-notes.html">Read the release notes</a>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Jarvis Voice · Not affiliated with Anthropic</span>
-    <span><a href="https://github.com/Logesh883/jarvis-voice-app/releases">All versions and release notes</a></span>
+    <span>VibePit · Not affiliated with Anthropic</span>
+    <span><a href="setup.html">Setup guide</a> · <a href="release-notes.html">Release notes</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
   </div>
 </footer>
 
@@ -286,16 +319,16 @@ footer a { color: var(--muted); }
 // Intel Macs get the Intel download first. Chrome and Edge can tell; Safari and Firefox
 // can't, so they keep Apple silicon (most Macs sold since 2020) with the Intel link beside it.
 (async () => {
-  const base = "https://github.com/Logesh883/jarvis-voice-app/releases/latest/download/";
+  const base = "https://github.com/Logesh883/vibepit-app/releases/latest/download/";
   try {
     const ua = navigator.userAgentData;
     if (!ua || !ua.getHighEntropyValues) return;
     const { architecture, platform } = await ua.getHighEntropyValues(["architecture"]);
     if (platform !== "macOS" || architecture !== "x86") return;
-    document.querySelectorAll("a.dl").forEach((a) => { a.href = base + "Jarvis-x86_64.dmg"; });
+    document.querySelectorAll("a.dl").forEach((a) => { a.href = base + "VibePit-x86_64.dmg"; });
     document.getElementById("dlChip").textContent = "Intel";
     const other = document.getElementById("dlOther");
-    other.textContent = "Apple silicon?"; other.href = base + "Jarvis-arm64.dmg";
+    other.textContent = "Apple silicon?"; other.href = base + "VibePit-arm64.dmg";
   } catch (e) { /* keep the default */ }
 })();
 </script>

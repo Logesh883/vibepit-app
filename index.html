@@ -77,6 +77,9 @@ section .head { display: grid; gap: 12px; margin-bottom: 36px; }
 .allow .path { font-family: var(--mono); font-size: 13.5px; color: var(--text); white-space: nowrap; }
 @media (max-width: 480px) { .allow .path { white-space: normal; } }
 
+.tour { font: 600 16px var(--display); text-decoration: none; }
+.tour:hover { text-decoration: underline; }
+
 /* the app window: Claude tabs on the left, the Chat on the right, usage and the mic below */
 .term { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; box-shadow: 0 30px 80px -40px rgba(30, 40, 110, .45); min-width: 0; }
 .term .top { display: flex; align-items: center; gap: 7px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--panel2); }
@@ -223,6 +226,7 @@ footer a { color: var(--muted); }
     <a href="#voice">Voice</a>
     <a href="#phone">Phone</a>
     <a href="#privacy">Privacy</a>
+    <a href="demo.html">Demo</a>
     <a href="setup.html">Setup guide</a>
     <a href="release-notes.html">Release notes</a>
     <a class="btn small dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
@@ -240,6 +244,7 @@ footer a { color: var(--muted); }
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
           <span id="dlLabel">Download for Mac</span>
         </a>
+        <a class="tour" href="demo.html">See how it works in a short demo <span aria-hidden="true">→</span></a>
         <p class="meta"><span id="dlChip">Apple silicon</span> · macOS 12 or later · free · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
         <div class="allow" role="note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
@@ -476,6 +481,7 @@ footer a { color: var(--muted); }
       <h2>Your pit wall for Claude Code</h2>
       <p class="lede">Every session in one window. Type, talk, or follow from your phone.</p>
       <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download for Mac</a>
+      <a href="demo.html">Watch the demo</a>
       <a href="setup.html">Read the Setup guide</a>
       <a href="release-notes.html">Read the release notes</a>
     </div>
@@ -485,7 +491,7 @@ footer a { color: var(--muted); }
 <footer>
   <div class="wrap">
     <span>VibePit · Not affiliated with Anthropic</span>
-    <span><a href="setup.html">Setup guide</a> · <a href="release-notes.html">Release notes</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
+    <span><a href="demo.html">Demo</a> · <a href="setup.html">Setup guide</a> · <a href="release-notes.html">Release notes</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
   </div>
 </footer>
 

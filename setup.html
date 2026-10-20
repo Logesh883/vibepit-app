@@ -190,6 +190,7 @@ footer a { color: var(--muted); }
       <a href="#phone">On your phone</a>
       <a href="#say">Useful phrases</a>
       <a href="#extras">Optional extras</a>
+      <a href="#settings">Your settings</a>
       <a href="#privacy">Your privacy</a>
       <a href="#help">If something goes wrong</a>
       <a href="#update">Updates and uninstalling</a>
@@ -317,11 +318,16 @@ footer a { color: var(--muted); }
             <div><b>Only my voice</b><p>Say <q>Hey Pit, learn my voice</q> and read five short sentences. VibePit then ignores other people speaking near you. It helps, but it is not a lock: a recording of you, or a very similar voice, can still pass.</p></div>
             <div><b>A second Claude account</b><p>Add it on the Claude accounts page, then choose it for the projects that should use it. If one account is close to its limit, VibePit offers to move the conversation to the other.</p></div>
             <div><b>Dictation</b><p>Say <q>dictate</q> to type into any app, such as Slack or your browser. This needs the Accessibility permission: <span class="path">System Settings → Privacy &amp; Security → Accessibility</span>.</p></div>
-            <div><b>Better hearing</b><p>Add your own Deepgram key under <b>Voice &amp; listening</b> for faster and more accurate speech recognition.</p></div>
+            <div><b>Better hearing</b><p>Add your own Deepgram key in <b>Voice &amp; listening → Microphone</b> for faster and more accurate speech recognition.</p></div>
             <div><b>Check before sending</b><p>If you prefer, what you say is placed in the message box first. You can correct any misheard words and then press Return.</p></div>
-            <div><b>A different name</b><p>Say <q>Hey Pit, change your name to Friday</q>, or change it in the settings. Short, distinct names are recognised best.</p></div>
-            <div><b>Theme</b><p>Choose Dark, Light or System in the settings.</p></div>
+            <div><b>A different name</b><p>Say <q>Hey Pit, change your name to Friday</q>, or change it in <b>Voice &amp; listening → Name &amp; waking</b>. Short, distinct names are recognised best.</p></div>
+            <div><b>Theme</b><p>Choose Dark, Light or System in <b>General → Appearance</b>.</p></div>
           </div>
+        </section>
+
+        <section class="group" id="settings">
+          <h3>Your settings</h3>
+          <p class="note">Settings are on three pages: <b>Voice &amp; listening</b>, <b>Claude behaviour</b> and <b>General</b>. Each page is divided into tabs, such as Microphone, Reviews or Updates. To find a setting quickly, type a word from it in the <b>Find a setting</b> box at the top of the page. If the setting is on another page, a link takes you there.</p>
         </section>
 
         <section class="group" id="privacy">
@@ -332,7 +338,7 @@ footer a { color: var(--muted); }
         <section class="group" id="help">
           <h3>If something goes wrong</h3>
           <div class="faq">
-            <details><summary>It does not hear me, or it reacts to noise</summary><p>Check that the microphone is allowed in <span class="path">System Settings → Privacy &amp; Security → Microphone</span>. The <b>Mic threshold</b> setting in Voice &amp; listening changes how loud speech must be before VibePit listens.</p></details>
+            <details><summary>It does not hear me, or it reacts to noise</summary><p>Check that the microphone is allowed in <span class="path">System Settings → Privacy &amp; Security → Microphone</span>. The <b>Mic threshold</b> setting in <b>Voice &amp; listening → Microphone</b> changes how loud speech must be before VibePit listens.</p></details>
             <details><summary>It mishears a project name</summary><p>Right after it says that it does not know a project, say <q>I meant abc</q>. VibePit remembers the misheard words for next time. You can also add aliases to the project.</p></details>
             <details><summary>I do not hear “is done” alerts</summary><p>Restart your Claude tabs after you install VibePit. If the Overview says the alerts are missing, press <b>Install alerts</b> there. Alerts work in the Claude tabs that VibePit opened, while VibePit is running.</p></details>
             <details><summary>Claude opens in Terminal, not in VS Code</summary><p>In VS Code, open the command palette with ⌘⇧P and run <b>Developer: Reload Window</b>. Then try again.</p></details>
@@ -345,7 +351,7 @@ footer a { color: var(--muted); }
         <section class="group" id="update">
           <h3>Updates and uninstalling</h3>
           <div class="items">
-            <div><b>Updates</b><p>When a new version is available, VibePit tells you. Press <b>Update now</b>. The app installs the update and opens again, and your projects and settings are kept. The <a href="release-notes.html">release notes</a> explain what is new in each version, and the app’s <b>What’s new</b> page shows them too.</p></div>
+            <div><b>Updates</b><p>When a new version is available, VibePit tells you. Press <b>Update now</b>. The app installs the update and opens again, and your projects and settings are kept. To check for a new version yourself, open <b>General → Updates</b> and press <b>Check now</b>. The <a href="release-notes.html">release notes</a> explain what is new in each version, and the app’s <b>What’s new</b> page shows them too.</p></div>
             <div><b>Uninstalling</b><p>Quit VibePit. In Terminal, run <code>~/.vibepit/app/.venv/bin/python ~/.vibepit/app/install_hooks.py --remove</code> to remove the spoken alerts from Claude Code. Then drag VibePit to the Trash, and delete the <code>~/.vibepit</code> folder.</p></div>
           </div>
         </section>

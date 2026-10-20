@@ -178,7 +178,7 @@ footer a { color: var(--muted); }
         <div class="vhead">
           <p class="tag"><b>1.0.0</b><span>Released 20 October 2026</span><span>·</span><span>First release</span></p>
           <h2>Welcome to VibePit</h2>
-          <p>VibePit sits beside VS Code and runs all your Claude Code sessions from one window. Answer Claude’s questions, permissions and plans with a click, see what every tab is doing, watch your usage limits, and follow along from your phone. Type to it, or say “Hey Pit, open abc” and your project opens with Claude ready. VibePit tells you when Claude is done or needs you, so you can run several projects at once and still know exactly where each one stands.</p>
+          <p>VibePit sits beside VS Code and runs all your Claude Code sessions from one window. Answer Claude’s questions, permissions and plans with a click, see what every tab is doing, watch your usage limits, and use Claude from your phone. Type to it, or say “Hey Pit, open abc” and your project opens with Claude ready. VibePit tells you when Claude is done or needs you, so you can run several projects at once and still know exactly where each one stands.</p>
         </div>
 
         <div class="glance">
@@ -189,8 +189,8 @@ footer a { color: var(--muted); }
           </div>
           <div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
-            <h3>Follow Claude on your phone</h3>
-            <p>Scan a QR code and your phone shows your Claude tabs in its browser. Read and reply to one project, or watch every project, on Wi-Fi or from anywhere.</p>
+            <h3>Use Claude from your phone</h3>
+            <p>Scan a QR code and your phone’s browser can do what the Chat does: send messages, answer Claude, stop a tab, attach photos, talk, and check background tasks and changes, on Wi-Fi or from anywhere.</p>
           </div>
           <div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
@@ -251,12 +251,15 @@ footer a { color: var(--muted); }
 
         <section class="group" id="phone">
           <h3>On your phone</h3>
-          <p>Step away from the desk and still know what Claude is doing. Your phone follows VibePit in its browser, with nothing to install.</p>
+          <p>Step away from the desk and keep working with Claude. Your phone uses VibePit in its web browser, with nothing to install.</p>
           <div class="items">
             <div><b>Scan a QR code</b><p>Press the phone icon in the message box and scan the code with your phone’s camera. Then press <em>Allow</em> on the Mac, and your phone is in.</p></div>
-            <div><b>Follow one project</b><p>Read the project’s Chat, send Claude a message, and answer what it asks, just as you would on the Mac.</p></div>
-            <div><b>Or watch every project</b><p>A timing tower of all your Claude tabs shows who is working, who is done and who needs you. It is read only: nothing can be sent or answered from it.</p></div>
-            <div><b>On Wi-Fi, or anywhere</b><p>Your phone follows on the same Wi-Fi by default. Choose <em>Anywhere</em> to follow through a Cloudflare tunnel when you are out.</p></div>
+            <div><b>One project or every project</b><p>Choose whether the phone can use the Claude tabs of one project, or of every project. Either way, it can do everything below.</p></div>
+            <div><b>Chat with Claude</b><p>Read the Chat, send messages, reply to one answer, and tap a suggested reply. Long answers and plans open full screen, so they are easy to read.</p></div>
+            <div><b>Answer, stop and switch</b><p>Answer Claude’s questions, permission requests and plans. Stop a tab that is working, switch its mode, open a new tab, or continue an earlier conversation.</p></div>
+            <div><b>Photos, files and your voice</b><p>Attach a photo or a file from your phone, and see the pictures Claude shows. Over the Anywhere link you can also talk, and your Mac writes down what you said.</p></div>
+            <div><b>Tasks, commands and changes</b><p>See background tasks and what they print. Read what a command does before you run it on your Mac. See which files changed in the project, and the latest commits.</p></div>
+            <div><b>On Wi-Fi, or anywhere</b><p>Your phone connects on the same Wi-Fi by default. Choose <em>Anywhere</em> to connect through a secure Cloudflare link when you are out.</p></div>
             <div><b>You decide who is in</b><p>Each code works once, for two minutes, and only after you allow the phone on the Mac. Disconnect it from the Mac or the phone at any time, give it a time limit, or remember it on your Wi-Fi.</p></div>
           </div>
         </section>
@@ -319,7 +322,8 @@ footer a { color: var(--muted); }
             <li><span><b>Opening it the first time.</b> macOS may say it cannot check the app. Open System Settings → Privacy &amp; Security and press Open Anyway. You only need to do this once.</span></li>
             <li><span><b>Only in tabs VibePit opens.</b> Answering Claude from the app, and hearing its summary read aloud, work in the Claude tabs that VibePit opened, while VibePit is running.</span></li>
             <li><span><b>VS Code works best.</b> Some features, such as sending a message to an open project with <q>in abc, …</q>, need Claude to open in VS Code rather than Terminal.</span></li>
-            <li><span><b>Following from anywhere needs cloudflared.</b> On the same Wi-Fi your phone needs nothing extra. To follow from anywhere, install Cloudflare’s free <code>cloudflared</code> on the Mac first (<code>brew install cloudflared</code>).</span></li>
+            <li><span><b>Connecting from anywhere needs cloudflared.</b> On the same Wi-Fi your phone needs nothing extra. To connect from anywhere, install Cloudflare’s free <code>cloudflared</code> on the Mac first (<code>brew install cloudflared</code>).</span></li>
+            <li><span><b>The phone’s microphone needs the Anywhere link.</b> Browsers only allow the microphone on secure (https) pages. On Wi-Fi, use the microphone on your phone’s keyboard instead.</span></li>
             <li><span><b>Only my voice is not a lock.</b> It helps VibePit ignore other voices, but a recording of you, or a very similar voice, can still pass.</span></li>
           </ul>
         </section>

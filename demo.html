@@ -9,28 +9,28 @@
 <meta property="og:description" content="A guided tour of VibePit: one window for all your Claude Code sessions.">
 <meta property="og:image" content="vibepit-logo.png">
 <link rel="icon" href="vibepit-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Atkinson+Hyperlegible+Next:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+@font-face { font-family: "Geist"; src: url("fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 /* The site's look (as setup.html) around the tour; the app itself plays in demo-app.html. */
 :root {
-  --ink: #f4f5fb; --panel: #ffffff; --panel2: #eceef7; --line: #dcdfec;
-  --text: #121528; --muted: #575e7d; --signal: #3c5ce6; --violet: #7a43d6; --ok: #16865a; --warn: #a86a00;
+  --ink: #f7f6f3; --panel: #ffffff; --panel2: #eceae5; --line: #e2e0da;
+  --text: #1b1b1d; --muted: #55555b; --signal: #3557d4; --violet: #3557d4; --ok: #16865a; --warn: #a86a00;
   --on-signal: #ffffff;
-  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --body: "Atkinson Hyperlegible Next", -apple-system, "Segoe UI", sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --display: "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --body: "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --r: 14px;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --ink: #0c0e16; --panel: #141826; --panel2: #1a1f30; --line: #262c40;
-  --text: #e8eaf4; --muted: #959cb5; --signal: #7690ff; --violet: #a874f7; --ok: #3ecf8e; --warn: #f2b14a;
-  --on-signal: #0c0e16; color-scheme: dark; } }
+  --ink: #0e0f11; --panel: #17181b; --panel2: #1e1f23; --line: #26272c;
+  --text: #ededee; --muted: #a9a9af; --signal: #8fa8ff; --violet: #8fa8ff; --ok: #3ecf8e; --warn: #f5b041;
+  --on-signal: #0e0f11; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --ink: #0c0e16; --panel: #141826; --panel2: #1a1f30; --line: #262c40;
-  --text: #e8eaf4; --muted: #959cb5; --signal: #7690ff; --violet: #a874f7; --ok: #3ecf8e; --warn: #f2b14a;
-  --on-signal: #0c0e16; color-scheme: dark; }
+  --ink: #0e0f11; --panel: #17181b; --panel2: #1e1f23; --line: #26272c;
+  --text: #ededee; --muted: #a9a9af; --signal: #8fa8ff; --violet: #8fa8ff; --ok: #3ecf8e; --warn: #f5b041;
+  --on-signal: #0e0f11; color-scheme: dark; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -40,25 +40,25 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outlin
 .wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -.02em; }
 p { margin: 0; text-wrap: pretty; }
-.eyebrow { font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.eyebrow { font: 600 15px/1.2 var(--body); color: var(--muted); }
 .lede { color: var(--muted); max-width: 62ch; }
 
 /* top bar */
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
-.brand { display: flex; align-items: center; gap: 10px; font: 700 18px var(--display); color: var(--text); text-decoration: none; letter-spacing: -.01em; }
+.brand { display: flex; align-items: center; gap: 10px; font: 600 18px var(--display); color: var(--text); text-decoration: none; letter-spacing: -.01em; }
 .brand img { width: 34px; height: 34px; border-radius: 9px; }
 .bar nav { display: flex; align-items: center; gap: 22px; font-size: 15px; }
 .bar nav a { color: var(--muted); text-decoration: none; }
 .bar nav a:hover, .bar nav a[aria-current] { color: var(--text); }
 .bar nav .btn { color: var(--on-signal); }
-.btn { display: inline-flex; align-items: center; gap: 10px; background: var(--signal); color: var(--on-signal); font: 700 16px var(--display); text-decoration: none; padding: 13px 22px; border-radius: 12px; border: 0; cursor: pointer; transition: transform .15s, filter .15s; }
+.btn { display: inline-flex; align-items: center; gap: 10px; background: var(--signal); color: var(--on-signal); font: 600 16px var(--display); text-decoration: none; padding: 13px 22px; border-radius: 999px; border: 0; cursor: pointer; transition: transform .15s, filter .15s; }
 .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.btn.small { font-size: 14px; padding: 8px 14px; border-radius: 10px; }
+.btn.small { font-size: 15px; padding: 9px 18px; border-radius: 999px; }
 .btn svg { width: 20px; height: 20px; flex: none; }
 
 .top { padding-block: clamp(28px, 5vw, 56px) clamp(20px, 3vw, 32px); display: grid; gap: 14px; }
-.top h1 { font-size: clamp(36px, 5.5vw, 60px); line-height: 1.02; font-weight: 800; letter-spacing: -.035em; }
-.top h1 em { font-style: normal; color: var(--signal); }
+.top h1 { font-size: clamp(36px, 5.5vw, 60px); line-height: 1.02; font-weight: 600; letter-spacing: -.035em; }
+.top h1 em { font-style: normal; color: inherit; }
 .top .lede { font-size: 19px; }
 
 /* the tour: steps above, the window, then what this step shows with the controls */
@@ -74,11 +74,11 @@ p { margin: 0; text-wrap: pretty; }
 
 .stage { position: relative; }
 .cap { margin-top: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 28px; align-items: start; }
-.cap h2 { font-size: clamp(22px, 2.6vw, 28px); line-height: 1.15; font-weight: 800; margin-top: 8px; }
+.cap h2 { font-size: clamp(22px, 2.6vw, 28px); line-height: 1.15; font-weight: 600; margin-top: 8px; }
 .cap p.say { color: var(--muted); margin-top: 8px; max-width: 70ch; }
 .hint { margin-top: 10px; font: 600 13px var(--mono); color: var(--signal); min-height: 1.4em; }
 .ctl { display: flex; gap: 8px; }
-.ctl button { display: inline-flex; align-items: center; gap: 8px; font: 700 14px var(--display); padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
+.ctl button { display: inline-flex; align-items: center; gap: 8px; font: 600 14px var(--display); padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
 .ctl button svg { width: 16px; height: 16px; }
 .ctl button.main { background: var(--signal); border-color: var(--signal); color: var(--on-signal); min-width: 104px; justify-content: center; }
 .ctl button:disabled { opacity: .45; cursor: default; }
@@ -96,7 +96,7 @@ p { margin: 0; text-wrap: pretty; }
 .view { position: relative; overflow: hidden; }
 .view iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 760px; border: 0; transform-origin: 0 0; display: block; }
 .after { margin-top: clamp(64px, 8vw, 96px); display: grid; justify-items: center; text-align: center; gap: 14px; }
-.after h2 { font-size: clamp(26px, 3.6vw, 36px); font-weight: 800; }
+.after h2 { font-size: clamp(26px, 3.6vw, 36px); font-weight: 600; }
 .after .links2 { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; font-size: 15px; }
 .fine { margin-top: 12px; font-size: 14px; color: var(--muted); }
 
@@ -122,7 +122,7 @@ footer a { color: var(--muted); }
 <header class="wrap bar">
   <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="">VibePit</a>
   <nav>
-    <a href="index.html">Home</a>
+    <a href="index.html#features">Features</a>
     <a href="demo.html" aria-current="page">Demo</a>
     <a href="setup.html">Setup guide</a>
     <a href="release-notes.html">Release notes</a>

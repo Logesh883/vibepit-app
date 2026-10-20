@@ -3,499 +3,362 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>VibePit</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="VibePit is one window for all your Claude Code sessions on the Mac. Answer Claude’s questions, permissions and plans with a click, watch your usage limits, keep notes and reminders, follow along from your phone, and talk to it when you like. Speech stays on your Mac.">
-<meta property="og:title" content="VibePit">
-<meta property="og:description" content="The pit wall for vibe coders: every Claude Code session in one window. Type, talk, or follow from your phone.">
+<title>VibePit: Claude Code in one window</title>
+<meta name="description" content="VibePit is a free Mac app for Claude Code. Run every session from one window, answer Claude with one click, hear when it is done, and carry on from your phone.">
+<meta property="og:title" content="VibePit: Claude Code in one window">
+<meta property="og:description" content="A free Mac app for Claude Code. Every session in one window, answered with one click.">
 <meta property="og:image" content="vibepit-logo.png">
 <link rel="icon" href="vibepit-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Atkinson+Hyperlegible+Next:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Layout: a two-column hero (pitch | the app's Chat), a strip of what's inside, then plain full-width bands, each with one job. */
+/* The app's own type (Geist) and colours, so the page and the product read as one thing. One
+   ground, one ink, one accent; surfaces differ by a step in tone, never by a line or a shadow. */
+@font-face { font-family: "Geist"; src: url("fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 :root {
-  --ink: #f4f5fb; --panel: #ffffff; --panel2: #eceef7; --line: #dcdfec;
-  --text: #121528; --muted: #575e7d; --signal: #3c5ce6; --violet: #7a43d6; --ok: #16865a; --warn: #a86a00;
-  --on-signal: #ffffff; --frame: #1b1f2e;
-  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --body: "Atkinson Hyperlegible Next", -apple-system, "Segoe UI", sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --r: 14px;
+  --ground: #f7f6f3; --tone: #eceae5; --ink: #1b1b1d; --muted: #55555b;
+  --accent: #3557d4; --on-accent: #ffffff; --ui-line: rgba(24,22,18,.10);
+  --font: "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --s-display: clamp(46px, 5.2vw, 80px); --s-h2: clamp(32px, 3.4vw, 50px); --s-h3: 24px; --s-body: 18px; --s-small: 15px;
+  --margin: clamp(20px, 4vw, 56px); --gap: clamp(120px, 14vw, 200px);
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --ink: #0c0e16; --panel: #141826; --panel2: #1a1f30; --line: #262c40;
-  --text: #e8eaf4; --muted: #959cb5; --signal: #7690ff; --violet: #a874f7; --ok: #3ecf8e; --warn: #f2b14a;
-  --on-signal: #0c0e16; --frame: #303650; color-scheme: dark; } }
+  --ground: #0e0f11; --tone: #18191c; --ink: #ededee; --muted: #a9a9af;
+  --accent: #8fa8ff; --on-accent: #0e0f11; --ui-line: rgba(255,255,255,.09); color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --ink: #0c0e16; --panel: #141826; --panel2: #1a1f30; --line: #262c40;
-  --text: #e8eaf4; --muted: #959cb5; --signal: #7690ff; --violet: #a874f7; --ok: #3ecf8e; --warn: #f2b14a;
-  --on-signal: #0c0e16; --frame: #303650; color-scheme: dark; }
+  --ground: #0e0f11; --tone: #18191c; --ink: #ededee; --muted: #a9a9af;
+  --accent: #8fa8ff; --on-accent: #0e0f11; --ui-line: rgba(255,255,255,.09); color-scheme: dark; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-body { margin: 0; background: var(--ink); color: var(--text); font: 17px/1.6 var(--body); }
-a { color: var(--signal); }
-a:focus-visible, button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 6px; }
-.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
-h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -.02em; }
-h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; font-weight: 800; }
-h3 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
-p { margin: 0; }
-.eyebrow { font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.lede { color: var(--muted); max-width: 62ch; }
-section { padding-block: clamp(56px, 9vw, 104px); border-top: 1px solid var(--line); scroll-margin-top: 8px; }
-section .head { display: grid; gap: 12px; margin-bottom: 36px; }
+body { margin: 0; background: var(--ground); color: var(--ink); font: 400 var(--s-body)/1.55 var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 600; text-wrap: balance; }
+p { text-wrap: pretty; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.frame { padding-inline: var(--margin); max-width: 1440px; margin-inline: auto; }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; }
 
-/* top bar */
-.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
-.brand { display: flex; align-items: center; gap: 10px; font: 700 18px var(--display); color: var(--text); text-decoration: none; letter-spacing: -.01em; }
-.brand img { width: 34px; height: 34px; border-radius: 9px; }
-.bar nav { display: flex; align-items: center; gap: 22px; font-size: 15px; }
-.bar nav a { color: var(--muted); text-decoration: none; }
-.bar nav a:hover { color: var(--text); }
-.bar nav .btn { color: var(--on-signal); }
-
-.btn { display: inline-flex; align-items: center; gap: 10px; background: var(--signal); color: var(--on-signal); font: 700 16px var(--display); text-decoration: none; padding: 13px 22px; border-radius: 12px; border: 0; cursor: pointer; transition: transform .15s, filter .15s; }
+/* one button shape on the whole site: a flat pill in the accent */
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 26px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font: 600 var(--s-body) var(--font); text-decoration: none; transition: transform .15s ease, filter .15s ease; }
 .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.btn.small { font-size: 14px; padding: 8px 14px; border-radius: 10px; }
-.btn svg { width: 20px; height: 20px; flex: none; }
+.btn:active { transform: translateY(0) scale(.98); }
+.btn svg { width: 18px; height: 18px; }
+.link { color: var(--accent); font-weight: 600; text-decoration: underline 1.5px transparent; text-underline-offset: 5px; transition: text-decoration-color .2s ease; }
+.link:hover { text-decoration-color: currentColor; }
+.note { font-size: var(--s-small); color: var(--muted); }
 
-/* hero */
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 64px); align-items: center; padding-block: clamp(36px, 7vw, 88px) clamp(56px, 8vw, 96px); }
-.hero h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1; font-weight: 800; letter-spacing: -.035em; }
-.hero h1 em { font-style: normal; color: var(--signal); }
-.hero .lede { margin-top: 22px; font-size: 19px; }
-.get { margin-top: 32px; display: grid; gap: 12px; justify-items: start; }
-.get > * { max-width: 100%; }
-.get .meta { font: 13px var(--mono); color: var(--muted); }
-.get .meta a { color: var(--muted); }
-.allow { margin-top: 6px; display: flex; gap: 12px; align-items: flex-start; max-width: 520px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); font-size: 15px; color: var(--muted); }
-.allow svg { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--warn); }
-.allow b { color: var(--text); }
-.allow .path { font-family: var(--mono); font-size: 13.5px; color: var(--text); white-space: nowrap; }
-@media (max-width: 480px) { .allow .path { white-space: normal; } }
+/* the bar: wordmark, four links, one action */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 20px; text-decoration: none; }
+.brand img { width: 32px; height: 32px; }
+.bar nav { display: flex; align-items: center; gap: 28px; font-size: var(--s-small); }
+.bar nav a:not(.btn) { text-decoration: none; color: var(--ink); opacity: .8; transition: opacity .15s; }
+.bar nav a:not(.btn):hover { opacity: 1; }
+.bar .btn { padding: 9px 18px; font-size: var(--s-small); }
 
-.tour { font: 600 16px var(--display); text-decoration: none; }
-.tour:hover { text-decoration: underline; }
+/* hero: the title upper left; the app itself, live, on a stage of the accent that runs off the
+   right edge, its corner cut like the app's chevron */
+.hero { position: relative; min-height: min(900px, 100svh); padding-top: clamp(40px, 7vh, 96px); }
+.hero .copy { grid-column: 1 / span 5; position: relative; z-index: 1; }
+.hero h1 { font-size: var(--s-display); line-height: 1; letter-spacing: -.035em; font-weight: 600; }
+.hero .lead { margin-top: 32px; max-width: 30ch; font-size: 20px; line-height: 1.5; }
+.hero .act { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
+.hero .note { margin-top: 18px; }
+.stage { position: absolute; left: 42%; right: 0; top: 112px; bottom: 0; background: var(--accent);
+  clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px); }
+.live { position: absolute; left: 56px; top: 56px; right: 0; bottom: 0; overflow: hidden; border-radius: 14px 0 0 0; background: #0e0f11; }
+.live iframe { position: absolute; top: 0; height: 100%; border: 0; display: block; transform-origin: 0 0; }
 
-/* the app window: Claude tabs on the left, the Chat on the right, usage and the mic below */
-.term { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; box-shadow: 0 30px 80px -40px rgba(30, 40, 110, .45); min-width: 0; }
-.term .top { display: flex; align-items: center; gap: 7px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--panel2); }
-.term .top i { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
-.term .top span { margin-left: 8px; font: 12px var(--mono); color: var(--muted); }
-.win { display: grid; grid-template-columns: 158px minmax(0, 1fr); }
-.tabs { border-right: 1px solid var(--line); padding: 12px 8px; display: grid; gap: 4px; align-content: start; }
-.tabs .eyebrow { font-size: 10.5px; padding: 0 8px 6px; }
-.tab { display: grid; grid-template-columns: 9px minmax(0, 1fr); gap: 2px 9px; align-items: center; padding: 7px 8px; border-radius: 8px; font: 600 12.5px var(--mono); }
-.tab small { grid-column: 2; font: 400 11px var(--mono); color: var(--muted); }
-.tab.on { background: var(--panel2); }
-.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
-.dot.work { background: var(--signal); animation: pulse 1.4s ease-in-out infinite; }
-.dot.need { background: var(--warn); }
-@keyframes pulse { 50% { opacity: .35; } }
-.chat { padding: 16px; display: grid; gap: 12px; align-content: start; font-size: 14px; line-height: 1.5; min-width: 0; }
-.me { justify-self: end; max-width: 88%; background: var(--signal); color: var(--on-signal); padding: 8px 12px; border-radius: 12px 12px 4px 12px; }
-.me small { display: block; text-align: right; font: 11px var(--mono); opacity: .8; }
-.live { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 3px; font: 12px/1.5 var(--mono); color: var(--muted); }
-.live b { color: var(--text); font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
-.live .spark { display: inline-block; color: var(--violet); animation: spin 3s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.ask { border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--line)); background: color-mix(in srgb, var(--warn) 7%, var(--panel)); border-radius: 10px; padding: 12px; display: grid; gap: 10px; }
-.ask p { font-size: 13.5px; }
-.ask code { font: 12.5px var(--mono); background: var(--panel2); padding: 2px 6px; border-radius: 5px; overflow-wrap: anywhere; }
-.ask .row { display: flex; flex-wrap: wrap; gap: 6px; }
-.ask .row span { font: 600 12px var(--display); padding: 6px 11px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); }
-.ask .row span:first-child { background: var(--signal); border-color: var(--signal); color: var(--on-signal); }
-.status { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 10px 16px; border-top: 1px solid var(--line); background: var(--panel2); font: 12px var(--mono); color: var(--muted); }
-.meter { display: inline-flex; align-items: center; gap: 6px; }
-.meter i { display: block; width: 44px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
-.meter i::before { content: ""; display: block; height: 100%; width: var(--v); background: var(--ok); border-radius: 3px; }
-.status .mic { margin-left: auto; color: var(--ok); display: inline-flex; align-items: center; gap: 6px; }
-.wave { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
-.wave s { width: 3px; height: 40%; background: var(--ok); border-radius: 2px; animation: wv 1.1s ease-in-out infinite; }
-.wave s:nth-child(2) { animation-delay: -.2s; } .wave s:nth-child(3) { animation-delay: -.45s; }
-.wave s:nth-child(4) { animation-delay: -.7s; } .wave s:nth-child(5) { animation-delay: -.9s; }
-@keyframes wv { 0%, 100% { height: 30%; } 50% { height: 100%; } }
+section { padding-top: var(--gap); }
+.head h2 { font-size: var(--s-h2); line-height: 1.05; letter-spacing: -.025em; }
+.head p { margin-top: 20px; max-width: 52ch; font-size: 20px; }
 
-/* what's inside: one tile per part of the app, each a link to its band */
-.inside { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; padding-bottom: clamp(56px, 8vw, 88px); }
-.inside a { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 6px; align-content: start; color: var(--text); text-decoration: none; transition: border-color .15s, transform .15s; }
-.inside a:hover { border-color: var(--signal); transform: translateY(-2px); }
-.inside svg { width: 24px; height: 24px; color: var(--signal); margin-bottom: 4px; }
-.inside b { font: 700 16px var(--display); }
-.inside span { color: var(--muted); font-size: 14.5px; line-height: 1.45; }
+/* what it does: one module repeated, the words on the left, a real piece of the app on the right */
+.feat { margin-top: 80px; display: grid; gap: clamp(88px, 10vw, 144px); }
+.cap { align-items: center; }
+.cap .words { grid-column: 1 / span 3; }
+.cap h3 { font-size: var(--s-h3); line-height: 1.2; letter-spacing: -.01em; }
+.cap p { margin-top: 14px; max-width: 40ch; }
+.cap figure { grid-column: 5 / -1; margin: 0; }
+/* each crop framed as the app frames its window: its corner radius and its own faint edge (data-ui) */
+.cap figure img { width: 100%; border-radius: 14px; box-shadow: 0 0 0 1px var(--ui-line); }
+.more { margin-top: 72px; }
 
-/* features */
-.feat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.feat div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 22px 24px; display: grid; gap: 8px; align-content: start; }
-.feat p { color: var(--muted); font-size: 15.5px; }
-.feat + .say, .say + .feat { margin-top: 16px; }
+/* get started: the heading and what you need on the left, the three things to do on the right */
+.start .side { grid-column: 1 / span 5; }
+.start ol { grid-column: 7 / span 6; list-style: none; margin: 0; padding: 0; display: grid; gap: 44px; }
+.start li h3 { font-size: var(--s-h3); line-height: 1.2; }
+.start li p { margin-top: 10px; max-width: 46ch; }
+.start .side p + p { margin-top: 16px; }
 
-/* install steps: a real sequence */
-.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; counter-reset: s; }
-.step { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 24px; display: grid; gap: 10px; align-content: start; }
-.step::before { counter-increment: s; content: counter(s); font: 700 14px var(--mono); color: var(--signal); width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--signal); display: grid; place-items: center; }
-.step p { color: var(--muted); font-size: 15.5px; }
-.handled { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 28px; color: var(--muted); font-size: 15.5px; }
-.handled div { display: flex; gap: 10px; align-items: baseline; }
-.handled div::before { content: "✓"; color: var(--ok); font-weight: 700; }
+/* privacy: a band one tone off the ground, across the whole width */
+.private { margin-top: var(--gap); padding-block: clamp(80px, 9vw, 128px); background: var(--tone); }
+.private .head { grid-column: 1 / span 5; }
+.private dl { grid-column: 7 / span 6; margin: 0; display: grid; gap: 32px; }
+.private dt { font-weight: 600; font-size: 20px; }
+.private dd { margin: 6px 0 0; max-width: 48ch; }
 
-/* what you can say */
-.say { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--panel); }
-.say div { padding: 18px 22px; border-top: 1px solid var(--line); display: grid; gap: 4px; min-width: 0; }
-.say div:nth-child(-n+2) { border-top: 0; }
-.say div:nth-child(odd) { border-right: 1px solid var(--line); }
-.say q { font: 600 16px var(--mono); color: var(--text); quotes: "“" "”"; }
-.say span { color: var(--muted); font-size: 15px; }
-
-/* two columns: words | facts, or words | a picture */
-.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
-.split.mid { align-items: center; }
-.facts { display: grid; gap: 18px; }
-.facts div { display: grid; gap: 4px; padding-left: 18px; border-left: 2px solid var(--line); }
-.facts p { color: var(--muted); font-size: 15.5px; }
-.split .head + .facts { margin-top: 4px; }
-
-/* the phone: a timing tower of every Claude tab */
-.phone { width: min(310px, 100%); justify-self: center; border: 9px solid var(--frame); border-radius: 38px; background: var(--panel); overflow: hidden; box-shadow: 0 30px 80px -40px rgba(30, 40, 110, .55); font: 12.5px/1.45 var(--mono); }
-.phone .sb { display: flex; justify-content: space-between; padding: 10px 18px 6px; font-size: 11px; color: var(--muted); }
-.phone .ph { padding: 4px 16px 12px; border-bottom: 1px solid var(--line); display: grid; gap: 2px; }
-.phone .ph b { font: 800 17px var(--display); letter-spacing: -.01em; }
-.phone .ph span { color: var(--muted); font-size: 11px; }
-.tower { display: grid; }
-.tower div { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
-.tower i { font-style: normal; font-weight: 600; color: var(--muted); }
-.tower b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tower em { font-style: normal; font-size: 10.5px; font-weight: 600; letter-spacing: .06em; padding: 2px 7px; border-radius: 5px; color: var(--on-signal); background: var(--ok); }
-.tower em.work { background: var(--signal); }
-.tower em.need { background: var(--warn); }
-.phone .last { padding: 12px 16px 18px; display: grid; gap: 6px; color: var(--muted); }
-.phone .last p { font: 13px/1.5 var(--body); color: var(--text); }
-.phone .last .link { font-size: 11.5px; text-decoration: none; border: 1px solid var(--line); border-radius: 7px; padding: 5px 8px; justify-self: start; color: var(--signal); }
-
-/* questions */
-.faq { display: grid; gap: 10px; max-width: 780px; }
-.faq details { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
-.faq summary { cursor: pointer; font: 700 17px var(--display); letter-spacing: -.01em; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+/* questions: the list on the left; on a wide screen the chosen answer is the large type on the right */
+.faq .side { grid-column: 1 / span 5; }
+.faq .side h2 { margin-bottom: 36px; }
+.faq details { padding-block: 10px; }
+.faq summary { list-style: none; cursor: pointer; display: flex; gap: 14px; align-items: baseline; font-size: 20px; font-weight: 500; color: var(--muted); }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+"; color: var(--muted); font-weight: 500; }
-.faq details[open] summary::after { content: "–"; }
-.faq details p { color: var(--muted); margin-top: 10px; font-size: 15.5px; }
-.faq code, .facts code { font: 14px var(--mono); background: var(--panel2); padding: 1px 6px; border-radius: 5px; }
+.faq summary::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; transform: translateY(-2px); transition: background .15s; }
+.faq details[open] summary, .faq summary:hover { color: var(--ink); }
+.faq details[open] summary::before { background: var(--accent); }
+.faq details p { margin: 10px 0 6px 22px; max-width: 52ch; }
+.faq .pane { grid-column: 7 / span 6; display: none; }
+.faq .pane p { position: sticky; top: 120px; font-size: var(--s-h3); line-height: 1.35; max-width: 32ch; transition: opacity .15s; }
+@media (min-width: 900px) {
+  .faq.paned .pane { display: block; }
+  .faq.paned details p { display: none; }
+}
 
-.cta { text-align: center; display: grid; justify-items: center; gap: 18px; }
-.cta .lede { margin-top: -4px; }
-footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 14px; }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
-footer a { color: var(--muted); }
+/* the close: a field of the accent */
+.close { margin-top: var(--gap); background: var(--accent); color: var(--on-accent); padding-block: clamp(96px, 12vw, 168px); }
+.close h2 { grid-column: 1 / span 7; font-size: var(--s-display); line-height: 1; letter-spacing: -.035em; }
+.close .end { grid-column: 8 / span 5; align-self: end; }
+.close .end p { font-size: 20px; max-width: 34ch; }
+.close .btn { margin-top: 28px; background: var(--on-accent); color: var(--accent); }
+.close .end .note { color: inherit; opacity: .85; margin-top: 16px; }
+.close .end .note a { color: inherit; }
 
-@media (max-width: 960px) {
-  .inside { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+footer { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px 24px; align-items: baseline; padding-block: 40px 32px; font-size: var(--s-small); color: var(--muted); }
+footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+footer nav a { color: var(--ink); text-decoration: none; }
+footer nav a:hover { text-decoration: underline; }
+footer .end { justify-self: end; }
+
+/* entrances: each part of a section rises in once; without script, or with reduced motion, it is simply there */
+.js [data-rise] { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: calc(var(--i, 0) * 80ms); }
+.js [data-rise].in { opacity: 1; transform: none; }
+.js .stage { clip-path: polygon(96px 0, 100% 0, 100% 0, 0 0, 0 0); transition: clip-path 1.1s cubic-bezier(.7,0,.2,1) .15s; }
+.js .stage.in { clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px); }
+.js .live iframe { transition: opacity .6s .9s; opacity: 0; }
+.js .stage.in .live iframe { opacity: 1; }
+
+@media (max-width: 1100px) {
+  .hero .copy { grid-column: 1 / span 6; }
+  .stage { left: 40%; top: 46%; }
 }
 @media (max-width: 860px) {
-  .hero, .split { grid-template-columns: minmax(0, 1fr); }
-  .steps, .feat { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .inside { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bar nav a:not(.btn) { display: none; }
+  .hero { min-height: 0; padding-bottom: 0; }
+  .hero .copy { grid-column: 1 / -1; }
+  .stage { position: relative; left: auto; top: auto; margin: 48px 0 0 var(--margin); height: 520px; clip-path: polygon(72px 0, 100% 0, 100% 100%, 0 100%, 0 72px); }
+  .js .stage { clip-path: polygon(72px 0, 100% 0, 100% 0, 0 0, 0 0); }
+  .js .stage.in { clip-path: polygon(72px 0, 100% 0, 100% 100%, 0 100%, 0 72px); }
+  .live { left: 16px; top: 16px; }
+  .cap figure, .start .side, .start ol, .private .head, .private dl, .faq .side, .close h2, .close .end { grid-column: 1 / -1; }
+  .cap figure { margin-top: 28px; }
+  .cap .words { grid-column: 1 / -1; }
+  .start ol, .private dl { margin-top: 44px; }
+  .close .end { margin-top: 32px; }
+  footer { grid-template-columns: 1fr; gap: 8px; padding-block: 64px 24px; }
+  footer .end { justify-self: start; }
 }
-@media (max-width: 620px) {
-  .say, .steps, .feat, .inside { grid-template-columns: minmax(0, 1fr); }
-  .say div:nth-child(2) { border-top: 1px solid var(--line); }
-  .say div:nth-child(odd) { border-right: 0; }
-  .win { grid-template-columns: minmax(0, 1fr); }
-  .tabs { border-right: 0; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; padding: 10px; }
-  .tabs .eyebrow, .tab small { display: none; }
-  .chat { padding: 14px; }
-  .status .mic { margin-left: 0; }
+@media (max-width: 560px) {
+  .hero .lead { font-size: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .wave s, .dot.work, .live .spark { animation: none; } .wave s { height: 60%; }
-  .btn, .inside a { transition: none; }
+  .js [data-rise], .js .stage, .js .live iframe { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .js .stage { clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px) !important; }
+  .btn, .link { transition: none; }
 }
 </style>
+<script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
 
-<header class="wrap bar">
-  <a class="brand" href="#top"><img src="vibepit-logo.png" alt="">VibePit</a>
-  <nav>
-    <a href="#chat">The Chat</a>
-    <a href="#voice">Voice</a>
-    <a href="#phone">Phone</a>
-    <a href="#privacy">Privacy</a>
+<header class="frame bar">
+  <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="" width="32" height="32">VibePit</a>
+  <nav aria-label="Site">
+    <a href="#features">Features</a>
     <a href="demo.html">Demo</a>
     <a href="setup.html">Setup guide</a>
     <a href="release-notes.html">Release notes</a>
-    <a class="btn small dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
+    <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
   </nav>
 </header>
 
-<main id="top">
-  <div class="wrap hero">
-    <div>
-      <p class="eyebrow">The pit wall for vibe coders</p>
-      <h1 style="margin-top:16px">Every Claude Code session. <em>One window.</em></h1>
-      <p class="lede">VibePit sits beside VS Code and runs all your Claude Code sessions from one place. Answer Claude’s questions, permissions and plans with a click, see what every tab is doing, keep an eye on your usage limits, and follow along from your phone. Type to it, or just talk.</p>
-      <div class="get">
-        <a class="btn dl" id="dlMain" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
-          <span id="dlLabel">Download for Mac</span>
-        </a>
-        <a class="tour" href="demo.html">See how it works in a short demo <span aria-hidden="true">→</span></a>
-        <p class="meta"><span id="dlChip">Apple silicon</span> · macOS 12 or later · free · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
-        <div class="allow" role="note">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-          <p><b>The first time you open it, macOS asks you to allow it.</b> If it says it cannot check VibePit, open <span class="path">System Settings → Privacy &amp; Security</span>, scroll down and press <b>Open Anyway</b> next to VibePit. You only do this once.</p>
+<main>
+  <div class="hero">
+    <div class="frame grid">
+      <div class="copy">
+        <h1>Claude Code, in one&nbsp;window.</h1>
+        <p class="lead" data-rise style="--i:1">VibePit is a free Mac app for Claude Code. Run every session side by side, answer Claude with one click, and hear when it is done.</p>
+        <div class="act" data-rise style="--i:2">
+          <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
+            Download for Mac
+          </a>
+          <a class="link" href="demo.html">Take the two-minute tour</a>
         </div>
+        <p class="note" data-rise style="--i:3">Free · macOS 12 or later · <span id="dlChip">Apple silicon</span> · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
       </div>
     </div>
-
-    <div class="term" role="img" aria-label="The VibePit window: three Claude tabs, one working, one needing you and one done. In the Chat, Claude has fixed a failing login test and asks permission to push, with Approve, Always allow and Reject buttons. Below, the 5-hour and weekly usage meters and the microphone.">
-      <div class="top"><i></i><i></i><i></i><span>VibePit — abc</span></div>
-      <div class="win">
-        <div class="tabs">
-          <p class="eyebrow">Claude tabs</p>
-          <div class="tab on"><span class="dot need"></span>abc-claude<small>needs you</small></div>
-          <div class="tab"><span class="dot work"></span>api-claude<small>working · 4m</small></div>
-          <div class="tab"><span class="dot"></span>web-claude<small>done</small></div>
-        </div>
-        <div class="chat">
-          <div class="me">why is the login test failing?<small>✓ read</small></div>
-          <div class="live">
-            <b><span><span class="spark">✻</span> Worked 3m · 12 steps</span><span>plan mode</span></b>
-            <span>Read src/auth/token.ts</span>
-            <span>Edit src/auth/token.ts</span>
-            <span>Ran npm test -- login · passed</span>
-          </div>
-          <div class="ask">
-            <p>The token check compared seconds with milliseconds. I fixed it and the test passes. May I push?</p>
-            <code>git push origin fix/token-expiry</code>
-            <div class="row"><span>Approve</span><span>Always allow</span><span>Reject</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="status">
-        <span class="meter">5h <i style="--v:42%"></i> 42%</span>
-        <span class="meter">week <i style="--v:18%"></i> 18%</span>
-        <span class="meter">context <i style="--v:31%"></i> 31%</span>
-        <span class="mic"><span class="wave" aria-hidden="true"><s></s><s></s><s></s><s></s><s></s></span>hearing you</span>
+    <div class="stage" id="stage">
+      <div class="live" id="live" data-ui>
+        <iframe id="liveApp" src="demo-app.html?loop" title="VibePit at work: Claude proposes a plan, asks to run the tests, and finishes" tabindex="-1" loading="eager"></iframe>
       </div>
     </div>
   </div>
 
-  <nav class="wrap inside" aria-label="What’s inside">
-    <a href="#chat">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg>
-      <b>The Chat</b><span>Every Claude tab, its progress, and what it needs from you.</span></a>
-    <a href="#voice">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
-      <b>Voice</b><span>Say it in your own words, and hear when Claude is done.</span></a>
-    <a href="#phone">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
-      <b>Your phone</b><span>Scan a code, then chat, answer and stop Claude from anywhere.</span></a>
-    <a href="#usage">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
-      <b>Usage &amp; accounts</b><span>Your limits, each chat’s context, and a second account.</span></a>
-    <a href="#notes">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h10v16H5V8z"/><path d="M9 4v4H5M9 13l2 2 4-4"/></svg>
-      <b>Notes &amp; reminders</b><span>Pins, checklists and reminders beside your work.</span></a>
-  </nav>
-
-  <section id="chat">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">The Chat</p>
-        <h2>Run Claude Code without living in the terminal</h2>
-        <p class="lede">The Chat shows every Claude tab across your projects: what Claude is doing right now, what it has finished, and what it is waiting for. Work in several projects at once and still know exactly where each one stands.</p>
-      </div>
-      <div class="feat">
-        <div><h3>Answer with one click</h3><p>Questions with options, permission requests and plans show up with buttons. Give your own answer instead, or tell Claude why you said no.</p></div>
-        <div><h3>Plans you can actually read</h3><p>A plan opens beside the Chat, laid out like a document. Approve it, reply to it, pin it, or branch it into a new session.</p></div>
-        <div><h3>Live progress</h3><p>Watch Claude’s commands, the files it reads and edits, and its background tasks, with a timer. When it is done, it folds into one summary line.</p></div>
-        <div><h3>Know it arrived</h3><p>A message sent while Claude is busy shows Queued, then a green tick once Claude has read it. If it could not be delivered, the Chat says so.</p></div>
-        <div><h3>Modes for each tab</h3><p>Normal, plan, auto or accept edits, shown on every tab and changed from the Chat. Open more tabs in a project, or start one in another account.</p></div>
-        <div><h3>Commands, skills and files</h3><p>Type / to find Claude’s commands and skills. Attach files with the paper clip, drop them on the window, or paste a screenshot.</p></div>
-        <div><h3>Links that lead somewhere</h3><p>Pull requests, issues, CI runs, releases, commits, preview links and pictures from an answer sit right under its headline. A link to a review or a pull request’s changes says what it is.</p></div>
-        <div><h3>History, branches and replies</h3><p>Earlier conversations are kept by day. Continue one, branch any message to try another approach, reply to one specific answer, or copy a message Claude wrote for you to send.</p></div>
-        <div><h3>Review PRs, run commands</h3><p>“Review PR 42” runs a review with your own instructions. When Claude asks you to run something, it explains first and runs only when you confirm.</p></div>
-      </div>
+  <section id="features" class="frame">
+    <div class="head">
+      <h2 data-rise>What VibePit does</h2>
+      <p data-rise style="--i:1">It sits beside VS Code and keeps every Claude Code session in view, so you can run several at once without losing track of any.</p>
     </div>
-  </section>
-
-  <section id="voice">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Voice</p>
-        <h2>Talk to it when your hands are busy</h2>
-        <p class="lede">Start with “Hey Pit”. For 30 seconds after each command, you can keep talking without the name. Begin with “Claude, …” to send a message to Claude, or with “Pit, …” for a command. Everything you can say, you can also type.</p>
-      </div>
-      <div class="say">
-        <div><q>open abc</q><span>VS Code on the project, with its Claude tab</span></div>
-        <div><q>in abc, check my last change</q><span>Sends the message to abc’s Claude tab</span></div>
-        <div><q>plan the Prisma upgrade</q><span>Plan mode: Claude researches and proposes before it edits</span></div>
-        <div><q>approve · always allow · reject</q><span>Answers Claude’s permission question</span></div>
-        <div><q>review PR 42</q><span>Claude reviews the pull request with your instructions</span></div>
-        <div><q>what did abc change?</q><span>Which files are not committed, and what waits to be pushed</span></div>
-        <div><q>resume abc</q><span>Continues that tab’s last Claude conversation</span></div>
-        <div><q>dictate</q><span>Speak freely; the text is pasted into the app in front</span></div>
-      </div>
-      <div class="feat">
-        <div><h3>Your own words</h3><p>No fixed phrases to learn. “Bring up abc” or “let it go ahead” both work. When a sentence could mean two things, VibePit asks, and remembers your answer.</p></div>
-        <div><h3>Only your voice</h3><p>Read five short sentences and VibePit learns your voice, so it ignores other people talking nearby. It keeps numbers, never a recording.</p></div>
-        <div><h3>Check before sending</h3><p>If you like, what you say lands in the message box first, so you can fix a misheard word before you press Return.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="phone">
-    <div class="wrap split mid">
-      <div>
-        <div class="head">
-          <p class="eyebrow">On your phone</p>
-          <h2>Step away. Keep working with Claude.</h2>
-          <p class="lede">Scan a QR code in VibePit and your phone’s browser can do what the Chat does, live. No app to install and no account to create.</p>
+    <div class="feat">
+      <div class="cap grid">
+        <div class="words">
+          <h3 data-rise>Answer Claude with one click</h3>
+          <p data-rise style="--i:1">When Claude asks a question or needs your permission, the request appears in VibePit with clear buttons. You do not need to find the right terminal.</p>
         </div>
-        <div class="facts">
-          <div><h3>Chat, answer and stop</h3><p>Send Claude a message, answer its questions and plans, stop a tab or switch its mode, and watch each step Claude takes, from the sofa or the coffee queue.</p></div>
-          <div><h3>Photos, voice, tasks and changes</h3><p>Attach a photo, talk, see background tasks, run the commands Claude asks for, and see what changed. For one project or every project.</p></div>
-          <div><h3>On Wi-Fi, or anywhere</h3><p>On the same Wi-Fi by default, or from anywhere through an encrypted Cloudflare tunnel when you choose it.</p></div>
-          <div><h3>You let each phone in</h3><p>A code works once, for two minutes, and the phone waits until you press Allow on the Mac. Disconnect it whenever you like, or give it a time limit.</p></div>
+        <figure data-ui data-rise style="--i:2">
+          <picture><source srcset="img/ask-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/ask-light.webp" width="944" height="508" alt="A request from Claude to run the login tests, with the buttons Yes and No, above the message box and the usage meters" loading="lazy"></picture>
+        </figure>
+      </div>
+      <div class="cap grid">
+        <div class="words">
+          <h3 data-rise>Read the plan before Claude starts</h3>
+          <p data-rise style="--i:1">In plan mode, Claude proposes a plan before it changes any file. VibePit shows it beside the chat as a document that is easy to read. Approve it, or say what should change.</p>
         </div>
+        <figure data-ui data-rise style="--i:2">
+          <picture><source srcset="img/plan-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/plan-light.webp" width="1220" height="620" alt="Claude’s plan waiting for approval in the chat, and the same plan laid out as a document beside it" loading="lazy"></picture>
+        </figure>
       </div>
-      <div class="phone" role="img" aria-label="VibePit on a phone, with every project: abc-claude needs you, api-claude is working, web-claude is done, with web-claude’s latest answer and its preview link.">
-        <div class="sb"><span>9:41</span><span>●●● 5G</span></div>
-        <div class="ph"><b>VibePit</b><span>Every project</span></div>
-        <div class="tower">
-          <div><i>P1</i><b>abc-claude</b><em class="need">NEEDS YOU</em></div>
-          <div><i>P2</i><b>api-claude</b><em class="work">4:12</em></div>
-          <div><i>P3</i><b>web-claude</b><em>DONE</em></div>
-          <div><i>P4</i><b>docs-claude</b><em>DONE</em></div>
+      <div class="cap grid">
+        <div class="words">
+          <h3 data-rise>See every session at a glance</h3>
+          <p data-rise style="--i:1">Each Claude tab, in every project, shows whether it is working, ready or waiting for you. Your 5-hour and weekly limits sit under the message box, so they never surprise you.</p>
         </div>
-        <div class="last">
-          <span>web-claude · just now</span>
-          <p>Done. The pricing page is responsive now, and the preview is up.</p>
-          <span class="link">↗ preview link</span>
+        <figure data-ui data-rise style="--i:2">
+          <picture><source srcset="img/glance-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/glance-light.webp" width="900" height="700" alt="The Chats list with four projects, one waiting for you, beside the route-map conversation" loading="lazy"></picture>
+        </figure>
+      </div>
+      <div class="cap grid">
+        <div class="words">
+          <h3 data-rise>Hear when it is done</h3>
+          <p data-rise style="--i:1">When Claude finishes, VibePit tells you with a short summary read aloud. The answer starts with its headline, with its pull request and checks right under it. Type to VibePit, or say “Hey Pit”.</p>
         </div>
+        <figure data-ui data-rise style="--i:2">
+          <picture><source srcset="img/answer-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/answer-light.webp" width="944" height="232" alt="Claude’s finished answer with links to pull request 73 and its CI run, and two suggested replies" loading="lazy"></picture>
+        </figure>
       </div>
+      <div class="cap grid">
+        <div class="words">
+          <h3 data-rise>Carry on from your phone</h3>
+          <p data-rise style="--i:1">Scan a QR code, press Allow on your Mac, and your phone shows the same chat in its browser. There is nothing to install. It works on your Wi-Fi, or from anywhere if you choose.</p>
+        </div>
+        <figure data-ui data-rise style="--i:2">
+          <picture><source srcset="img/phone-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/phone-light.webp" width="1242" height="539" alt="VibePit on a phone sending Explain the change, and the message arriving in the chat on the Mac" loading="lazy"></picture>
+        </figure>
+      </div>
+    </div>
+    <p class="more" data-rise>Notes and reminders, two Claude accounts, a floating status panel and more are in the <a class="link" href="release-notes.html">release notes</a>.</p>
+  </section>
+
+  <section class="frame start" id="start">
+    <div class="grid">
+      <div class="side head">
+        <h2 data-rise>Ready in a few minutes</h2>
+        <p data-rise style="--i:1">You need a Mac with macOS 12 or later, and a Claude account that can use Claude Code: Pro, Max, Team or Enterprise, or an API key.</p>
+        <p class="note" data-rise style="--i:2">VS Code is recommended. VibePit installs Claude Code for you if it is missing. The <a class="link" href="setup.html">Setup guide</a> explains every step.</p>
+      </div>
+      <ol>
+        <li data-rise><h3>Download and open it</h3><p>Drag VibePit into Applications and open it. The first time, macOS asks you to allow it: open System Settings, then Privacy &amp; Security, and press Open Anyway.</p></li>
+        <li data-rise style="--i:1"><h3>Follow Get started</h3><p>The app gives you one button for each step: install Claude Code, log in, get VS Code and add your projects. Each step ticks itself off.</p></li>
+        <li data-rise style="--i:2"><h3>Open a project</h3><p>Type “open” and a project’s name, or say “Hey Pit, open” and its name. VS Code opens it with Claude ready in its own tab.</p></li>
+      </ol>
     </div>
   </section>
 
-  <section id="usage">
-    <div class="wrap">
+  <div class="private" id="privacy">
+    <div class="frame grid">
       <div class="head">
-        <p class="eyebrow">Usage &amp; accounts</p>
-        <h2>Never get cut off mid-task</h2>
-        <p class="lede">See where you stand with your Claude limits before they surprise you, and keep working when one account runs low.</p>
+        <h2 data-rise>Your work stays on your Mac</h2>
+        <p data-rise style="--i:1">There is no VibePit account. Your messages go to Claude through your own Claude Code, exactly as if you typed them in the terminal.</p>
       </div>
-      <div class="feat">
-        <div><h3>Your limits at a glance</h3><p>How much of your 5-hour and weekly limits you have used, and when each resets, in the Chat and per account.</p></div>
-        <div><h3>Context meter</h3><p>See how full each conversation is, so you know when it is time to start a fresh one.</p></div>
-        <div><h3>Two Claude accounts</h3><p>When one account nears its limit, VibePit offers the other. The conversation moves across, and what you send meanwhile goes with it.</p></div>
-        <div><h3>Your week</h3><p>The last 7 days for each project: how long Claude worked, how many messages you sent, and how long Claude waited for you.</p></div>
-        <div id="notes"><h3>Notes, pins and reminders</h3><p>Pin key answers, write notes, keep checklists and set reminders on one board. Filter by kind, project or search, and copy any of them.</p></div>
-        <div><h3>Suggested by Claude, saved by you</h3><p>Ask Claude for a plan, steps or a reminder and it offers one as a note. Nothing is saved until you approve it.</p></div>
+      <dl>
+        <div data-rise><dt>Speech is turned into text on your Mac</dt><dd>A small model on your Mac works out what you meant. No audio leaves it, unless you add your own Deepgram key for faster hearing.</dd></div>
+        <div data-rise style="--i:1"><dt>Closed to the network</dt><dd>The app talks only to itself, and every request needs a secret token. It opens to your phone only while a phone you allowed is connected.</dd></div>
+        <div data-rise style="--i:2"><dt>Independent</dt><dd>VibePit is not made by or affiliated with Anthropic. You use your own Claude account.</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <section class="frame faq" id="faq">
+    <div class="grid">
+      <div class="side">
+        <h2 class="head" data-rise>Questions</h2>
+        <details open><summary>Is VibePit free?</summary><p>Yes, VibePit is free. You use your own Claude account, so your usual Claude plan or API costs apply.</p></details>
+        <details><summary>Do I have to talk to it?</summary><p>No. Everything you can say, you can also type, and typed commands are answered in writing. You can turn the microphone off completely.</p></details>
+        <details><summary>Do I need VS Code?</summary><p>It is recommended: each project opens in VS Code with Claude in its terminal panel. If you prefer, Claude can open in Terminal instead.</p></details>
+        <details><summary>How do updates work?</summary><p>When a new version is out, VibePit tells you. Press Update now, and it installs the update and opens again. Your projects and settings are kept.</p></details>
+        <details><summary>Why does macOS warn me the first time?</summary><p>VibePit is not yet signed with an Apple Developer ID. Open System Settings, then Privacy &amp; Security, and press Open Anyway next to VibePit. You only do this once.</p></details>
       </div>
+      <div class="pane" aria-live="polite"><p id="faqAnswer"></p></div>
     </div>
   </section>
 
-  <section id="away">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">While you are away</p>
-        <h2>It comes and gets you when it’s needed</h2>
-        <p class="lede">Start a few tasks, go do something else. VibePit tells you when Claude is done, or when it is waiting for you, and nothing else.</p>
-      </div>
-      <div class="feat">
-        <div><h3>Spoken alerts and summaries</h3><p>Hear “abc-claude is done” with a short, plain summary, or “abc-claude needs you”. Also as notifications, and inside the window while you use it.</p></div>
-        <div><h3>Catch up</h3><p>When you come back, a card in the Chats list tells you what each Claude tab did while you were gone.</p></div>
-        <div><h3>Floating panel</h3><p>A small panel on every desktop, even over full-screen apps, shows which tabs are ready, working or need you. Click to jump in.</p></div>
-        <div><h3>Menu bar icon</h3><p>Start or stop listening and open VibePit from the menu bar, with or without its window open.</p></div>
-        <div><h3>The screen stays on</h3><p>While any Claude session is working, your Mac does not go to sleep. When Claude is done, your usual settings apply again.</p></div>
-        <div><h3>Reminders on time</h3><p>A reminder still arrives with the laptop locked, because your Mac stays awake in the hour before it.</p></div>
+  <div class="close">
+    <div class="frame grid">
+      <h2 data-rise>Try it on your next task.</h2>
+      <div class="end">
+        <p data-rise style="--i:1">VibePit is free for Mac. Most people are set up in about fifteen minutes.</p>
+        <a class="btn dl" data-rise style="--i:2" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download for Mac</a>
+        <p class="note" data-rise style="--i:3">Or <a href="demo.html">take the tour</a> first.</p>
       </div>
     </div>
-  </section>
-
-  <section id="how">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Install</p>
-        <h2>Download, open, get going</h2>
-        <p class="lede">No terminal commands and nothing to clone. The app brings its own speech engine and sets the rest up the first time you open it.</p>
-      </div>
-      <div class="steps">
-        <div class="step"><h3>Open the download</h3><p>Open the VibePit disk image and drag VibePit into Applications.</p></div>
-        <div class="step"><h3>Allow it to open</h3><p>The first time, macOS may say it cannot check the app. Go to <b>System Settings → Privacy &amp; Security</b>, scroll down, press <b>Open Anyway</b> next to VibePit and confirm.</p></div>
-        <div class="step"><h3>Follow Get started</h3><p>The first window guides you through the rest, one button per step: install Claude Code, log in, get VS Code, and add your projects.</p></div>
-        <div class="step"><h3>Open a project</h3><p>Type “open abc” in the Chat, or press Start, allow the microphone and say “Hey Pit, open abc”.</p></div>
-      </div>
-      <div class="handled">
-        <div>Speech recognition, built in, running on your Mac</div>
-        <div>Spoken “is done” alerts added to Claude Code</div>
-        <div>The VS Code extension that opens Claude tabs</div>
-        <div>Claude finds your projects and suggests a name for each</div>
-        <div><span>A step-by-step <a href="setup.html">Setup guide</a>, in the app and on this website</span></div>
-        <div>Updates install from inside the app</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="privacy">
-    <div class="wrap split">
-      <div class="head" style="margin:0">
-        <p class="eyebrow">Privacy</p>
-        <h2>Your voice and your code stay yours</h2>
-        <p class="lede">VibePit turns your speech into text on your Mac, and a small model on your Mac works out what you meant. No audio is uploaded, and there is no VibePit account. The only things that leave your Mac are the messages you send to Claude, through your own Claude Code.</p>
-      </div>
-      <div class="facts">
-        <div><h3>Local speech models</h3><p>The Mac’s own speech recognition on macOS 26, or Whisper on older versions. Models download once, on first start.</p></div>
-        <div><h3>Your own key, only if you want</h3><p>For faster hearing you can add your own Deepgram key. Only what you say to VibePit is sent, after it hears its name.</p></div>
-        <div><h3>Closed to the network by default</h3><p>The app talks to itself on <code>127.0.0.1</code> only, and every request needs a secret token. It opens to your phone only while you have one connected, and only for that phone.</p></div>
-        <div><h3>Project suggestions on request</h3><p>“Set up with Claude” shows Claude your project names, top-level files and READMEs, only when you press it. Claude gets no tools, so it cannot read or change anything else.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="faq">
-    <div class="wrap">
-      <div class="head"><p class="eyebrow">Questions</p><h2>Before you download</h2></div>
-      <div class="faq">
-        <details><summary>What do I need?</summary><p>A Mac with macOS 12 or later, and a Claude account for Claude Code (Pro, Max, Team or Enterprise, or an API key). Apple silicon runs the speech models fastest. If Claude Code is not installed, the app installs it for you.</p></details>
-        <details><summary>Do I have to talk to it?</summary><p>No. Everything you can say, you can also type in the Chat, and typed commands are answered in writing. You can turn the microphone off completely and use VibePit as a window for your Claude Code sessions.</p></details>
-        <details><summary>Do I need VS Code?</summary><p>It is recommended: each project gets a VS Code window with its Claude tabs in the terminal panel. If you prefer, choose “Use Terminal instead” and Claude opens in Terminal windows.</p></details>
-        <details><summary>How do I follow Claude on my phone?</summary><p>Press the phone icon in the message box, choose one project or every project, and scan the QR code with your phone’s camera. Press Allow on the Mac, and your phone can use your Claude tabs in its browser. Connecting from outside your Wi-Fi needs Cloudflare’s free <code>cloudflared</code> installed on the Mac.</p></details>
-        <details><summary>macOS says it cannot check the app for malicious software</summary><p>Open System Settings → Privacy &amp; Security, scroll down, and press <b>Open Anyway</b> next to VibePit. You only need to do this once.</p></details>
-        <details><summary>Why does it ask for the microphone and Accessibility?</summary><p>The microphone lets VibePit hear you. Accessibility is needed only to open project windows in full screen and to paste dictated text. You can say no to either and use everything else.</p></details>
-        <details><summary>Can I call it something other than Pit?</summary><p>Yes. Say “Hey Pit, change your name to Friday”, or change it in the settings. Short, distinct names are recognised best.</p></details>
-        <details><summary>How do I update or uninstall?</summary><p>When a new version is available, the app tells you: press <b>Update now</b>, and your projects and settings are kept. To uninstall, quit VibePit, run <code>~/.vibepit/app/.venv/bin/python ~/.vibepit/app/install_hooks.py --remove</code> in Terminal, drag VibePit to the Trash, and delete the <code>~/.vibepit</code> folder.</p></details>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap cta">
-      <img src="vibepit-logo.png" alt="" width="88" height="88" style="border-radius:22px">
-      <h2>Your pit wall for Claude Code</h2>
-      <p class="lede">Every session in one window. Type, talk, or follow from your phone.</p>
-      <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download for Mac</a>
-      <a href="demo.html">Watch the demo</a>
-      <a href="setup.html">Read the Setup guide</a>
-      <a href="release-notes.html">Read the release notes</a>
-    </div>
-  </section>
+  </div>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span>VibePit · Not affiliated with Anthropic</span>
-    <span><a href="demo.html">Demo</a> · <a href="setup.html">Setup guide</a> · <a href="release-notes.html">Release notes</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
-  </div>
+<footer class="frame">
+  <span>VibePit, a Mac app for Claude Code</span>
+  <nav aria-label="More"><a href="demo.html">Demo</a><a href="setup.html">Setup guide</a><a href="release-notes.html">Release notes</a><a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></nav>
+  <span class="end">© 2026 · Not affiliated with Anthropic</span>
 </footer>
 
 <script>
+// Each part of a section rises in once, as it comes into view.
+const rise = new IntersectionObserver((es) => es.forEach((e) => {
+  if (e.isIntersecting) { e.target.classList.add("in"); rise.unobserve(e.target); }
+}), { rootMargin: "0px 0px -8% 0px" });
+document.querySelectorAll("[data-rise], .stage").forEach((el) => rise.observe(el));
+
+// The live app: drawn as a desktop window, its menu and list cropped off on the left (the Chat
+// is what it shows); on a narrow screen it is drawn narrower and scaled to fit.
+function fit() {
+  const live = document.getElementById("live"), f = document.getElementById("liveApp");
+  const w = live.clientWidth, h = live.clientHeight;
+  if (w >= 600) {  // true size: the 336px of menu and list sit off to the left
+    f.style.width = w + 336 + "px"; f.style.height = h + "px"; f.style.left = "-336px"; f.style.transform = "";
+  } else {  // narrow: the app's own narrow layout (no list), its menu cropped, scaled to fit
+    const logical = 640, k = w / (logical - 60);
+    f.style.width = logical + "px"; f.style.height = h / k + "px"; f.style.left = -60 * k + "px"; f.style.transform = `scale(${k})`;
+  }
+}
+addEventListener("resize", fit); fit();
+
+// Questions: on a wide screen, the chosen question's answer is the large type on the right.
+(() => {
+  const faq = document.getElementById("faq"), all = [...faq.querySelectorAll("details")], out = document.getElementById("faqAnswer");
+  const wide = matchMedia("(min-width: 900px)");
+  const show = (d) => { all.forEach((x) => x.open = x === d); out.textContent = d.querySelector("p").textContent; };
+  all.forEach((d) => {
+    d.querySelector("summary").addEventListener("click", (e) => { if (wide.matches) { e.preventDefault(); show(d); } });
+    d.querySelector("summary").addEventListener("mouseenter", () => { if (wide.matches) show(d); });
+    d.querySelector("summary").addEventListener("focus", () => { if (wide.matches) show(d); });
+  });
+  faq.classList.add("paned"); show(all[0]);
+})();
+
 // Intel Macs get the Intel download first. Chrome and Edge can tell; Safari and Firefox
 // can't, so they keep Apple silicon (most Macs sold since 2020) with the Intel link beside it.
 (async () => {

@@ -2335,6 +2335,10 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const STOP = Symbol("stop");
 const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const COUNT = 7;
+// ?loop: the homepage's live picture. It plays the first five steps by itself, over and over (the
+// Chats list and the phone sit outside its crop), and needs no page around it to start it.
+const LOOP = new URLSearchParams(location.search).has("loop");
+const LAST = LOOP ? 4 : COUNT - 1;
 let token = 0, fast = false, auto = false, step = 0, stepDone = false, begun = false, pending = null, hint = "", timers = [];
 
 const post = () => parent.postMessage({ tour: "state", step, stepDone, auto, hint, begun }, "*");
@@ -2627,11 +2631,14 @@ async function go(n) {
   try { await STEPS[n](my); } catch (e) { if (e === STOP) return; throw e; }
   if (my !== token) return;
   stepDone = true;
-  if (n === COUNT - 1) auto = false;
+  if (n === LAST && !LOOP) auto = false;
   post();
-  if (auto && n < COUNT - 1) {
+  if (auto && n < LAST) {
     try { await wait(n === 4 || n === 5 ? 4200 : 2600, my); } catch (e) { return; }
     if (auto && my === token) go(n + 1);
+  } else if (auto && LOOP) {
+    try { await wait(6000, my); } catch (e) { return; }
+    if (my === token) go(0);
   }
 }
 addEventListener("message", (e) => {
@@ -2654,6 +2661,7 @@ document.addEventListener("click", (e) => { if (e.target.closest("a")) e.prevent
 document.addEventListener("submit", (e) => e.preventDefault(), true);
 reset();
 post();
+if (LOOP) { if (still) go(LAST); else { auto = true; go(0); } }
 
 </script>
 </body>

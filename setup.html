@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>VibePit Setup Guide</title>
-<meta name="description" content="How to install and set up VibePit, step by step: what you need, the first open, adding your projects, your first voice command, and what to do if something goes wrong.">
+<meta name="description" content="How to install and set up VibePit, step by step: what you need, the first open, adding your projects, your first task, connecting your phone, and what to do if something goes wrong.">
 <meta property="og:title" content="VibePit Setup Guide">
 <meta property="og:description" content="Set up VibePit in about 15 minutes: install it, follow Get started, add your projects and say “Hey Pit”.">
 <meta property="og:image" content="icon.png">
@@ -186,6 +186,7 @@ footer a { color: var(--muted); }
       <a href="#listen">4. Start listening</a>
       <a href="#first">5. Your first task</a>
       <a href="#daily">Everyday use</a>
+      <a href="#phone">On your phone</a>
       <a href="#say">Useful phrases</a>
       <a href="#extras">Optional extras</a>
       <a href="#privacy">Your privacy</a>
@@ -247,7 +248,7 @@ footer a { color: var(--muted); }
             <li><span><b>Press Start</b> on the Overview.</span></li>
             <li><span><b>Allow the microphone.</b> macOS asks once whether VibePit may use the microphone. Please press Allow, or VibePit cannot hear you.</span></li>
             <li><span><b>Wait for the speech models.</b> The first time, the speech models download. This can take a few minutes. On macOS 26, VibePit uses the Mac’s own speech recognition; on older versions it uses Whisper, which runs on your Mac.</span></li>
-            <li><span><b>Look for the menu bar icon.</b> A small waveform appears in the menu bar. It shows that VibePit is listening, and you can start and stop listening from it.</span></li>
+            <li><span><b>Look for the menu bar icon.</b> The VibePit logo appears in the menu bar. It shows that VibePit is listening, and you can start and stop listening from it.</span></li>
           </ol>
         </section>
 
@@ -257,7 +258,7 @@ footer a { color: var(--muted); }
             <li><span><b>Open a project.</b> Say <q>Hey Pit, open abc</q>, using the name of one of your projects. VS Code opens the project with a Claude tab called abc-claude.</span></li>
             <li><span><b>Tell Claude what to do.</b> Say it in your own words, for example <q>why is the login test failing?</q> You can also type it in the Chat.</span></li>
             <li><span><b>Follow along, or walk away.</b> The Chat shows what Claude is doing while it works. You do not need to watch it.</span></li>
-            <li><span><b>Answer when Claude asks.</b> If Claude needs your permission, you hear <q>abc-claude needs you</q>. Answer with one click in the Chat, or say <q>approve</q> or <q>reject</q>.</span></li>
+            <li><span><b>Answer when Claude asks.</b> If Claude needs your permission, you hear <q>abc-claude needs you</q>. Answer with one click in the Chat, or say <q>approve</q> or <q>reject</q>. You can also answer from your phone.</span></li>
             <li><span><b>Hear the result.</b> When Claude finishes, you hear <q>abc-claude is done</q> and a short summary of what it did.</span></li>
           </ol>
         </section>
@@ -269,9 +270,28 @@ footer a { color: var(--muted); }
             <div><b>Command or message?</b><p>VibePit works out whether you gave a command or wrote a message for Claude. To be sure, begin with <q>Pit, …</q> for a command, or with <q>Claude, …</q> for a message. If a sentence could mean two things, VibePit asks you.</p></div>
             <div><b>Several projects at once</b><p>Say <q>in abc, …</q> to send a message to a project that is already open, while you keep working in another one.</p></div>
             <div><b>The Chat</b><p>The Chat shows each Claude tab’s conversation, what Claude is doing right now, and its answers. Questions, permission requests and plans appear there with buttons to answer.</p></div>
+            <div><b>Plans</b><p>In plan mode, a plan opens beside the Chat, laid out like a document. Approve it, or write what should change; press Shift+Return for a new line. You can also pin a plan or branch it into a new session.</p></div>
+            <div><b>Reply, copy and links</b><p>Press <b>Reply</b> on one answer to talk about just that answer. When Claude writes a message for someone, <b>Copy the message to …</b> copies it ready to paste. Links from an answer, such as pull requests and reviews, sit under its headline.</p></div>
             <div><b>Modes</b><p>Each Claude tab has a mode. In <b>plan</b> mode, Claude researches and proposes a plan before it changes any files. In <b>accept edits</b> mode, it edits files without asking each time. You can change the mode from the Chat.</p></div>
             <div><b>Floating panel</b><p>While VibePit is in the background, a small panel shows whether each Claude tab is ready, working or needs you. Click it to go back to that conversation.</p></div>
-            <div><b>Usage</b><p>The Chat shows how much of your 5-hour and weekly Claude limits you have used, and how full the conversation is.</p></div>
+            <div><b>Usage</b><p>The Chat shows how much of your 5-hour and weekly Claude limits you have used, and how full the conversation is. <b>Your week</b> shows the last 7 days for each project.</p></div>
+            <div><b>Notes and reminders</b><p>Pin an answer, or keep notes, checklists and reminders on one board. Claude can suggest one when you ask for a plan or a reminder; nothing is saved until you approve it.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="phone">
+          <h3>On your phone</h3>
+          <p>Your phone can use VibePit in its web browser, with nothing to install. It can send messages, answer Claude, stop a tab, attach photos, and show background tasks and changes.</p>
+          <ol class="steps">
+            <li><span><b>Make a QR code.</b> Open <b>On your phone</b> in VibePit, choose one project or every project, and press <b>Make a QR code</b>. You can also press the phone icon in the message box.</span></li>
+            <li><span><b>Scan it.</b> Point your phone’s camera at the code and open the link. Each code works once, for two minutes.</span></li>
+            <li><span><b>Press Allow on the Mac.</b> The phone waits until you let it in. Then it shows your Claude tabs.</span></li>
+            <li><span><b>Open it again later.</b> If you close the page on your phone, click <b>Scan to open again</b> beside the phone on the Mac for a new code. You can also add VibePit to your phone’s Home screen.</span></li>
+          </ol>
+          <div class="items">
+            <div><b>On Wi-Fi</b><p>By default, the phone and the Mac need the same Wi-Fi. The link stays on your network but is not encrypted, so use a network you trust.</p></div>
+            <div><b>Anywhere</b><p>Choose <b>Anywhere</b> to connect from outside, through an encrypted Cloudflare link. Install Cloudflare’s free cloudflared on the Mac first: <code>brew install cloudflared</code>. The phone’s microphone works only over this link.</p></div>
+            <div><b>Who is in</b><p>Disconnect a phone from the Mac or from the phone at any time, give it a time limit, or remember it on your Wi-Fi.</p></div>
           </div>
         </section>
 
@@ -315,6 +335,7 @@ footer a { color: var(--muted); }
             <details><summary>It mishears a project name</summary><p>Right after it says that it does not know a project, say <q>I meant abc</q>. VibePit remembers the misheard words for next time. You can also add aliases to the project.</p></details>
             <details><summary>I do not hear “is done” alerts</summary><p>Restart your Claude tabs after you install VibePit. If the Overview says the alerts are missing, press <b>Install alerts</b> there. Alerts work in the Claude tabs that VibePit opened, while VibePit is running.</p></details>
             <details><summary>Claude opens in Terminal, not in VS Code</summary><p>In VS Code, open the command palette with ⌘⇧P and run <b>Developer: Reload Window</b>. Then try again.</p></details>
+            <details><summary>My phone does not connect</summary><p>Check that the phone is on the same Wi-Fi as the Mac, or choose Anywhere. A code works once, for two minutes, so make a new one if it has run out. If the phone says the code is in use, another phone has it; make a new code for this one.</p></details>
             <details><summary>VibePit stopped listening</summary><p>On the Overview, press <b>Show log</b> to see why, and then press <b>Start again</b>.</p></details>
             <details><summary>macOS says it cannot check the app</summary><p>Open <span class="path">System Settings → Privacy &amp; Security</span>, scroll down, and press <b>Open Anyway</b> next to VibePit. You only need to do this once.</p></details>
           </div>

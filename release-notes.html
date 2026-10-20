@@ -236,16 +236,18 @@ footer a { color: var(--muted); }
           <div class="items">
             <div><b>Answer questions, permissions and plans</b><p>When Claude asks a question with options, asks to run a command, or presents a plan, the Chat shows it clearly with buttons to answer. You can also give your own answer, or tell Claude why you said no.</p></div>
             <div><b>Live progress</b><p>While Claude works, a live card shows what it is saying, the commands it runs, the files it reads and edits, and its background tasks, with a timer. When it finishes, the card folds into a short summary line.</p></div>
-            <div><b>Plans beside the Chat</b><p>A plan opens in a pane beside the Chat, easy to read. It has Copy, Reply, Pin and Branch like any answer, and once you approve it, it stays in the Chat with your answer. Read any long answer in the same pane, and pin it from there.</p></div>
-            <div><b>Links under the headline</b><p>Pictures, pull requests, issues, CI runs, releases, commits and preview links from Claude’s answer show right under its headline, ready to open.</p></div>
+            <div><b>Plans beside the Chat</b><p>A plan opens in a pane beside the Chat, easy to read. It has Copy, Reply, Pin and Branch like any answer, and once you approve it, it stays in the Chat with your answer. The box for what should change takes several lines (Shift+Return starts a new one), and a plan you answer in the terminal shows in the Chat too. Read any long answer in the same pane, and pin it from there.</p></div>
+            <div><b>Links under the headline</b><p>Pictures, pull requests, issues, CI runs, releases, commits and preview links from Claude’s answer show right under its headline, ready to open. A GitHub link to a review, a comment or a pull request’s changes says what it is, such as <em>Review on pull request #73</em>.</p></div>
             <div><b>Know that Claude received your message</b><p>A message you send while Claude is busy shows <em>Queued</em>, then a green tick once Claude has read it. If a message could not be delivered, it says so.</p></div>
             <div><b>Slash commands, skills and attachments</b><p>Type <code>/</code> to find Claude's commands and skills, with suggestions as you type. Attach images and files with the paper clip, by dropping them on the window, or by pasting a screenshot.</p></div>
             <div><b>Earlier conversations and branches</b><p>Past conversations are kept, grouped by day. Open one to continue it, or branch any message into a new Claude session to try a different approach.</p></div>
             <div><b>Reply to one answer</b><p>Press <em>Reply</em> on one of Claude’s answers, and Claude gets that answer’s summary with what you write, so it knows exactly what you mean.</p></div>
+            <div><b>Messages to pass on</b><p>When Claude writes a message for you to send to someone, <em>Copy the message to …</em> appears under its headline. It copies with its bold text and lists kept, ready to paste into Slack or an email.</p></div>
             <div><b>Modes for each tab</b><p>Each Claude tab shows its mode: normal, plan, auto or accept edits. You can change it from the Chat. In plan mode, Claude researches and proposes before it edits anything. With more than two tabs in a project, they collect in a menu, and <em>+</em> starts a new tab in either Claude account.</p></div>
             <div><b>Review mode</b><p>Say <q>review PR 42</q>, or type <code>/review 42</code>. Claude reviews the pull request using your own review instructions, which you can edit in the settings.</p></div>
             <div><b>Run commands Claude suggests</b><p>When Claude asks you to run a command yourself, you can run it from the Chat. Claude explains it first, and nothing runs until you confirm.</p></div>
             <div><b>Catch up</b><p>When you return, a card in the Chats list explains what each Claude tab did while you were away.</p></div>
+            <div><b>Back to the Chat</b><p>Coming back to the app opens the Chat. On any other page, Chat in the menu shows how many Claude tabs are working.</p></div>
           </div>
         </section>
 
@@ -253,14 +255,15 @@ footer a { color: var(--muted); }
           <h3>On your phone</h3>
           <p>Step away from the desk and keep working with Claude. Your phone uses VibePit in its web browser, with nothing to install.</p>
           <div class="items">
-            <div><b>Scan a QR code</b><p>Press the phone icon in the message box and scan the code with your phone’s camera. Then press <em>Allow</em> on the Mac, and your phone is in.</p></div>
+            <div><b>Scan a QR code</b><p>Press the phone icon in the message box and scan the code with your phone’s camera. Then press <em>Allow</em> on the Mac, and your phone is in. Closed the page on your phone? Click <em>Scan to open again</em> on the Mac for a big code, or add VibePit to your phone’s Home screen.</p></div>
             <div><b>One project or every project</b><p>Choose whether the phone can use the Claude tabs of one project, or of every project. Either way, it can do everything below.</p></div>
-            <div><b>Chat with Claude</b><p>Read the Chat, send messages, reply to one answer, and tap a suggested reply. Long answers and plans open full screen, so they are easy to read.</p></div>
-            <div><b>Answer, stop and switch</b><p>Answer Claude’s questions, permission requests and plans. Stop a tab that is working, switch its mode, open a new tab, or continue an earlier conversation.</p></div>
+            <div><b>Chat with Claude</b><p>Read the Chat, send messages, reply to one answer, and tap a suggested reply. Each tab is named by its conversation’s title, as in the app. Long answers and plans open full screen, so they are easy to read.</p></div>
+            <div><b>Answer, stop and switch</b><p>Answer Claude’s questions, permission requests and plans. Stop a tab that is working, switch its mode, open or close a tab, or continue an earlier conversation.</p></div>
+            <div><b>Every step Claude takes</b><p>Tap <em>Working</em>, or a finished answer, to see each step Claude took in a sheet that keeps up while it works.</p></div>
             <div><b>Photos, files and your voice</b><p>Attach a photo or a file from your phone, and see the pictures Claude shows. Over the Anywhere link you can also talk, and your Mac writes down what you said.</p></div>
             <div><b>Tasks, commands and changes</b><p>See background tasks and what they print. Read what a command does before you run it on your Mac. See which files changed in the project, and the latest commits.</p></div>
-            <div><b>On Wi-Fi, or anywhere</b><p>Your phone connects on the same Wi-Fi by default. Choose <em>Anywhere</em> to connect through a secure Cloudflare link when you are out.</p></div>
-            <div><b>You decide who is in</b><p>Each code works once, for two minutes, and only after you allow the phone on the Mac. Disconnect it from the Mac or the phone at any time, give it a time limit, or remember it on your Wi-Fi.</p></div>
+            <div><b>On Wi-Fi, or anywhere</b><p>Your phone connects on the same Wi-Fi by default. The Wi-Fi link is not encrypted, so the phone reminds you to use a network you trust. Choose <em>Anywhere</em> to connect through a secure Cloudflare link when you are out.</p></div>
+            <div><b>You decide who is in</b><p>Each code works once, for two minutes, and only after you allow the phone on the Mac. If another phone tries a code that is in use, it is told how to connect, and your Mac tells you. Disconnect a phone from the Mac or the phone at any time, give it a time limit, or remember it on your Wi-Fi.</p></div>
           </div>
         </section>
 
@@ -330,7 +333,7 @@ footer a { color: var(--muted); }
 
         <section class="group">
           <h3>Your privacy</h3>
-          <p class="note">Your speech is turned into text on your Mac, and a small model on your Mac works out what you meant. No audio or words leave your Mac unless you add your own Deepgram key. The app only talks to itself on <code>127.0.0.1</code>, and every request needs a secret token. It opens to your phone only while you have one connected, and only for the phone you allowed. Your messages to Claude go through your own Claude Code, exactly as if you had typed them. VibePit is not affiliated with Anthropic, and you need your own Claude account.</p>
+          <p class="note">Your speech is turned into text on your Mac, and a small model on your Mac works out what you meant. No audio or words leave your Mac unless you add your own Deepgram key. The app only talks to itself on <code>127.0.0.1</code>, and every request needs a secret token. It opens to your phone only while you have one connected, and only for the phone you allowed. On Wi-Fi that link stays on your network but is not encrypted; <em>Anywhere</em> uses https. Your messages to Claude go through your own Claude Code, exactly as if you had typed them. VibePit is not affiliated with Anthropic, and you need your own Claude account.</p>
         </section>
       </article>
     </div>

@@ -47,7 +47,7 @@
 // (the share sheet: AirDrop, Messages, Mail), or copies it. The buttons say so.
 (() => {
   if (!matchMedia("(max-width: 860px) and (hover: none)").matches) return;
-  const PAGE = "https://logesh883.github.io/vibepit-app/";
+  const PAGE = "https://vibepit.tlogesh.in/";
   const SHARE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 12v9h14v-9"/></svg>';
   const css = document.createElement("style");
   css.textContent = ".vp-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:40;transform:translate(-50%,20px);opacity:0;padding:12px 16px;background:#1b1b1d;color:#f7f6f3;font:600 15px/1.4 Geist,-apple-system,sans-serif;transition:opacity .25s,transform .3s;pointer-events:none;width:max-content;max-width:calc(100vw - 40px);text-align:center}:root[data-theme=dark] .vp-toast{background:#ededee;color:#0e0f11}.vp-toast.on{opacity:1;transform:translate(-50%,0)}";

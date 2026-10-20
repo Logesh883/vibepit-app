@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>VibePit Release Notes</title>
-<meta name="description" content="What is new in each version of VibePit, the pit wall for vibe coders: every Claude Code session in one window, by typing, by voice, or from your phone.">
+<meta name="description" content="What is new in each version of VibePit, the pit wall for vibe coders: every Claude Code session in one window, answered with one click, on your Mac or from your phone.">
 <meta property="og:title" content="VibePit Release Notes">
-<meta property="og:description" content="VibePit 1.0, the first release: answer Claude from the app, everyday speech, usage limits at a glance, and notes and reminders in one place.">
+<meta property="og:description" content="VibePit 1.0, the first release: answer Claude from the app, plans you can read, every session at a glance, usage limits, and your phone.">
 <meta property="og:image" content="vibepit-logo.png">
 <link rel="icon" href="vibepit-logo.png">
 <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
@@ -120,27 +120,47 @@ footer a { color: var(--muted); }
 
 @media (max-width: 860px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
-  .toc { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .toc .eyebrow { grid-column: 1 / -1; }
+  /* the contents: one row of chips that stays at the top while you read, swiped sideways */
+  .toc { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 10px 16px; background: var(--ink); }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc .eyebrow { display: none; }
+  .toc a { flex: none; white-space: nowrap; padding: 8px 12px; border-radius: 999px; background: var(--panel); color: var(--text); font-size: 14px; }
+  .toc a span { display: none; }
+  .toc .sub { padding-left: 12px; font-size: 14px; }
   .toc .sub { display: none; }
-  .bar nav a:not(.btn):not([aria-current]) { display: none; }
+  .bar nav a:not(.btn):not([aria-current]):not([href="index.html"]) { display: none; }
 }
 @media (max-width: 620px) {
   .glance { grid-template-columns: minmax(0, 1fr); }
   .items div { padding: 14px 16px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn { transition: none; } }
+
+/* the theme button (theme.js), and a soft change of colour when it is pressed */
+.theme { all: unset; box-sizing: border-box; width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer; color: var(--muted); background: var(--panel); transition: color .2s, background-color .2s, transform .3s; }
+.theme:hover { color: var(--text); background: var(--panel2); }
+.theme:active { transform: rotate(-20deg) scale(.94); }
+.theme:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.theme svg { width: 18px; height: 18px; }
+.theme .sun, :root[data-theme="dark"] .theme .moon { display: none; }
+:root[data-theme="dark"] .theme .sun { display: block; }
+.theming, .theming *, .theming *::before, .theming *::after { transition-property: background-color, color, border-color, fill !important; transition-duration: .4s !important; transition-delay: 0s !important; }
+@media (max-width: 560px) { .bar nav { gap: 14px; } .bar nav a[aria-current] { display: none; } .bar .brand { font-size: 0; gap: 0; } }
 </style>
+<script>try{var t=localStorage.getItem("vp-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t}catch(e){}</script>
+<script src="theme.js" defer></script>
 </head>
 <body>
 
 <header class="wrap bar">
   <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="">VibePit</a>
   <nav>
+    <a href="index.html">Home</a>
     <a href="index.html#features">Features</a>
-    <a href="demo.html">Demo</a>
+    <a href="demo.html">Tour</a>
     <a href="setup.html">Setup guide</a>
     <a href="release-notes.html" aria-current="page">Release notes</a>
+    <button type="button" class="theme" aria-label="Switch theme"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     <a class="btn small dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
   </nav>
 </header>
@@ -149,7 +169,7 @@ footer a { color: var(--muted); }
   <div class="wrap top">
     <p class="eyebrow">Release notes</p>
     <h1>VibePit 1.0. <em>The pit wall for vibe coders.</em></h1>
-    <p class="lede">The first version of VibePit is here. It brings all your Claude Code sessions together in one calm window. Answer Claude’s questions and plans with a click, watch your usage limits, follow along from your phone, give Claude work by typing or talking, and hear when it is done.</p>
+    <p class="lede">The first version of VibePit is here. It brings all your Claude Code sessions together in one calm window. Answer Claude’s questions and plans with a click, read every answer headline first, watch your usage limits, and follow along from your phone. Voice is there too, if you want it.</p>
     <div class="get">
       <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
@@ -163,13 +183,13 @@ footer a { color: var(--muted); }
     <nav class="toc" aria-label="Versions">
       <p class="eyebrow">Versions</p>
       <a href="#v1-0-0">VibePit 1.0 <span>Oct 2026</span></a>
-      <a class="sub" href="#talking">Talking to VibePit</a>
       <a class="sub" href="#chat">The Chat</a>
       <a class="sub" href="#phone">On your phone</a>
       <a class="sub" href="#usage">Usage and accounts</a>
       <a class="sub" href="#notes">Notes and reminders</a>
       <a class="sub" href="#away">While you are away</a>
       <a class="sub" href="#app">The app</a>
+      <a class="sub" href="#voice">Voice mode (optional)</a>
       <a class="sub" href="#start">Getting started</a>
       <a class="sub" href="#known">Known issues</a>
     </nav>
@@ -179,7 +199,7 @@ footer a { color: var(--muted); }
         <div class="vhead">
           <p class="tag"><b>1.0.0</b><span>Released 20 October 2026</span><span>·</span><span>First release</span></p>
           <h2>Welcome to VibePit</h2>
-          <p>VibePit sits beside VS Code and runs all your Claude Code sessions from one window. Answer Claude’s questions, permissions and plans with a click, see what every tab is doing, watch your usage limits, and use Claude from your phone. Type to it, or say “Hey Pit, open abc” and your project opens with Claude ready. VibePit tells you when Claude is done or needs you, so you can run several projects at once and still know exactly where each one stands.</p>
+          <p>VibePit sits beside VS Code and runs all your Claude Code sessions from one window. Answer Claude’s questions, permissions and plans with a click, see what every tab is doing, watch your usage limits, and use Claude from your phone. Type “open abc” and your project opens in VS Code with Claude ready. VibePit tells you when Claude is done or needs you, so you can run several projects at once and still know exactly where each one stands.</p>
         </div>
 
         <div class="glance">
@@ -189,18 +209,23 @@ footer a { color: var(--muted); }
             <p>Questions, permission requests and plans appear in the Chat. Answer them with one click, without switching to the terminal.</p>
           </div>
           <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16M16 9h2M16 13h2"/></svg>
+            <h3>Plans you can read</h3>
+            <p>A plan opens beside the Chat, laid out like a document. Approve it, reply to it, pin it, or branch it into a new session.</p>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+            <h3>Every session at a glance</h3>
+            <p>Every Claude tab in every project shows whether it is working, ready or needs you, in the Chats list and in a small floating panel. A Catch up card tells you what happened while you were away.</p>
+          </div>
+          <div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
             <h3>Use Claude from your phone</h3>
             <p>Scan a QR code and your phone’s browser can do what the Chat does: send messages, answer Claude, stop a tab, attach photos, talk, and check background tasks and changes, on Wi-Fi or from anywhere.</p>
           </div>
           <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
-            <h3>Speak in your own words</h3>
-            <p>VibePit follows clear built-in rules from the start, with nothing to download. If you like, download a small model in Settings, and VibePit understands whatever way you put things. It runs on your Mac, so nothing you say leaves it.</p>
-          </div>
-          <div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
-            <h3>Your usage at a glance</h3>
+            <h3>Your usage limits</h3>
             <p>See how much of your 5-hour and weekly Claude limits you have used, and move a conversation to another account when one runs low.</p>
           </div>
           <div>
@@ -208,33 +233,14 @@ footer a { color: var(--muted); }
             <h3>Notes and reminders</h3>
             <p>Pinned messages, notes, checklists and reminders share one board. Claude can suggest them, and you decide what is saved.</p>
           </div>
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M13 4v16M16 9h2M16 13h2"/></svg>
-            <h3>Plans you can read</h3>
-            <p>A plan opens beside the Chat, laid out like a document. Approve it, reply to it, pin it, or branch it into a new session.</p>
-          </div>
         </div>
 
-        <section class="group" id="talking">
-          <h3>Talking to VibePit</h3>
-          <p>VibePit listens for its name, understands what you meant, and sends it to the right place.</p>
-          <div class="items">
-            <div><b>Say “Hey Pit”</b><p>Say <q>Hey Pit</q> to begin. To be sure a sentence is a command, begin with <q>Pit, …</q>. To be sure it goes to Claude, begin with <q>Claude, …</q>. For 30 seconds after each command, you can keep talking without the name.</p></div>
-            <div><b>Open projects by voice</b><p>Say <q>open abc</q>, and VS Code opens the project with a named Claude Code tab. You can open more Claude tabs in the same project, switch between them, and continue an earlier conversation with <q>resume abc</q>.</p></div>
-            <div><b>Everyday speech</b><p>With the optional understanding model (Settings → Voice &amp; listening → Understanding, about 1.8 GB), phrases such as <q>bring up abc</q>, <q>let it go ahead</q> or <q>is abc done?</q> all work. Without it, VibePit uses the phrases on the Voice commands page. VibePit decides whether you gave a command, asked about the app, or wrote a message for Claude. When a sentence could mean two things, it asks you, and it remembers your answer.</p></div>
-            <div><b>Type instead of talk</b><p>Everything you can say, you can also type in the Chat. Typed commands are answered in writing instead of out loud.</p></div>
-            <div><b>Only my voice</b><p>Read five short sentences, and VibePit learns your voice. It then ignores other people speaking near you. Your voiceprint is stored on your Mac as a short list of numbers, never as a recording.</p></div>
-            <div><b>Check before sending</b><p>If you prefer, what you say is placed in the message box first. You can correct any misheard words and then press Return.</p></div>
-            <div><b>Better hearing with your own key</b><p>For faster and more accurate recognition, you can add your own Deepgram key. Only what you say to VibePit is sent, and only after it hears its name. Without a key, all speech recognition stays on your Mac.</p></div>
-            <div><b>Ask about your changes</b><p>Say <q>what did abc change?</q> to hear which files are not yet committed, how many lines changed, and whether any commits are waiting to be pushed.</p></div>
-            <div><b>Dictation</b><p>Say <q>dictate</q> and speak freely. When you pause, the text is pasted into the app in front, such as Slack or your browser.</p></div>
-          </div>
-        </section>
 
         <section class="group" id="chat">
           <h3>The Chat</h3>
           <p>The Chat is the centre of VibePit. It shows every Claude tab, what Claude is doing, and what it needs from you.</p>
           <div class="items">
+            <div><b>Open projects from the Chat</b><p>Type <q>open abc</q>, and VS Code opens the project with a named Claude Code tab. You can open more Claude tabs in the same project, switch between them, and continue an earlier conversation with <q>resume abc</q>.</p></div>
             <div><b>Answer questions, permissions and plans</b><p>When Claude asks a question with options, asks to run a command, or presents a plan, the Chat shows it clearly with buttons to answer. You can also give your own answer, or tell Claude why you said no.</p></div>
             <div><b>Live progress</b><p>While Claude works, a live card shows what it is saying, the commands it runs, the files it reads and edits, and its background tasks, with a timer. When it finishes, the card folds into a short summary line.</p></div>
             <div><b>Plans beside the Chat</b><p>A plan opens in a pane beside the Chat, easy to read. It has Copy, Reply, Pin and Branch like any answer, and once you approve it, it stays in the Chat with your answer. The box for what should change takes several lines (Shift+Return starts a new one), and a plan you answer in the terminal shows in the Chat too. Read any long answer in the same pane, and pin it from there.</p></div>
@@ -245,7 +251,8 @@ footer a { color: var(--muted); }
             <div><b>Reply to one answer</b><p>Press <em>Reply</em> on one of Claude’s answers, and Claude gets that answer’s summary with what you write, so it knows exactly what you mean.</p></div>
             <div><b>Messages to pass on</b><p>When Claude writes a message for you to send to someone, <em>Copy the message to …</em> appears under its headline. It copies with its bold text and lists kept, ready to paste into Slack or an email.</p></div>
             <div><b>Modes for each tab</b><p>Each Claude tab shows its mode: normal, plan, auto or accept edits. You can change it from the Chat. In plan mode, Claude researches and proposes before it edits anything. With more than two tabs in a project, they collect in a menu, and <em>+</em> starts a new tab in either Claude account.</p></div>
-            <div><b>Review mode</b><p>Say <q>review PR 42</q>, or type <code>/review 42</code>. Claude reviews the pull request using your own review instructions, which you can edit in <b>Claude behaviour → Reviews</b>.</p></div>
+            <div><b>Ask about your changes</b><p>Type <q>what did abc change?</q> to see which files are not yet committed, how many lines changed, and whether any commits are waiting to be pushed.</p></div>
+            <div><b>Review mode</b><p>Type <code>/review 42</code>. Claude reviews the pull request using your own review instructions, which you can edit in <b>Claude behaviour → Reviews</b>.</p></div>
             <div><b>Run commands Claude suggests</b><p>When Claude asks you to run a command yourself, you can run it from the Chat. Claude explains it first, and nothing runs until you confirm.</p></div>
             <div><b>Catch up</b><p>When you return, a card in the Chats list explains what each Claude tab did while you were away.</p></div>
             <div><b>Back to the Chat</b><p>Coming back to the app opens the Chat. On any other page, Chat in the menu shows how many Claude tabs are working.</p></div>
@@ -290,9 +297,9 @@ footer a { color: var(--muted); }
         <section class="group" id="away">
           <h3>While you are away from the screen</h3>
           <div class="items">
-            <div><b>Spoken alerts and summaries</b><p>You hear <q>abc-claude is done</q> with a short, plain summary of what Claude did, or <q>abc-claude needs you</q> when it is waiting. Alerts also appear as notifications, and inside the window while you are using it.</p></div>
+            <div><b>Alerts when Claude is done or needs you</b><p>VibePit tells you when <em>abc-claude is done</em>, with a short summary of what Claude did, or when <em>abc-claude needs you</em>. Alerts appear as notifications, and inside the window while you are using it. With voice mode on, they are read aloud too.</p></div>
             <div><b>Floating panel</b><p>A small panel stays on every desktop, also over full-screen apps. It shows whether each Claude tab is ready, working or needs you. Click it to return to that conversation.</p></div>
-            <div><b>Menu bar icon</b><p>Start or stop listening and open the app from the menu bar, whether the window is open or not.</p></div>
+            <div><b>Menu bar icon</b><p>Start or stop VibePit and open the app from the menu bar, whether the window is open or not.</p></div>
             <div><b>The screen stays on</b><p>While any Claude Code session is open, your screen does not go to sleep, even while Claude waits for your next message. Once you close every Claude session, your Mac follows its usual settings again.</p></div>
           </div>
         </section>
@@ -300,11 +307,25 @@ footer a { color: var(--muted); }
         <section class="group" id="app">
           <h3>The app</h3>
           <div class="items">
-            <div><b>Easy setup</b><p>The app brings its own speech engine. On first open, a Get started card guides you through each remaining step with one button each: install Claude Code, log in, get VS Code, and add your projects. <em>Set up with Claude</em> finds the projects on your Mac and suggests a short name to say for each one.</p></div>
+            <div><b>Easy setup</b><p>On first open, a Get started card guides you through each remaining step with one button each: install Claude Code, log in, get VS Code, and add your projects. <em>Set up with Claude</em> finds the projects on your Mac and suggests a short name for each one.</p></div>
             <div><b>A guide and release notes inside the app</b><p>A Setup guide explains how everything works, and a What’s new page lists the changes in every version. Both are also on the VibePit website.</p></div>
-            <div><b>Settings that are easy to find</b><p>Settings are on three pages: Voice &amp; listening, Claude behaviour and General. Each page is divided into tabs, and the <em>Find a setting</em> box shows any setting when you type a word from it.</p></div>
+            <div><b>Settings that are easy to find</b><p>Settings are on three pages: Claude behaviour, General, and Voice &amp; listening. Each page is divided into tabs, and the <em>Find a setting</em> box shows any setting when you type a word from it.</p></div>
             <div><b>Automatic updates</b><p>When a new version is available, the app tells you. Press <em>Update now</em>, and it installs the update and opens again. Your settings are kept. You can also check for a new version yourself in <b>General → Updates</b>.</p></div>
             <div><b>A calm design</b><p>Quiet colours, clear type, and a Chat built around the conversation. Choose Dark, Light or System in <b>General → Appearance</b>.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="voice">
+          <h3>Voice mode (optional)</h3>
+          <p>If you like, talk to VibePit instead of typing, and hear short summaries. Everything here is optional, and you can turn the microphone off completely.</p>
+          <div class="items">
+            <div><b>Say “Hey Pit”</b><p>Say <q>Hey Pit</q> to begin, then a command or a message, such as <q>Hey Pit, open abc</q>. To be sure a sentence is a command, begin with <q>Pit, …</q>. To be sure it goes to Claude, begin with <q>Claude, …</q>. For 30 seconds after each command, you can keep talking without the name.</p></div>
+            <div><b>Spoken summaries</b><p>Hear <q>abc-claude is done</q> with a short, plain summary of what Claude did, or <q>abc-claude needs you</q> when it is waiting. Typed commands are answered in writing instead of out loud.</p></div>
+            <div><b>Everyday speech</b><p>With the optional understanding model (Settings → Voice &amp; listening → Understanding, about 1.8 GB), phrases such as <q>bring up abc</q>, <q>let it go ahead</q> or <q>is abc done?</q> all work. Without it, VibePit uses the phrases on the Voice commands page. When a sentence could mean two things, it asks you, and it remembers your answer.</p></div>
+            <div><b>Only my voice</b><p>Read five short sentences, and VibePit learns your voice. It then ignores other people speaking near you. Your voiceprint is stored on your Mac as a short list of numbers, never as a recording.</p></div>
+            <div><b>Check before sending</b><p>If you prefer, what you say is placed in the message box first. You can correct any misheard words and then press Return.</p></div>
+            <div><b>Better hearing with your own key</b><p>For faster and more accurate recognition, you can add your own Deepgram key. Only what you say to VibePit is sent, and only after it hears its name. Without a key, all speech recognition stays on your Mac.</p></div>
+            <div><b>Dictation</b><p>Say <q>dictate</q> and speak freely. When you pause, the text is pasted into the app in front, such as Slack or your browser.</p></div>
           </div>
         </section>
 
@@ -314,8 +335,8 @@ footer a { color: var(--muted); }
             <li><span><b>Download VibePit.</b> Choose the download for your Mac: Apple silicon (M1 and later) or Intel.</span></li>
             <li><span><b>Install it.</b> Open the disk image and drag VibePit to Applications, then open it. If macOS says it cannot check the app, open System Settings → Privacy &amp; Security and press <b>Open Anyway</b>.</span></li>
             <li><span><b>Follow the Get started card.</b> Each step ticks itself off when it is done.</span></li>
-            <li><span><b>Press Start.</b> Allow the microphone. The speech models download once, which can take a few minutes.</span></li>
-            <li><span><b>Say your first command.</b> Say <q>Hey Pit, open abc</q>, using the name of one of your projects, and tell Claude what to do.</span></li>
+            <li><span><b>Press Start.</b> To only type, turn the microphone off first in Voice &amp; listening → Microphone. To talk too, allow the microphone; the speech models then download once.</span></li>
+            <li><span><b>Open your first project.</b> Type <q>open abc</q> in the Chat, using the name of one of your projects, and tell Claude what to do.</span></li>
           </ol>
           <p class="note">The <a href="setup.html">Setup guide</a> explains each step in detail. You need a Mac with macOS 12 or later, and a Claude account that can use Claude Code (Pro, Max, Team or Enterprise, or an API key). VS Code is recommended; you can use Terminal instead.</p>
         </section>
@@ -323,19 +344,20 @@ footer a { color: var(--muted); }
         <section class="group" id="known">
           <h3>Known issues</h3>
           <ul class="list known">
-            <li><span><b>Mac only.</b> VibePit runs on macOS 12 or newer. The Mac's own speech recognition needs macOS 26; older versions use Whisper, which is slower.</span></li>
+            <li><span><b>Mac only.</b> VibePit runs on macOS 12 or newer.</span></li>
             <li><span><b>Opening it the first time.</b> macOS may say it cannot check the app. Open System Settings → Privacy &amp; Security and press Open Anyway. You only need to do this once.</span></li>
-            <li><span><b>Only in tabs VibePit opens.</b> Answering Claude from the app, and hearing its summary read aloud, work in the Claude tabs that VibePit opened, while VibePit is running.</span></li>
+            <li><span><b>Only in tabs VibePit opens.</b> Answering Claude from the app, and its alerts and summaries, work in the Claude tabs that VibePit opened, while VibePit is running.</span></li>
             <li><span><b>VS Code works best.</b> Some features, such as sending a message to an open project with <q>in abc, …</q>, need Claude to open in VS Code rather than Terminal.</span></li>
             <li><span><b>Connecting from anywhere needs cloudflared.</b> On the same Wi-Fi your phone needs nothing extra. To connect from anywhere, install Cloudflare’s free <code>cloudflared</code> on the Mac first (<code>brew install cloudflared</code>).</span></li>
             <li><span><b>The phone’s microphone needs the Anywhere link.</b> Browsers only allow the microphone on secure (https) pages. On Wi-Fi, use the microphone on your phone’s keyboard instead.</span></li>
+            <li><span><b>Voice mode is fastest on macOS 26.</b> The Mac’s own speech recognition needs macOS 26; older versions use Whisper, which is slower.</span></li>
             <li><span><b>Only my voice is not a lock.</b> It helps VibePit ignore other voices, but a recording of you, or a very similar voice, can still pass.</span></li>
           </ul>
         </section>
 
         <section class="group">
           <h3>Your privacy</h3>
-          <p class="note">Your speech is turned into text on your Mac. The optional understanding model also runs on your Mac. No audio or words leave your Mac unless you add your own Deepgram key. The app only talks to itself on <code>127.0.0.1</code>, and every request needs a secret token. It opens to your phone only while you have one connected, and only for the phone you allowed. On Wi-Fi that link stays on your network but is not encrypted; <em>Anywhere</em> uses https. Your messages to Claude go through your own Claude Code, exactly as if you had typed them. VibePit is not affiliated with Anthropic, and you need your own Claude account.</p>
+          <p class="note">There is no VibePit account. The app only talks to itself on <code>127.0.0.1</code>, and every request needs a secret token. It opens to your phone only while you have one connected, and only for the phone you allowed. On Wi-Fi that link stays on your network but is not encrypted; <em>Anywhere</em> uses https. Your messages to Claude go through your own Claude Code, exactly as if you had typed them. In voice mode, your speech is turned into text on your Mac, and the optional understanding model runs on your Mac too; no audio or words leave it unless you add your own Deepgram key. VibePit is not affiliated with Anthropic, and you need your own Claude account.</p>
         </section>
       </article>
     </div>
@@ -345,7 +367,7 @@ footer a { color: var(--muted); }
 <footer>
   <div class="wrap">
     <span>VibePit · Not affiliated with Anthropic</span>
-    <span><a href="demo.html">Demo</a> · <a href="setup.html">Setup guide</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
+    <span><a href="demo.html">Tour</a> · <a href="setup.html">Setup guide</a> · <a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></span>
   </div>
 </footer>
 

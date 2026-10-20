@@ -2134,6 +2134,7 @@ h2.grp + .card, h2.grp + .gsub + .card { margin-bottom: 4px; }
 html, body { overflow: hidden; }
 .app * { scrollbar-width: none; } .app *::-webkit-scrollbar { display: none; }
 .nf, .nf * { animation: none !important; }
+.composer .box.typing { border-color: color-mix(in srgb, var(--text) 22%, transparent); box-shadow: var(--shadow), 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent); }
 .try { animation: tryring 1.4s ease-out infinite !important; position: relative; z-index: 1; }
 @keyframes tryring { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); } 100% { box-shadow: 0 0 0 12px transparent; } }
 .pressed { transform: scale(.95); transition: transform .12s; }
@@ -2352,8 +2353,10 @@ function wait(ms, my) {
 async function type(text, my) {
   const box = $("#chatInput");
   if (fast || still) { box.value = text; return; }
-  box.value = ""; box.focus({ preventScroll: true });
+  // looks focused while it types, without taking the keyboard from the page around it
+  box.value = ""; box.closest(".box").classList.add("typing");
   for (const ch of text) { box.value += ch; await wait(24, my); }
+  box.closest(".box").classList.remove("typing");
 }
 // A button the viewer can press. While the tour plays, it presses itself after a moment.
 function choice(btn, words, my) {
@@ -2516,7 +2519,7 @@ function reset() {
   $("#liveDock").hidden = true; $("#liveDock").innerHTML = "";
   $("#dphone").classList.remove("on"); $("#pm").innerHTML = "";
   spot(null); usage(12, 41, 0); list(); head();
-  add(`<div class="msg bot"><div class="who"><img src="vibepit-logo.png" alt=""><b>VibePit</b></div>Good afternoon. Type “open” and a project’s name, or say “Hey Pit, open route-map”.</div>`);
+  add(`<div class="msg bot"><div class="who"><img src="vibepit-logo.png" alt=""><b>VibePit</b></div>Good afternoon. Type “open” and a project’s name to start, such as “open route-map”.</div>`);
 }
 
 // ---------- the steps ----------
@@ -2579,7 +2582,7 @@ const STEPS = [
     await wait(500, my); work.line("run");
     usage(21, 43, 21);
   },
-  async (my) => {  // 5. Hear that it is done
+  async (my) => {  // 5. Read the result first
     await wait(900, my);
     work.fold("1m 12s");
     add(`<div class="msg claude"><div class="who"><b>claude</b>14:06</div><div class="sum">After you log in, you now return to the page you came from. I added two tests, and all 48 tests pass.</div>${T.shown}${T.replies}${T.acts}</div>`);

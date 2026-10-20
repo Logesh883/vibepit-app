@@ -3,361 +3,1009 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>VibePit: Claude Code in one window</title>
-<meta name="description" content="VibePit is a free Mac app for Claude Code. Run every session from one window, answer Claude with one click, hear when it is done, and carry on from your phone.">
-<meta property="og:title" content="VibePit: Claude Code in one window">
-<meta property="og:description" content="A free Mac app for Claude Code. Every session in one window, answered with one click.">
+<title>VibePit: The pit wall for vibe coders</title>
+<meta name="description" content="VibePit is a free Mac app for Claude Code. See every session in one window, answer Claude with one click, read plans before it starts, and carry on from your phone.">
+<meta property="og:title" content="VibePit: The pit wall for vibe coders">
+<meta property="og:description" content="One cockpit. Every coding session. A free Mac app for Claude Code.">
 <meta property="og:image" content="vibepit-logo.png">
+<meta name="theme-color" content="#0e0f11">
+<script>try{var t=localStorage.getItem("vp-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t}catch(e){}</script>
+<script src="theme.js" defer></script>
 <link rel="icon" href="vibepit-logo.png">
 <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* The app's own type (Geist) and colours, so the page and the product read as one thing. One
-   ground, one ink, one accent; surfaces differ by a step in tone, never by a line or a shadow. */
+/* A familiar product page: the app on the first screen, then features in tabs, two picture rows,
+   three steps, privacy, questions and a closing call to action. The app's own type (Geist) and
+   colours, light or dark as the app is (theme.js); one accent; square buttons. */
 @font-face { font-family: "Geist"; src: url("fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; } /* taste-skill-ignore: only for the real code inside the app fragments */
 :root {
-  --ground: #f7f6f3; --tone: #eceae5; --ink: #1b1b1d; --muted: #55555b;
-  --accent: #3557d4; --on-accent: #ffffff; --ui-line: rgba(24,22,18,.10);
+  --ground: #f7f6f3; --band: #efede8; --tone: #e9e7e1; --tone-2: #dfddd6; --hover: #d6d4cc;
+  --ink: #1b1b1d; --muted: #55555b; --accent: #3557d4; --on-accent: #ffffff; --ok: #16865a;
+  --warn: #a86a00; --bad: #c4452f; --ui-line: rgba(24,22,18,.10); --code: #e3e1db; --odd: rgba(24,22,18,.035); --soft-on-accent: rgba(255,255,255,.18);
   --font: "Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  --s-display: clamp(46px, 5.2vw, 80px); --s-h2: clamp(32px, 3.4vw, 50px); --s-h3: 24px; --s-body: 18px; --s-small: 15px;
-  --margin: clamp(20px, 4vw, 56px); --gap: clamp(120px, 14vw, 200px);
+  --s-h1: clamp(24px, 2.6vw, 38px); --s-h2: clamp(32px, 3.6vw, 52px); --s-h3: 22px; --s-body: 18px; --s-small: 15px;
+  --margin: clamp(20px, 3.4vw, 48px); --gap: clamp(96px, 11vw, 160px);
+  --ease: cubic-bezier(.2, .7, .2, 1);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --ground: #0e0f11; --tone: #18191c; --ink: #ededee; --muted: #a9a9af;
-  --accent: #8fa8ff; --on-accent: #0e0f11; --ui-line: rgba(255,255,255,.09); color-scheme: dark; } }
+  --ground: #0e0f11; --band: #131417; --tone: #17181b; --tone-2: #1f2024; --hover: #26282d;
+  --ink: #ededee; --muted: #a9a9af; --accent: #8fa8ff; --on-accent: #0e0f11; --ok: #3ecf8e;
+  --warn: #f5b041; --bad: #e5735f; --ui-line: rgba(255,255,255,.07); --code: #0b0c0e; --odd: rgba(255,255,255,.025); --soft-on-accent: rgba(14,15,17,.14);
+  color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --ground: #0e0f11; --tone: #18191c; --ink: #ededee; --muted: #a9a9af;
-  --accent: #8fa8ff; --on-accent: #0e0f11; --ui-line: rgba(255,255,255,.09); color-scheme: dark; }
+  --ground: #0e0f11; --band: #131417; --tone: #17181b; --tone-2: #1f2024; --hover: #26282d;
+  --ink: #ededee; --muted: #a9a9af; --accent: #8fa8ff; --on-accent: #0e0f11; --ok: #3ecf8e;
+  --warn: #f5b041; --bad: #e5735f; --ui-line: rgba(255,255,255,.07); --code: #0b0c0e; --odd: rgba(255,255,255,.025); --soft-on-accent: rgba(14,15,17,.14);
+  color-scheme: dark; }
+/* the theme button, and a soft change of colour when it is pressed */
+.theme { all: unset; box-sizing: border-box; width: 38px; height: 38px; display: grid; place-items: center; cursor: pointer; color: var(--muted); background: var(--tone); transition: color .2s, background-color .2s, transform .3s var(--ease); }
+.theme:hover { color: var(--ink); background: var(--tone-2); }
+.theme:active { transform: rotate(-20deg) scale(.94); }
+.theme:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme svg { width: 18px; height: 18px; }
+.theme .sun, :root[data-theme="dark"] .theme .moon { display: none; }
+:root[data-theme="dark"] .theme .sun { display: block; }
+.theming, .theming *, .theming *::before, .theming *::after { transition-property: background-color, color, border-color, fill !important; transition-duration: .4s !important; transition-delay: 0s !important; }
 
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 80px; }
 body { margin: 0; background: var(--ground); color: var(--ink); font: 400 var(--s-body)/1.55 var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-h1, h2, h3, p { margin: 0; }
-h1, h2, h3 { font-weight: 600; text-wrap: balance; }
+h1, h2, h3, p, ul, ol { margin: 0; }
+h1, h2, h3 { font-weight: 600; text-wrap: balance; letter-spacing: -.02em; }
 p { text-wrap: pretty; }
 a { color: inherit; }
 img { display: block; max-width: 100%; height: auto; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .frame { padding-inline: var(--margin); max-width: 1440px; margin-inline: auto; }
-.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; }
 
-/* one button shape on the whole site: a flat pill in the accent */
-.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 26px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font: 600 var(--s-body) var(--font); text-decoration: none; transition: transform .15s ease, filter .15s ease; }
-.btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.btn:active { transform: translateY(0) scale(.98); }
-.btn svg { width: 18px; height: 18px; }
-.link { color: var(--accent); font-weight: 600; text-decoration: underline 1.5px transparent; text-underline-offset: 5px; transition: text-decoration-color .2s ease; }
-.link:hover { text-decoration-color: currentColor; }
-.note { font-size: var(--s-small); color: var(--muted); }
+/* one button shape on the whole page: a flat, square-cornered block */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 26px; background: var(--accent); color: var(--on-accent); font: 600 var(--s-body)/1 var(--font); text-decoration: none; border: 0; cursor: pointer; transition: background-color .2s, color .2s, transform .2s var(--ease); }
+.btn:hover { background: var(--ink); color: var(--ground); transform: translateY(-2px); }
+.btn:active { transform: scale(.97); }
+.btn.quiet { background: var(--tone-2); color: var(--ink); }
+.btn.quiet:hover { background: var(--ink); color: var(--ground); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.link { font-weight: 600; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.link svg { width: 16px; height: 16px; transition: transform .2s var(--ease); }
+.link:hover svg { transform: translateX(4px); }
+.under { font-weight: 600; text-decoration: underline 1.5px; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 5px; transition: text-decoration-color .2s; }
+.under:hover { text-decoration-color: currentColor; }
 
-/* the bar: wordmark, four links, one action */
-.bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 24px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 20px; text-decoration: none; }
-.brand img { width: 32px; height: 32px; }
-.bar nav { display: flex; align-items: center; gap: 28px; font-size: var(--s-small); }
-.bar nav a:not(.btn) { text-decoration: none; color: var(--ink); opacity: .8; transition: opacity .15s; }
-.bar nav a:not(.btn):hover { opacity: 1; }
-.bar .btn { padding: 9px 18px; font-size: var(--s-small); }
+/* the bar: stays at the top, and takes a solid ground once the page scrolls */
+.top { position: sticky; top: 0; z-index: 20; transition: background-color .3s, transform .35s var(--ease); }
+/* the bar steps out of the way while you read on down, and comes back the moment you scroll up */
+.top.away { transform: translateY(-100%); }
+.top.scrolled { background: var(--ground); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 18px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: var(--s-body); text-decoration: none; }
+.brand img { width: 30px; height: 30px; }
+.bar nav { display: flex; align-items: center; gap: 30px; font-size: var(--s-small); }
+.bar nav a:not(.btn) { text-decoration: none; color: var(--muted); transition: color .15s; }
+.bar nav a:not(.btn):hover { color: var(--ink); }
+.bar .btn { padding: 10px 16px; font-size: var(--s-small); }
 
-/* hero: the title upper left; the app itself, live, on a stage of the accent that runs off the
-   right edge, its corner cut like the app's chevron */
-.hero { position: relative; min-height: min(900px, 100svh); padding-top: clamp(40px, 7vh, 96px); }
-.hero .copy { grid-column: 1 / span 5; position: relative; z-index: 1; }
-.hero h1 { font-size: var(--s-display); line-height: 1; letter-spacing: -.035em; font-weight: 600; }
-.hero .lead { margin-top: 32px; max-width: 30ch; font-size: 20px; line-height: 1.5; }
-.hero .act { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
-.hero .note { margin-top: 18px; }
-.stage { position: absolute; left: 42%; right: 0; top: 112px; bottom: 0; background: var(--accent);
-  clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px); }
-.live { position: absolute; left: 56px; top: 56px; right: 0; bottom: 0; overflow: hidden; border-radius: 14px 0 0 0; background: #0e0f11; }
-.live iframe { position: absolute; top: 0; height: 100%; border: 0; display: block; transform-origin: 0 0; }
+/* hero: the app itself, then the name set wide, the title, and one row with the action */
+.hero { text-align: center; padding-block: clamp(8px, 2vh, 24px) clamp(20px, 3vh, 32px); }
+/* the app takes all the width the bubbles leave, up to what the screen's height allows; it is
+   drawn 1280 x 680 so it sits a little wider than tall */
+.stagewrap { --bw: 0px; --w: min(calc(100vw - 2 * var(--margin)), calc((100svh - 380px) * 1280 / 680), 1080px); position: relative; will-change: transform; }
+@media (min-width: 1200px) { .stagewrap { --bw: clamp(168px, 13vw, 200px); --w: min(calc(100vw - 2 * (var(--margin) + var(--bw) + 24px)), calc((100svh - 380px) * 1280 / 680), 1080px); } }
+/* feature bubbles in the room beside the app, on screens wide enough to have it */
+.bub { position: absolute; width: var(--bw); padding: 10px 12px; text-align: left; background: var(--tone); border-radius: 10px; font-size: 13px; line-height: 1.35; display: none; transition: background-color .25s; }
+.bub:hover { background: var(--tone-2); }
+.bub b { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.bub b::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--accent)); flex: none; }
+.bub span { display: block; margin-top: 3px; color: var(--muted); padding-left: 14px; }
+.bub.l { right: calc(50% + var(--w) / 2 + 24px); }
+.bub.r { left: calc(50% + var(--w) / 2 + 24px); }
+@media (min-width: 1200px) { .bub { display: block; } }
+.js .bub { animation: bubin .9s var(--ease) both, bob var(--t, 6s) ease-in-out infinite; animation-delay: calc(.5s + var(--d) * 120ms), calc(1.4s + var(--d) * 120ms); }
+.js .bub.l { --from: -24px; } .js .bub.r { --from: 24px; }
+@keyframes bubin { from { opacity: 0; transform: translateX(var(--from)); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+.object { width: var(--w); height: calc(var(--w) * 680 / 1280); margin: 0 auto; position: relative; overflow: hidden; border-radius: 12px; background: var(--tone); }
+.object iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 760px; border: 0; transform-origin: 0 0; display: block; pointer-events: none; }  /* it plays by itself; scrolling over it moves the page */
+.mark { margin-top: clamp(22px, 3.4vh, 40px); font-weight: 700; font-size: 28px; line-height: 1; letter-spacing: .62em; text-indent: .62em; text-transform: uppercase; }
+.hero .idea { margin-top: 8px; font-size: var(--s-body); color: var(--muted); }
+.hero h1 { margin-top: 16px; font-size: var(--s-h1); line-height: 1.2; font-weight: 500; letter-spacing: -.02em; }
+.row { margin-top: clamp(20px, 3vh, 32px); display: flex; justify-content: center; align-items: center; gap: 48px; font-size: var(--s-small); color: var(--muted); }
+.row .spec { width: 15em; }
+.row .spec:first-child { text-align: right; }
+.row .spec:last-child { text-align: left; }
+.with { margin-top: clamp(24px, 4vh, 44px); display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 40px; font-size: var(--s-small); color: var(--muted); }
+.with b { color: var(--ink); font-weight: 600; }
 
+/* section heads: centred title and one sentence */
 section { padding-top: var(--gap); }
-.head h2 { font-size: var(--s-h2); line-height: 1.05; letter-spacing: -.025em; }
-.head p { margin-top: 20px; max-width: 52ch; font-size: 20px; }
-
-/* what it does: one module repeated, the words on the left, a real piece of the app on the right */
-.feat { margin-top: 80px; display: grid; gap: clamp(88px, 10vw, 144px); }
-.cap { align-items: center; }
-.cap .words { grid-column: 1 / span 3; }
-.cap h3 { font-size: var(--s-h3); line-height: 1.2; letter-spacing: -.01em; }
-.cap p { margin-top: 14px; max-width: 40ch; }
-.cap figure { grid-column: 5 / -1; margin: 0; }
-/* each crop framed as the app frames its window: its corner radius and its own faint edge (data-ui) */
-.cap figure img { width: 100%; border-radius: 14px; box-shadow: 0 0 0 1px var(--ui-line); }
-.more { margin-top: 72px; }
-
-/* get started: the heading and what you need on the left, the three things to do on the right */
-.start .side { grid-column: 1 / span 5; }
-.start ol { grid-column: 7 / span 6; list-style: none; margin: 0; padding: 0; display: grid; gap: 44px; }
-.start li h3 { font-size: var(--s-h3); line-height: 1.2; }
-.start li p { margin-top: 10px; max-width: 46ch; }
-.start .side p + p { margin-top: 16px; }
-
-/* privacy: a band one tone off the ground, across the whole width */
-.private { margin-top: var(--gap); padding-block: clamp(80px, 9vw, 128px); background: var(--tone); }
-.private .head { grid-column: 1 / span 5; }
-.private dl { grid-column: 7 / span 6; margin: 0; display: grid; gap: 32px; }
-.private dt { font-weight: 600; font-size: 20px; }
-.private dd { margin: 6px 0 0; max-width: 48ch; }
-
-/* questions: the list on the left; on a wide screen the chosen answer is the large type on the right */
-.faq .side { grid-column: 1 / span 5; }
-.faq .side h2 { margin-bottom: 36px; }
-.faq details { padding-block: 10px; }
-.faq summary { list-style: none; cursor: pointer; display: flex; gap: 14px; align-items: baseline; font-size: 20px; font-weight: 500; color: var(--muted); }
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; transform: translateY(-2px); transition: background .15s; }
-.faq details[open] summary, .faq summary:hover { color: var(--ink); }
-.faq details[open] summary::before { background: var(--accent); }
-.faq details p { margin: 10px 0 6px 22px; max-width: 52ch; }
-.faq .pane { grid-column: 7 / span 6; display: none; }
-.faq .pane p { position: sticky; top: 120px; font-size: var(--s-h3); line-height: 1.35; max-width: 32ch; transition: opacity .15s; }
-@media (min-width: 900px) {
-  .faq.paned .pane { display: block; }
-  .faq.paned details p { display: none; }
+@media (min-width: 900px) and (min-height: 640px) {
+  .screen { min-height: calc(100svh - 72px); display: grid; align-content: center; padding-block: clamp(16px, 3.4vh, 40px); }
+  .screen .head h2 { font-size: clamp(30px, min(3.4vw, 5.4vh), 52px); }
+  .screen .head p { margin-top: 12px; }
+  .compare, .kit, .faq, .tabs { margin-top: clamp(20px, 3.6vh, 44px); }
+  .compare .r > div { padding-block: clamp(14px, 2.2vh, 24px); }
+  .compare .hd span { padding-bottom: 8px; }
+  .panes { margin-top: clamp(14px, 2.4vh, 28px); }
+  .pane { padding: clamp(20px, 3.6vh, 44px) clamp(24px, 3vw, 48px); }
+  .pane .ticks { margin-top: 16px; gap: 8px; }
+  .q button { padding-block: clamp(12px, 2vh, 20px); }
+  .kit dl { margin-top: 14px; }
+  .kit dl div { padding-block: clamp(8px, 1.3vh, 12px); }
+  .steps { margin-top: clamp(28px, 5vh, 56px); }
+  .compare .r { font-size: 17px; }
+  .compare .r > div { line-height: 1.45; }
+}
+@media (min-width: 900px) and (min-height: 640px) and (max-height: 860px) {
+  .compare .r, .kit dt, .faq .q button, .pane p, .pane .ticks { font-size: var(--s-small); }
+  .screen .head p { font-size: 16px; }
+  .compare .r > div { padding-block: 12px; }
+  .q .a p { padding-bottom: 14px; }
+  .kit > div { padding: 18px 20px; }
+  .kit dl div { padding-block: 7px; }
+  .kit > div > p { display: none; }
+}
+@media (min-width: 900px) and (min-height: 640px) and (max-height: 820px) {
+  .screen { padding-block: 10px; }
+  .pane figure img { max-height: 42vh; width: auto; margin-inline: auto; }
+  .kit dd, .q .a p { font-size: 14px; }
+  .kit dl div { padding-block: 6px; }
+  .compare, .kit, .faq, .tabs { margin-top: 20px; }
+  .q button { padding-block: 11px; }
+  .faq { gap: 3px; }
+  .hero.screen { padding-block: clamp(8px, 2vh, 24px) clamp(16px, 3vh, 32px); }
+  .how-band { margin-top: 0 !important; padding-block: 0 !important; }
+  .cta { margin-top: 0 !important; padding-top: 64px; }
 }
 
-/* the close: a field of the accent */
-.close { margin-top: var(--gap); background: var(--accent); color: var(--on-accent); padding-block: clamp(96px, 12vw, 168px); }
-.close h2 { grid-column: 1 / span 7; font-size: var(--s-display); line-height: 1; letter-spacing: -.035em; }
-.close .end { grid-column: 8 / span 5; align-self: end; }
-.close .end p { font-size: 20px; max-width: 34ch; }
-.close .btn { margin-top: 28px; background: var(--on-accent); color: var(--accent); }
-.close .end .note { color: inherit; opacity: .85; margin-top: 16px; }
-.close .end .note a { color: inherit; }
+/* zoom on scroll: each section grows into place as it arrives and shrinks away as it leaves;
+   its pictures move a little more, for depth (set by the script below) */
+.zoomed { transform-origin: 50% 50%; will-change: transform, opacity; }
 
-footer { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px 24px; align-items: baseline; padding-block: 40px 32px; font-size: var(--s-small); color: var(--muted); }
-footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-footer nav a { color: var(--ink); text-decoration: none; }
-footer nav a:hover { text-decoration: underline; }
-footer .end { justify-self: end; }
+/* the reading bar along the top, filled as the page scrolls */
+.progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); transform: scaleX(0); transform-origin: left; z-index: 30; pointer-events: none; }
+/* the part of the page in view is lit in the bar */
+.bar nav a.here { color: var(--ink) !important; }
 
-/* entrances: each part of a section rises in once; without script, or with reduced motion, it is simply there */
-.js [data-rise] { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: calc(var(--i, 0) * 80ms); }
+/* more ways in: the comparison rows open from the middle, the lists cascade, figures settle */
+.js .compare .r > div { transition: transform .9s var(--ease), opacity .9s var(--ease); transition-delay: calc(var(--i, 0) * 110ms + 80ms); }
+.js .compare .r:not(.in) > div:first-child { transform: translateX(-48px); opacity: 0; }
+.js .compare .r:not(.in) > div:last-child { transform: translateX(48px); opacity: 0; }
+.js .kit dl div { opacity: 0; transform: translateY(14px); transition: opacity .5s, transform .6s var(--ease), background-color .2s; }
+.js .kit .in dl div { opacity: 1; transform: none; }
+.js .kit .in dl div:nth-child(1) { transition-delay: .25s, .25s, 0s; } .js .kit .in dl div:nth-child(2) { transition-delay: .35s, .35s, 0s; }
+.js .kit .in dl div:nth-child(3) { transition-delay: .45s, .45s, 0s; } .js .kit .in dl div:nth-child(4) { transition-delay: .55s, .55s, 0s; }
+.js .private dl div[data-rise] { transform: translateX(40px); }
+.js .private dl div[data-rise].in { transform: none; }
+.js .split .frag[data-rise], .js .split figure[data-rise] { transition-duration: 1s; }
+.js .pane figure img { transition: transform 6s linear; }
+.js .pane.on figure img { transform: scale(1.03); }
+.js .head h2[data-rise] { transform: translateY(32px) scale(.98); }
+.js .head h2[data-rise].in { transform: none; }
+.head { text-align: center; max-width: 760px; margin-inline: auto; }
+.head h2 { font-size: var(--s-h2); line-height: 1.08; letter-spacing: -.03em; }
+.head p { margin-top: 18px; color: var(--muted); }
+.ticks { list-style: none; padding: 0; margin-top: 24px; display: grid; gap: 12px; }
+.ticks li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; }
+.ticks svg { width: 22px; height: 22px; color: var(--ok); margin-top: 2px; }
+
+/* features: tabs that move on by themselves, the matching part of the app beside the words */
+.tabs { margin: 48px auto 0; display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
+.tabs button { all: unset; box-sizing: border-box; position: relative; overflow: hidden; padding: 14px 22px; background: var(--tone); color: var(--muted); font-weight: 600; font-size: var(--s-small); cursor: pointer; transition: background-color .25s, color .25s; }
+.tabs button:hover { color: var(--ink); background: var(--tone-2); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tabs button[aria-selected="true"] { color: var(--ink); background: var(--tone-2); }
+.tabs button i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+.tabs button[aria-selected="true"] i { animation: fill var(--dwell, 7s) linear forwards; }
+.tabs.held button[aria-selected="true"] i { animation: none; transform: scaleX(1); }
+@keyframes fill { to { transform: scaleX(1); } }
+.panes { margin-top: 32px; display: grid; background: var(--band); }
+.pane { grid-area: 1 / 1; display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 4vw, 64px); align-items: center; padding: clamp(28px, 4vw, 56px); opacity: 0; visibility: hidden; transition: opacity .5s, visibility 0s .5s; }
+.pane.on { opacity: 1; visibility: visible; transition: opacity .5s; }
+.pane h3 { font-size: 28px; line-height: 1.2; }
+.pane p { margin-top: 14px; color: var(--muted); }
+.pane figure { margin: 0; transform: translateY(16px) scale(.98); transition: transform .7s var(--ease); }
+.pane.on figure { transform: none; }
+.pane figure img { border-radius: 10px; }
+.pane .words > * { transform: translateY(12px); transition: transform .6s var(--ease); }
+.pane.on .words > * { transform: none; }
+
+/* two rows: the picture on one side, the words on the other, then swapped */
+.split { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+.split + .split { margin-top: clamp(96px, 10vw, 144px); }
+.split.flip { grid-template-columns: 5fr 7fr; }
+.split.flip figure { order: 2; }
+.split figure { margin: 0; }
+.split figure img { border-radius: 10px; }
+.split h2 { font-size: var(--s-h2); line-height: 1.1; letter-spacing: -.03em; }
+.split p { margin-top: 18px; color: var(--muted); }
+.split .link { margin-top: 28px; }
+.js .split figure[data-rise] { transform: translateX(-40px); }
+.js .split.flip figure[data-rise] { transform: translateX(40px); }
+.js .split figure[data-rise].in { transform: none; }
+
+/* sound familiar: the usual way against VibePit, row by row */
+.compare { max-width: 1280px; margin: 56px auto 0; display: grid; gap: 4px; }
+.compare .hd, .compare .r { display: grid; grid-template-columns: 1fr 1fr; }
+.compare .hd span { padding: 0 32px 14px; font-size: var(--s-small); font-weight: 600; color: var(--muted); }
+.compare .hd span + span { color: var(--accent); }
+.compare .r > div { display: grid; grid-template-columns: 22px 1fr; gap: 14px; align-items: start; padding: 26px 32px; }
+.compare .r > div:first-child { background: var(--tone); color: var(--muted); }
+.compare .r > div:last-child { background: var(--tone-2); transition: background-color .25s; }
+.compare .r:hover > div:last-child { background: var(--hover); }
+.compare .r svg { width: 22px; height: 22px; margin-top: 2px; }
+.compare .r > div:first-child svg { color: var(--bad); }
+.compare .r > div:last-child svg { color: var(--ok); }
+.compare b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+.compare .r > div:first-child b { color: var(--muted); font-weight: 500; margin: 0; }
+.compare .r > div:last-child b::after { content: "."; }
+
+/* two pieces of the app drawn at true size: Claude's steps, and a command explained */
+.frag { font-size: 15px; line-height: 1.45; background: var(--tone); border: 1px solid var(--ui-line); border-radius: 12px; padding: 18px 20px; } /* taste-skill-ignore: the app's own card edge (data-ui) */
+.frag code, .frag pre { font-family: "Geist Mono", ui-monospace, Menlo, monospace; font-size: 14px; }
+.frag .fh { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--muted); }
+.frag .fh b { color: var(--ink); font-weight: 600; }
+.frag .chip { padding: 2px 8px; border-radius: 6px; background: var(--tone-2); color: var(--ink); font-size: 13px; font-variant-numeric: tabular-nums; }
+.frag .chip.warm { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+.frag .fh .end { margin-left: auto; display: flex; gap: 6px; }
+.frag .mini { padding: 5px 10px; border-radius: 7px; background: var(--tone-2); color: var(--ink); font-size: 13px; font-weight: 600; }
+.frag .mini.stop { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
+.frag .mini.go { background: var(--accent); color: var(--on-accent); }
+.steplist { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 2px; }
+.steplist li { display: grid; grid-template-columns: 74px 1fr auto; gap: 12px; align-items: baseline; padding: 9px 10px; border-radius: 8px; }
+.steplist li:nth-child(odd) { background: var(--odd); }
+.steplist .v { color: var(--muted); }
+.steplist .x { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.steplist .x.ok { color: var(--ok); }
+.steplist li.now .v { color: var(--accent); }
+.steplist li.now code::after { content: ""; display: inline-block; width: 7px; height: 15px; margin-left: 4px; vertical-align: -2px; background: var(--accent); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.js .steplist li { opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s var(--ease); transition-delay: calc(var(--k) * 260ms + 200ms); }
+.js .live.in .steplist li { opacity: 1; transform: none; }
+.frag .ff { margin-top: 14px; color: var(--muted); font-size: 13px; }
+.frag pre { margin: 14px 0 0; padding: 12px 14px; border-radius: 8px; background: var(--code); color: var(--ink); white-space: pre-wrap; }
+.frag .does { margin-top: 14px; }
+.frag .does span { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.frag .risk { padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 600; background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+.frag .foot { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+.frag .foot .where { flex: 1; color: var(--muted); font-size: 13px; }
+.frag .mini.go { animation: nudge 2.4s var(--ease) infinite; }
+@keyframes nudge { 0%, 70%, 100% { transform: none; } 80% { transform: translateY(-2px); } 90% { transform: none; } }
+
+/* everything else: four groups, each a short list */
+.kit { margin-top: 48px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+@media (max-width: 1200px) { .kit { grid-template-columns: 1fr 1fr; } }
+.kit > div { background: var(--tone); padding: clamp(22px, 2vw, 32px); }
+.kit h3 { font-size: var(--s-h3); }
+.kit > div > p { margin-top: 6px; color: var(--muted); font-size: var(--s-small); }
+.kit dl { margin: 22px 0 0; display: grid; gap: 4px; }
+.kit dl div { display: grid; gap: 2px; padding: 12px 14px; background: var(--ground); transition: background-color .2s, transform .25s var(--ease); }
+.kit dl div:hover { background: var(--tone-2); transform: translateX(4px); }
+.kit dt { font-weight: 600; font-size: 16px; }
+.kit dd { margin: 0; color: var(--muted); font-size: var(--s-small); }
+
+/* three steps on a line that draws itself in */
+.how-band { margin-top: var(--gap); padding-block: clamp(80px, 9vw, 128px); background: var(--band); }
+.how-band section { padding-top: 0; }
+.steps { list-style: none; padding: 0; margin-top: 64px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; position: relative; counter-reset: step; }
+.steps::before { content: ""; position: absolute; top: 27px; left: 16%; right: 16%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 1.4s var(--ease) .3s; }
+.steps.in::before { transform: scaleX(1); }
+.steps li { position: relative; text-align: center; padding: 0 12px; counter-increment: step; }
+.steps .n { width: 56px; height: 56px; margin: 0 auto; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 20px; position: relative; }
+.steps h3 { margin-top: 24px; font-size: var(--s-h3); }
+.steps p { margin: 10px auto 0; max-width: 32ch; color: var(--muted); }
+.how-band .more { margin-top: 48px; text-align: center; }
+
+/* privacy: the promise on the left, the three reasons as a list on the right */
+.private { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+.private h2 { font-size: var(--s-h2); line-height: 1.08; letter-spacing: -.03em; }
+.private .lead { margin-top: 18px; color: var(--muted); max-width: 36ch; }
+.private dl { margin: 0; display: grid; gap: 4px; }
+.private dl div { padding: 26px 32px; background: var(--tone); transition: background-color .25s, transform .3s var(--ease); }
+.private dl div:hover { background: var(--tone-2); transform: translateX(6px); }
+.private dt { font-size: var(--s-h3); font-weight: 600; letter-spacing: -.01em; }
+.private dd { margin: 8px 0 0; color: var(--muted); }
+
+/* questions: each opens smoothly; one open at a time */
+.faq { max-width: 860px; margin: 48px auto 0; display: grid; gap: 4px; }
+.q { background: var(--tone); }
+.q button { all: unset; box-sizing: border-box; width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 22px 28px; font-size: var(--s-body); font-weight: 600; cursor: pointer; transition: background-color .2s; }
+.q button:hover { background: var(--tone-2); }
+.q button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.q .pm { position: relative; width: 16px; height: 16px; flex: none; color: var(--muted); transition: transform .35s var(--ease), color .2s; }
+.q .pm::before, .q .pm::after { content: ""; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; background: currentColor; }
+.q .pm::after { transform: rotate(90deg); }
+.q.open .pm { transform: rotate(45deg); color: var(--accent); }
+.q .a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s var(--ease); }
+.q.open .a { grid-template-rows: 1fr; }
+.q .a > div { overflow: hidden; }
+.q .a p { padding: 0 28px 24px; max-width: 64ch; color: var(--muted); }
+
+/* the closing call to action: one field of the accent */
+.cta { margin-top: var(--gap); }
+.cta .box { background: var(--accent); color: var(--on-accent); text-align: center; padding: clamp(56px, 7vw, 104px) var(--margin); }
+.cta h2 { font-size: var(--s-h2); line-height: 1.08; letter-spacing: -.03em; }
+.cta p { margin-top: 16px; }
+.cta .acts { margin-top: 36px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+.cta .btn { background: var(--on-accent); color: var(--ink); }
+.cta .btn:hover { background: var(--ink); color: var(--ground); }
+.cta .btn.quiet { background: var(--soft-on-accent); color: var(--on-accent); }
+.cta .btn.quiet:hover { background: var(--on-accent); color: var(--ink); }
+
+/* footer: the name and what it is, three lists, and the small print */
+footer { margin-top: var(--gap); background: var(--band); padding-block: 72px 32px; }
+footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+footer .about p { margin-top: 16px; max-width: 34ch; color: var(--muted); font-size: var(--s-small); }
+footer h3 { font-size: var(--s-small); font-weight: 600; letter-spacing: 0; }
+footer ul { list-style: none; padding: 0; margin-top: 16px; display: grid; gap: 10px; font-size: var(--s-small); }
+footer ul a { color: var(--muted); text-decoration: none; transition: color .15s; }
+footer ul a:hover { color: var(--ink); }
+footer .small { margin-top: 64px; padding-top: 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: var(--s-small); color: var(--muted); }
+
+/* entrances: each part rises in once; without script, or with reduced motion, it is simply there */
+.js [data-rise] { opacity: 0; transform: translateY(28px); transition: opacity .8s var(--ease), transform .8s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
 .js [data-rise].in { opacity: 1; transform: none; }
-.js .stage { clip-path: polygon(96px 0, 100% 0, 100% 0, 0 0, 0 0); transition: clip-path 1.1s cubic-bezier(.7,0,.2,1) .15s; }
-.js .stage.in { clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px); }
-.js .live iframe { transition: opacity .6s .9s; opacity: 0; }
-.js .stage.in .live iframe { opacity: 1; }
+.js .hero .object, .js .hero .mark, .js .hero h1, .js .hero .idea, .js .hero .row, .js .hero .with { animation: up .9s var(--ease) both; }
+.js .hero .mark { animation-delay: .15s; } .js .hero h1 { animation-delay: .25s; } .js .hero .idea { animation-delay: .3s; } .js .hero .row { animation-delay: .38s; } .js .hero .with { animation-delay: .5s; }
+@keyframes up { from { opacity: 0; transform: translateY(24px); } }
 
-@media (max-width: 1100px) {
-  .hero .copy { grid-column: 1 / span 6; }
-  .stage { left: 40%; top: 46%; }
+@media (max-width: 960px) {
+  .pane, .split, .split.flip { grid-template-columns: none; }
+  .split.flip figure { order: 0; }
+  .private { grid-template-columns: none; }
+  .kit { grid-template-columns: none; }
+  footer .cols { grid-template-columns: 1fr 1fr; }
+  footer .about { grid-column: 1 / -1; }
 }
 @media (max-width: 860px) {
   .bar nav a:not(.btn) { display: none; }
-  .hero { min-height: 0; padding-bottom: 0; }
-  .hero .copy { grid-column: 1 / -1; }
-  .stage { position: relative; left: auto; top: auto; margin: 48px 0 0 var(--margin); height: 520px; clip-path: polygon(72px 0, 100% 0, 100% 100%, 0 100%, 0 72px); }
-  .js .stage { clip-path: polygon(72px 0, 100% 0, 100% 0, 0 0, 0 0); }
-  .js .stage.in { clip-path: polygon(72px 0, 100% 0, 100% 100%, 0 100%, 0 72px); }
-  .live { left: 16px; top: 16px; }
-  .cap figure, .start .side, .start ol, .private .head, .private dl, .faq .side, .close h2, .close .end { grid-column: 1 / -1; }
-  .cap figure { margin-top: 28px; }
-  .cap .words { grid-column: 1 / -1; }
-  .start ol, .private dl { margin-top: 44px; }
-  .close .end { margin-top: 32px; }
-  footer { grid-template-columns: 1fr; gap: 8px; padding-block: 64px 24px; }
-  footer .end { justify-self: start; }
-}
-@media (max-width: 560px) {
-  .hero .lead { font-size: 18px; }
+  .stagewrap { --w: calc(100vw - 2 * var(--margin)); }
+  .object { height: calc(var(--w) * 760 / 900); }
+  .mark { font-size: 22px; letter-spacing: .5em; text-indent: .5em; }
+  .hero h1 { font-size: 26px; }
+  .row { flex-direction: column; gap: 14px; }
+  .row .spec, .row .spec:first-child, .row .spec:last-child { width: auto; text-align: center; }
+  .row .btn { width: 100%; }
+  .tabs { justify-content: flex-start; }
+  .tabs button { flex: 1 1 auto; text-align: center; }
+  .steps { grid-template-columns: none; gap: 48px; }
+  .steps::before { display: none; }
+  /* on a phone things rise in rather than slide from the sides, so nothing passes the screen's edge */
+  .js .compare .r:not(.in) > div:first-child, .js .compare .r:not(.in) > div:last-child, .js .private dl div[data-rise]:not(.in),
+  .js .split figure[data-rise]:not(.in), .js .split.flip figure[data-rise]:not(.in) { transform: translateY(24px); }
+  /* on a phone the panels run edge to edge, their words on the page's margins */
+  .compare, .kit, .faq, .panes, .private dl, .cta .box { margin-inline: calc(-1 * var(--margin)); }
+  .compare .r > div, .kit > div, .q button, .pane, .private dl div, .cta .box { padding-inline: var(--margin); }
+  .q .a p { padding-inline: var(--margin); }
+  .kit dl div { padding-inline: 12px; }
+  .steps li { display: grid; grid-template-columns: 48px 1fr; column-gap: 18px; text-align: left; padding: 0; }
+  .steps .n { width: 48px; height: 48px; margin: 0; grid-row: span 2; }
+  .steps h3 { margin-top: 10px; }
+  .steps p { margin: 6px 0 0; }
+  .compare .hd { display: none; }
+  .compare .r { grid-template-columns: none; }
+  .kit dl div { grid-template-columns: none; gap: 2px; }
+  .steplist li { grid-template-columns: 64px 1fr; }
+  .steplist .x { grid-column: 2; }
+  .cta .btn { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .js [data-rise], .js .stage, .js .live iframe { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .js .stage { clip-path: polygon(96px 0, 100% 0, 100% 100%, 0 100%, 0 96px) !important; }
-  .btn, .link { transition: none; }
+  .js [data-rise], .js .split figure[data-rise] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .js .hero * { animation: none !important; }
+  .js .bub { animation: none !important; }
+  .top { transition: background-color .3s; }
+  .js .compare .r > div, .js .kit dl div, .js .private dl div[data-rise], .js .head h2[data-rise] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .js .pane figure img { transform: none !important; }
+  .steps::before { transform: none !important; transition: none; }
+  .js .steplist li, .frag .mini.go, .steplist li.now code::after, .kit dl div, .pane, .pane figure, .pane .words > *, .q .a, .btn, .private dl div { transition: none !important; transform: none !important; }
+  .tabs button i, .frag .mini.go, .steplist li.now code::after { animation: none !important; }
+  .js .steplist li { opacity: 1 !important; }
+}
+
+/* ===== Phones. Everything below lives in phone-only rules; the desktop page is unchanged. ===== */
+.menu, .sheet, .getbar, .chips-run, .swipe { display: none; }
+@media (max-width: 860px) {
+  /* the bar: the logo, the theme, a menu button and one action */
+  .bar { padding-block: 12px; gap: 10px; }
+  .bar nav { gap: 8px; }
+  .bar .btn { padding: 10px 14px; }
+  .menu { all: unset; box-sizing: border-box; display: grid; place-items: center; width: 38px; height: 38px; background: var(--tone); color: var(--ink); cursor: pointer; }
+  .menu svg { width: 20px; height: 20px; }
+  .menu .x, .menu[aria-expanded="true"] .bars { display: none; }
+  .menu[aria-expanded="true"] .x { display: block; }
+  .sheet { display: grid; position: fixed; left: 0; right: 0; top: 62px; z-index: 19; padding: 8px var(--margin) 24px; background: var(--ground); gap: 2px; transform: translateY(-12px); opacity: 0; visibility: hidden; transition: opacity .25s, transform .3s var(--ease), visibility 0s .3s; }
+  .sheet.on { transform: none; opacity: 1; visibility: visible; transition: opacity .25s, transform .3s var(--ease); }
+  .sheet a { display: flex; justify-content: space-between; align-items: center; padding: 16px 4px; font-size: 20px; font-weight: 600; text-decoration: none; color: var(--ink); }
+  .sheet a svg { width: 18px; height: 18px; color: var(--muted); }
+  .sheet .btn { margin-top: 14px; justify-content: center; font-size: var(--s-body); padding: 16px; color: var(--on-accent); }
+  .sheet .note { margin-top: 10px; font-size: 14px; color: var(--muted); text-align: center; }
+  body.sheet-open { overflow: hidden; }
+
+  /* the first screen: the words and the action first, then the app, then what it does */
+  .hero { display: flex; flex-direction: column; padding-top: 20px; }
+  .hero .mark { order: 1; margin-top: 8px; font-size: 18px; }
+  .hero h1 { order: 2; margin-top: 14px; font-size: 32px; line-height: 1.12; letter-spacing: -.03em; font-weight: 600; }
+  .hero .idea { order: 3; margin-top: 10px; }
+  .hero .row { order: 4; margin-top: 22px; gap: 10px; }
+  .hero .row .spec:last-child { display: none; }
+  .hero .stagewrap { order: 5; margin-top: 28px; }
+  .hero .chips-run { order: 6; }
+  .hero .with { order: 7; margin-top: 18px; gap: 6px 18px; font-size: 14px; }
+  .object { height: calc(var(--w) * 560 / 460); border-radius: 16px; }
+  .send-note { display: block !important; font-size: 13px; color: var(--muted); }
+
+  /* what it does, as chips that drift past */
+  .chips-run { display: block; margin: 16px calc(-1 * var(--margin)) 0; overflow: hidden; }
+  .chips-run .track { display: flex; gap: 8px; width: max-content; animation: drift 40s linear infinite; }
+  .chips-run span { padding: 8px 12px; background: var(--tone); font-size: 14px; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; }
+  .chips-run span::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--accent)); }
+  @keyframes drift { to { transform: translateX(-50%); } }
+
+  /* shorter sections */
+  section { padding-top: 72px; }
+  .how-band { margin-top: 72px; padding-block: 64px; }
+  .cta, footer { margin-top: 72px; }
+  .head h2, .screen .head h2 { font-size: 30px; }
+  .head p { font-size: 16px; }
+
+  /* sound familiar: each row one panel, the old way in small type above the VibePit way */
+  .compare { margin-top: 28px; gap: 8px; }
+  .compare .r { background: var(--tone-2); }
+  .compare .r > div { padding-block: 0; background: none !important; }
+  .compare .r > div:first-child { padding-top: 16px; font-size: 14px; grid-template-columns: 18px 1fr; gap: 10px; }
+  .compare .r > div:first-child svg { width: 16px; height: 16px; }
+  .compare .r > div:first-child b { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--bad) 60%, transparent); }
+  .compare .r > div:last-child { padding-top: 8px; padding-bottom: 18px; font-size: 16px; }
+
+  /* feature tabs: one row that scrolls sideways */
+  .tabs { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; margin-inline: calc(-1 * var(--margin)); padding-inline: var(--margin); scrollbar-width: none; scroll-snap-type: x proximity; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { flex: none; padding: 12px 16px; scroll-snap-align: start; }
+  .pane { gap: 20px; padding-block: 24px; }
+  .pane h3 { font-size: 22px; }
+  .pane .ticks { font-size: 16px; }
+
+  /* the two app pieces and the phone: the words first, then the piece */
+  .split { gap: 24px; }
+  .split > div:not(.frag) { order: -1; }
+  .split h2 { font-size: 28px; }
+  .split .ticks { font-size: 16px; }
+  .frag { font-size: 14px; padding: 14px; }
+  .steplist li { grid-template-columns: 60px 1fr; gap: 8px; padding: 7px 8px; }
+  .frag .foot { flex-wrap: wrap; }
+  .frag .foot .where { flex-basis: 100%; }
+  /* wide screenshots, cropped to the part a phone can read: the plan card, and the phone itself */
+  #p1 figure img { aspect-ratio: 1.15; width: 100%; height: auto; object-fit: cover; object-position: 0 0; }
+  #phone figure img { aspect-ratio: 1.05; width: 100%; object-fit: cover; object-position: 0 50%; }
+
+  /* everything else: four cards to swipe through */
+  .swipe { display: flex; justify-content: center; gap: 6px; margin-top: 14px; font-size: 14px; color: var(--muted); }
+  .kit { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 20px calc(-1 * var(--margin)) 0; padding-inline: var(--margin); scrollbar-width: none; grid-template-columns: none; }
+  .kit::-webkit-scrollbar { display: none; }
+  .kit > div { flex: 0 0 84%; scroll-snap-align: center; padding: 22px 18px; }
+  .kit > div > p { display: block; }
+  .kit dl div { padding: 10px 12px; }
+  .kit dt { font-size: 16px; } .kit dd { font-size: 15px; }
+
+  /* privacy and questions: tighter */
+  .private dl div { padding-block: 18px; }
+  .private dt { font-size: 18px; }
+  .private dd { font-size: 16px; }
+  .q button { padding-block: 16px; font-size: 17px; }
+  .steps { gap: 32px; }
+
+  /* the bar along the bottom: always one tap from sending the link to your Mac */
+  .getbar { display: flex; position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 18; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 10px 10px 16px; background: var(--tone-2); border-radius: 14px; transform: translateY(140%); transition: transform .4s var(--ease); }
+  .getbar.on { transform: none; }
+  .getbar b { display: block; font-size: 15px; }
+  .getbar small { display: block; font-size: 13px; color: var(--muted); }
+  .getbar .btn { padding: 12px 14px; font-size: 15px; flex: none; }
+  footer { padding-bottom: 96px; }
+
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) {
+  .chips-run { overflow-x: auto; } .chips-run .track { animation: none; }
+  .sheet, .getbar { transition: none; }
 }
 </style>
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
+<div class="progress" id="progress" aria-hidden="true"></div>
 
-<header class="frame bar">
-  <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="" width="32" height="32">VibePit</a>
-  <nav aria-label="Site">
-    <a href="#features">Features</a>
-    <a href="demo.html">Demo</a>
-    <a href="setup.html">Setup guide</a>
-    <a href="release-notes.html">Release notes</a>
-    <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
-  </nav>
-</header>
+<div class="top" id="top">
+  <header class="frame bar">
+    <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="" width="30" height="30">VibePit</a>
+    <nav aria-label="Site">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="demo.html">Tour</a>
+      <a href="setup.html">Setup guide</a>
+      <a href="release-notes.html">Release notes</a>
+      <button type="button" class="theme" aria-label="Switch theme"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <a class="btn dl" data-phone="Get it" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a>
+      <button type="button" class="menu" id="menuBtn" aria-expanded="false" aria-controls="sheet" aria-label="Menu"><svg class="bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </nav>
+  </header>
+</div>
+<nav class="sheet" id="sheet" aria-label="Menu">
+  <a href="#features">Features<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a href="#how">How it works<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a href="#faq">Questions<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a href="demo.html">Two-minute tour<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a href="setup.html">Setup guide<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a href="release-notes.html">Release notes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a class="btn dl" data-phone="Send the link to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download for Mac</a>
+  <p class="note">VibePit is a Mac app. Send yourself the link and open it on your Mac.</p>
+</nav>
 
 <main>
-  <div class="hero">
-    <div class="frame grid">
-      <div class="copy">
-        <h1>Claude Code, in one&nbsp;window.</h1>
-        <p class="lead" data-rise style="--i:1">VibePit is a free Mac app for Claude Code. Run every session side by side, answer Claude with one click, and hear when it is done.</p>
-        <div class="act" data-rise style="--i:2">
-          <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
-            Download for Mac
-          </a>
-          <a class="link" href="demo.html">Take the two-minute tour</a>
-        </div>
-        <p class="note" data-rise style="--i:3">Free · macOS 12 or later · <span id="dlChip">Apple silicon</span> · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
-      </div>
-    </div>
-    <div class="stage" id="stage">
-      <div class="live" id="live" data-ui>
+  <div class="hero frame screen">
+    <div class="stagewrap">
+      <div class="object" id="object" data-ui>
         <iframe id="liveApp" src="demo-app.html?loop" title="VibePit at work: Claude proposes a plan, asks to run the tests, and finishes" tabindex="-1" loading="eager"></iframe>
       </div>
+      <p class="bub l" style="top: 4%; --d:0; --t:6s"><b>Near your limit?</b><span>Move the chat to your other Claude account</span></p>
+      <p class="bub l" style="top: 34%; --d:2; --t:7s; --c: var(--ok)"><b>Projects found for you</b><span>Set up with Claude names each one</span></p>
+      <p class="bub l" style="top: 64%; --d:4; --t:6.5s; --c: var(--warn)"><b>Dev server opens too</b><span>A project’s terminals start with it</span></p>
+      <p class="bub r" style="top: 10%; --d:1; --t:6.8s; --c: var(--ok)"><b>Screen stays awake</b><span>While any Claude session is open</span></p>
+      <p class="bub r" style="top: 40%; --d:3; --t:6.2s; --c: var(--warn)"><b>Claude suggests notes</b><span>Saved only when you approve</span></p>
+      <p class="bub r" style="top: 68%; --d:5; --t:7.2s"><b>Background tasks, live</b><span>See each one run, and what it prints</span></p>
     </div>
+    <p class="mark" aria-hidden="true">VibePit</p>
+    <h1>The pit wall for vibe coders.</h1>
+    <p class="idea">One cockpit. Every coding session.</p>
+    <div class="row">
+      <span class="spec">Free · macOS 12 or later</span>
+      <a class="btn dl" data-phone="Send the link to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
+        Download for Mac
+      </a>
+      <span class="spec send-note" style="display:none">VibePit runs on your Mac. Send yourself the link.</span>
+      <span class="spec"><span id="dlChip">Apple silicon</span> · <a class="under" id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></span>
+    </div>
+    <div class="chips-run" aria-hidden="true"><div class="track"><span>Answer with one click</span><span style="--c: var(--warn)">Plans before edits</span><span style="--c: var(--ok)">Every step, live</span><span>Usage at a glance</span><span style="--c: var(--warn)">Notes and reminders</span><span style="--c: var(--ok)">Use it from your phone</span><span>Screen stays awake</span><span style="--c: var(--warn)">Two Claude accounts</span><span style="--c: var(--ok)">Your data stays on your Mac</span><span>Answer with one click</span><span style="--c: var(--warn)">Plans before edits</span><span style="--c: var(--ok)">Every step, live</span><span>Usage at a glance</span><span style="--c: var(--warn)">Notes and reminders</span><span style="--c: var(--ok)">Use it from your phone</span><span>Screen stays awake</span><span style="--c: var(--warn)">Two Claude accounts</span><span style="--c: var(--ok)">Your data stays on your Mac</span></div></div>
+    <p class="with"><span><b>Your data stays on your Mac</b></span><span>Works with <b>Claude Code</b></span><span><b>VS Code</b> or <b>Terminal</b></span><span><b>GitHub</b> links</span><span>Your <b>iPhone</b> or <b>Android</b> browser</span></p>
   </div>
 
-  <section id="features" class="frame">
+  <section class="frame screen" id="why" aria-labelledby="wy">
     <div class="head">
-      <h2 data-rise>What VibePit does</h2>
-      <p data-rise style="--i:1">It sits beside VS Code and keeps every Claude Code session in view, so you can run several at once without losing track of any.</p>
+      <h2 id="wy" data-rise>Sound familiar?</h2>
+      <p data-rise style="--i:1">Claude Code is powerful. Running it in a row of terminals is not. VibePit gives it a proper home on your Mac.</p>
     </div>
-    <div class="feat">
-      <div class="cap grid">
-        <div class="words">
-          <h3 data-rise>Answer Claude with one click</h3>
-          <p data-rise style="--i:1">When Claude asks a question or needs your permission, the request appears in VibePit with clear buttons. You do not need to find the right terminal.</p>
-        </div>
-        <figure data-ui data-rise style="--i:2">
-          <picture><source srcset="img/ask-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/ask-light.webp" width="944" height="508" alt="A request from Claude to run the login tests, with the buttons Yes and No, above the message box and the usage meters" loading="lazy"></picture>
-        </figure>
-      </div>
-      <div class="cap grid">
-        <div class="words">
-          <h3 data-rise>Read the plan before Claude starts</h3>
-          <p data-rise style="--i:1">In plan mode, Claude proposes a plan before it changes any file. VibePit shows it beside the chat as a document that is easy to read. Approve it, or say what should change.</p>
-        </div>
-        <figure data-ui data-rise style="--i:2">
-          <picture><source srcset="img/plan-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/plan-light.webp" width="1220" height="620" alt="Claude’s plan waiting for approval in the chat, and the same plan laid out as a document beside it" loading="lazy"></picture>
-        </figure>
-      </div>
-      <div class="cap grid">
-        <div class="words">
-          <h3 data-rise>See every session at a glance</h3>
-          <p data-rise style="--i:1">Each Claude tab, in every project, shows whether it is working, ready or waiting for you. Your 5-hour and weekly limits sit under the message box, so they never surprise you.</p>
-        </div>
-        <figure data-ui data-rise style="--i:2">
-          <picture><source srcset="img/glance-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/glance-light.webp" width="900" height="700" alt="The Chats list with four projects, one waiting for you, beside the route-map conversation" loading="lazy"></picture>
-        </figure>
-      </div>
-      <div class="cap grid">
-        <div class="words">
-          <h3 data-rise>Hear when it is done</h3>
-          <p data-rise style="--i:1">When Claude finishes, VibePit tells you with a short summary read aloud. The answer starts with its headline, with its pull request and checks right under it. Type to VibePit, or say “Hey Pit”.</p>
-        </div>
-        <figure data-ui data-rise style="--i:2">
-          <picture><source srcset="img/answer-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/answer-light.webp" width="944" height="232" alt="Claude’s finished answer with links to pull request 73 and its CI run, and two suggested replies" loading="lazy"></picture>
-        </figure>
-      </div>
-      <div class="cap grid">
-        <div class="words">
-          <h3 data-rise>Carry on from your phone</h3>
-          <p data-rise style="--i:1">Scan a QR code, press Allow on your Mac, and your phone shows the same chat in its browser. There is nothing to install. It works on your Wi-Fi, or from anywhere if you choose.</p>
-        </div>
-        <figure data-ui data-rise style="--i:2">
-          <picture><source srcset="img/phone-dark.webp" media="(prefers-color-scheme: dark)"><img src="img/phone-light.webp" width="1242" height="539" alt="VibePit on a phone sending Explain the change, and the message arriving in the chat on the Mac" loading="lazy"></picture>
-        </figure>
-      </div>
-    </div>
-    <p class="more" data-rise>Notes and reminders, two Claude accounts, a floating status panel and more are in the <a class="link" href="release-notes.html">release notes</a>.</p>
-  </section>
-
-  <section class="frame start" id="start">
-    <div class="grid">
-      <div class="side head">
-        <h2 data-rise>Ready in a few minutes</h2>
-        <p data-rise style="--i:1">You need a Mac with macOS 12 or later, and a Claude account that can use Claude Code: Pro, Max, Team or Enterprise, or an API key.</p>
-        <p class="note" data-rise style="--i:2">VS Code is recommended. VibePit installs Claude Code for you if it is missing. The <a class="link" href="setup.html">Setup guide</a> explains every step.</p>
-      </div>
-      <ol>
-        <li data-rise><h3>Download and open it</h3><p>Drag VibePit into Applications and open it. The first time, macOS asks you to allow it: open System Settings, then Privacy &amp; Security, and press Open Anyway.</p></li>
-        <li data-rise style="--i:1"><h3>Follow Get started</h3><p>The app gives you one button for each step: install Claude Code, log in, get VS Code and add your projects. Each step ticks itself off.</p></li>
-        <li data-rise style="--i:2"><h3>Open a project</h3><p>Type “open” and a project’s name, or say “Hey Pit, open” and its name. VS Code opens it with Claude ready in its own tab.</p></li>
-      </ol>
+    <div class="compare">
+      <div class="hd" aria-hidden="true"><span>The usual way</span><span>With VibePit</span></div>
+      <div class="r" data-rise style="--i:0"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><b>Switching between VS Code, terminals and Claude tabs all day</b></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>One window for every session</b>Every Claude tab, in every project, in one list that tells you which one needs you.</span></div></div>
+      <div class="r" data-rise style="--i:1"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><b>Reading long answers in a plain terminal</b></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>A Chat that is easy to read</b>A headline first, links under it, plans laid out as documents, and buttons to answer.</span></div></div>
+      <div class="r" data-rise style="--i:2"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><b>Claude asks you to run a command, and you are not sure what it does</b></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Know before it runs</b>VibePit explains the command in plain words and how risky it is. Nothing runs until you say so.</span></div></div>
+      <div class="r" data-rise style="--i:3"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><b>Claude works through many steps, and you cannot see what is happening</b></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Every step in view</b>Each file Claude reads or edits and each command it runs appears live, as it happens.</span></div></div>
     </div>
   </section>
 
-  <div class="private" id="privacy">
-    <div class="frame grid">
+  <section class="frame screen" id="features" aria-labelledby="ft">
+    <div class="head">
+      <h2 id="ft" data-rise>Answer Claude in one place</h2>
+      <p data-rise style="--i:1">Stop switching between terminals. VibePit shows what every Claude Code session is doing, and lets you answer it with a click.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Features" id="tabs" data-rise style="--i:2">
+      <button type="button" role="tab" id="t0" aria-controls="p0" aria-selected="true">Answer with one click<i></i></button>
+      <button type="button" role="tab" id="t1" aria-controls="p1" aria-selected="false" tabindex="-1">Read the plan first<i></i></button>
+      <button type="button" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Read the result first<i></i></button>
+    </div>
+    <div class="panes" data-rise style="--i:3">
+      <div class="pane on" role="tabpanel" id="p0" aria-labelledby="t0">
+        <div class="words">
+          <h3>Answer Claude without finding the terminal</h3>
+          <p>When Claude asks a question or needs your permission, the request appears in the Chat with clear buttons.</p>
+          <ul class="ticks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Yes, No, or tell Claude what to do instead</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Don’t ask again, when Claude Code offers it</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Answer on the Mac or from your phone</li>
+          </ul>
+        </div>
+        <figure data-ui><img src="img/ask-dark.webp" width="944" height="508" alt="A request from Claude to run the login tests, with the buttons Yes and No, above the message box"></figure>
+      </div>
+      <div class="pane" role="tabpanel" id="p1" aria-labelledby="t1">
+        <div class="words">
+          <h3>See the plan before any file changes</h3>
+          <p>In plan mode, Claude proposes a plan first. VibePit opens it beside the Chat as a document that is easy to read.</p>
+          <ul class="ticks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Approve it with one click</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Or write what should change</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Pin it, or branch it into a new session</li>
+          </ul>
+        </div>
+        <figure data-ui><img src="img/plan-dark.webp" width="1220" height="620" alt="Claude’s plan waiting for approval in the Chat, and the same plan laid out as a document beside it" loading="lazy"></figure>
+      </div>
+      <div class="pane" role="tabpanel" id="p2" aria-labelledby="t2">
+        <div class="words">
+          <h3>Know the outcome at a glance</h3>
+          <p>Every answer starts with a one-line headline, so you see what happened before you read the details.</p>
+          <ul class="ticks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Pull requests, reviews and checks under it</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Suggested replies you send with one click</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Reply to one answer, or copy a message to pass on</li>
+          </ul>
+        </div>
+        <figure data-ui><img src="img/answer-dark.webp" width="944" height="232" alt="Claude’s finished answer with links to pull request 73 and its CI run, and two suggested replies" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="frame screen" id="steps-live" aria-label="Every step Claude takes">
+    <div class="split">
+      <div class="frag live" data-ui data-rise aria-label="Claude at work, step by step: it read two files, searched, edited the router, ran the login tests (12 passed) and is writing a new test">
+        <div class="fh"><b>claude</b> is working <span class="chip warm" id="clock">48s</span><span class="chip">6 steps</span><span class="end"><span class="mini">All steps</span><span class="mini stop">Stop</span></span></div>
+        <ol class="steplist">
+          <li style="--k:0"><span class="v">Read</span><code>src/auth/login.ts</code><span class="x"></span></li>
+          <li style="--k:1"><span class="v">Read</span><code>src/router.ts</code><span class="x"></span></li>
+          <li style="--k:2"><span class="v">Searched</span><code>“redirect” in src</code><span class="x">4 matches</span></li>
+          <li style="--k:3"><span class="v">Edited</span><code>src/router.ts</code><span class="x">+12 −3</span></li>
+          <li style="--k:4"><span class="v">Ran</span><code>npm test -- login</code><span class="x ok">12 passed</span></li>
+          <li class="now" style="--k:5"><span class="v">Writing</span><code>tests/login.test.ts</code><span class="x"></span></li>
+        </ol>
+        <p class="ff">route-map-claude · Keep the page after login</p>
+      </div>
+      <div>
+        <h2 data-rise>See every step Claude takes</h2>
+        <p data-rise style="--i:1">In the terminal, a long task is a wall of text. In VibePit, each step appears as it happens, so you always know what Claude is doing and how far it has got.</p>
+        <ul class="ticks" data-rise style="--i:2">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Every file it reads, searches and edits</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Every command it runs, with the result</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>A clock and a step count, and Stop when you need it</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="frame screen" id="commands" aria-label="Commands explained">
+    <div class="split flip">
+      <div class="frag" data-ui data-rise aria-label="Claude asks you to run npm run db:reset; VibePit explains that it deletes and refills the local database, marks it as Changes something, and waits for you to press Run">
+        <div class="fh"><b>Claude asks you to run this</b><span class="risk">Changes something</span></div>
+        <pre>npm run db:reset</pre>
+        <p class="does"><span>What it does</span>Deletes your local database and fills it again with sample data, so the login tests start from a clean state. It does not touch any server.</p>
+        <div class="foot"><span class="where">Runs in ~/code/route-map, as you</span><span class="mini">Copy</span><span class="mini">Not needed</span><span class="mini go">Run…</span></div>
+      </div>
+      <div>
+        <h2 data-rise>Know what a command does before it runs</h2>
+        <p data-rise style="--i:1">Not sure about a command Claude wants you to run? VibePit explains it in plain words and tells you how risky it is. Nothing runs until you press Run and confirm.</p>
+        <ul class="ticks" data-rise style="--i:2">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>What it does, in one or two sentences</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Only reads, Changes something, or Hard to undo</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Where it runs, and its output goes back to Claude</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="frame screen" id="phone" aria-label="On your phone">
+    <div class="split">
+      <figure data-ui data-rise><img src="img/phone-dark.webp" width="1242" height="539" alt="VibePit on a phone sending Explain the change, and the message arriving in the Chat on the Mac" loading="lazy"></figure>
+      <div>
+        <h2 data-rise>Carry on from your phone</h2>
+        <p data-rise style="--i:1">Scan a QR code, press Allow on the Mac, and your phone’s browser shows the same Chat. There is nothing to install.</p>
+        <ul class="ticks" data-rise style="--i:2">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Send messages, answer Claude and stop a tab</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>On your Wi-Fi, or from anywhere over an encrypted link</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Each code works once, and only after you allow it</li>
+        </ul>
+        <a class="link" href="setup.html#phone" data-rise style="--i:3">How to connect a phone<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="frame screen" id="more" aria-labelledby="mr">
+    <div class="head">
+      <h2 id="mr" data-rise>Everything else, built in</h2>
+      <p data-rise style="--i:1">The small things that make a long day with Claude Code easier.</p>
+      <p class="swipe" aria-hidden="true">Swipe for more<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg></p>
+    </div>
+    <div class="kit">
+      <div data-rise style="--i:0">
+        <h3>Stay organised</h3>
+        <p>Keep what matters from every conversation.</p>
+        <dl>
+          <div><dt>Notes</dt><dd>Notes and checklists for each project, on one board.</dd></div>
+          <div><dt>Reminders</dt><dd>They arrive on time, even with the laptop locked.</dd></div>
+          <div><dt>Pinned messages</dt><dd>Pin any answer or plan, and find it again in seconds.</dd></div>
+          <div><dt>Messages to pass on</dt><dd>When Claude writes a message for someone, copy it ready to paste.</dd></div>
+        </dl>
+      </div>
+      <div data-rise style="--i:1">
+        <h3>Watch your limits</h3>
+        <p>No surprise when a limit runs out.</p>
+        <dl>
+          <div><dt>Usage meters</dt><dd>Your 5-hour and weekly Claude limits, with reset times.</dd></div>
+          <div><dt>Context meter</dt><dd>How full each conversation is, so you know when to start fresh.</dd></div>
+          <div><dt>Your week</dt><dd>Seven days per project: time worked, messages sent, time Claude waited.</dd></div>
+          <div><dt>Two accounts</dt><dd>Choose which Claude account each project or tab uses.</dd></div>
+        </dl>
+      </div>
+      <div data-rise style="--i:0">
+        <h3>Work your way</h3>
+        <p>Faster ways to steer Claude.</p>
+        <dl>
+          <div><dt>Quick suggestions</dt><dd>Suggested replies, and Claude’s commands and skills as you type /.</dd></div>
+          <div><dt>Branch</dt><dd>Try another approach from any message, in a new session.</dd></div>
+          <div><dt>Resume</dt><dd>Earlier conversations are kept by day. Open one and carry on.</dd></div>
+          <div><dt>Review mode</dt><dd>Type /review 42 and Claude reviews the pull request with your own prompt.</dd></div>
+        </dl>
+      </div>
+      <div data-rise style="--i:1">
+        <h3>Always in reach</h3>
+        <p>VibePit is there even when its window is not.</p>
+        <dl>
+          <div><dt>Floating panel</dt><dd>Every tab’s state on every desktop, even over full-screen apps.</dd></div>
+          <div><dt>Menu bar icon</dt><dd>Start, stop and open VibePit from the menu bar.</dd></div>
+          <div><dt>Catch up</dt><dd>What each tab did while you were away.</dd></div>
+          <div><dt>Your phone</dt><dd>Scan a QR code and answer Claude from anywhere.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <div class="how-band">
+    <section class="frame screen" id="how" aria-labelledby="hw">
       <div class="head">
-        <h2 data-rise>Your work stays on your Mac</h2>
-        <p data-rise style="--i:1">There is no VibePit account. Your messages go to Claude through your own Claude Code, exactly as if you typed them in the terminal.</p>
+        <h2 id="hw" data-rise>Up and running in three steps</h2>
+        <p data-rise style="--i:1">You need a Mac with macOS 12 or later, and a Claude account that can use Claude Code. Most people are ready in about ten minutes.</p>
       </div>
-      <dl>
-        <div data-rise><dt>Speech is turned into text on your Mac</dt><dd>Built-in rules understand you from the start, and an optional model on your Mac understands any phrasing. No audio leaves it, unless you add your own Deepgram key for faster hearing.</dd></div>
-        <div data-rise style="--i:1"><dt>Closed to the network</dt><dd>The app talks only to itself, and every request needs a secret token. It opens to your phone only while a phone you allowed is connected.</dd></div>
-        <div data-rise style="--i:2"><dt>Independent</dt><dd>VibePit is not made by or affiliated with Anthropic. You use your own Claude account.</dd></div>
-      </dl>
-    </div>
+      <ol class="steps" id="steps">
+        <li data-rise><span class="n" aria-hidden="true">1</span><h3>Download and install</h3><p>Drag VibePit to Applications and open it. The first time, macOS asks you to press Open Anyway.</p></li>
+        <li data-rise style="--i:2"><span class="n" aria-hidden="true">2</span><h3>Follow Get started</h3><p>One button each to install Claude Code, log in and add your projects. Each step ticks itself off.</p></li>
+        <li data-rise style="--i:4"><span class="n" aria-hidden="true">3</span><h3>Open a project</h3><p>Type “open” and a project’s name. VS Code opens it with Claude ready, and VibePit follows every step.</p></li>
+      </ol>
+      <p class="more" data-rise><a class="link" href="setup.html">Read the Setup guide<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+    </section>
   </div>
 
-  <section class="frame faq" id="faq">
-    <div class="grid">
-      <div class="side">
-        <h2 class="head" data-rise>Questions</h2>
-        <details open><summary>Is VibePit free?</summary><p>Yes, VibePit is free. You use your own Claude account, so your usual Claude plan or API costs apply.</p></details>
-        <details><summary>Do I have to talk to it?</summary><p>No. Everything you can say, you can also type, and typed commands are answered in writing. You can turn the microphone off completely.</p></details>
-        <details><summary>Do I need VS Code?</summary><p>It is recommended: each project opens in VS Code with Claude in its terminal panel. If you prefer, Claude can open in Terminal instead.</p></details>
-        <details><summary>How do updates work?</summary><p>When a new version is out, VibePit tells you. Press Update now, and it installs the update and opens again. Your projects and settings are kept.</p></details>
-        <details><summary>Why does macOS warn me the first time?</summary><p>VibePit is not yet signed with an Apple Developer ID. Open System Settings, then Privacy &amp; Security, and press Open Anyway next to VibePit. You only do this once.</p></details>
-      </div>
-      <div class="pane" aria-live="polite"><p id="faqAnswer"></p></div>
+  <section class="frame private screen" id="privacy" aria-labelledby="pv">
+    <div>
+      <h2 id="pv" data-rise>Your data stays on your Mac</h2>
+      <p class="lead" data-rise style="--i:1">VibePit keeps everything in the app, on your Mac. It sends nothing to us or to anyone else: no account, no tracking. Your messages go only to Claude, through your own Claude Code, as they always have.</p>
+    </div>
+    <dl>
+      <div data-rise><dt>Nothing sent anywhere</dt><dd>Your projects, notes, pins and history stay on your Mac. The only thing VibePit asks the internet is whether a new version is out.</dd></div>
+      <div data-rise style="--i:1"><dt>No account, no tracking</dt><dd>There is no VibePit account to create, and the app does not collect how you use it.</dd></div>
+      <div data-rise style="--i:2"><dt>Closed to the network</dt><dd>The app talks only to itself, and every request needs a secret token.</dd></div>
+      <div data-rise style="--i:3"><dt>Your phone, only when you allow it</dt><dd>It opens to a phone only while one you allowed is connected, and you can disconnect it at any time.</dd></div>
+    </dl>
+  </section>
+
+  <section class="frame screen" id="faq" aria-labelledby="fq">
+    <div class="head">
+      <h2 id="fq" data-rise>Frequently asked questions</h2>
+    </div>
+    <div class="faq" id="faqList">
+      <div class="q open" data-rise><button type="button" aria-expanded="true">Is VibePit free?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>Yes. VibePit is free. You use your own Claude account, so your usual Claude plan or API costs apply.</p></div></div></div>
+      <div class="q" data-rise style="--i:1"><button type="button" aria-expanded="false">Is VibePit a voice assistant?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>No. VibePit is a window for Claude Code that you use by typing and clicking. Voice is an optional extra: you can talk to it and hear short summaries, or turn the microphone off completely.</p></div></div></div>
+      <div class="q" data-rise style="--i:2"><button type="button" aria-expanded="false">Does VibePit send my code anywhere?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>No. Everything stays on your Mac. Your messages go to Claude through your own Claude Code, exactly as when you use it in the terminal, and VibePit itself sends nothing anywhere.</p></div></div></div>
+      <div class="q" data-rise style="--i:2"><button type="button" aria-expanded="false">Which Macs does it run on?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>Any Mac with macOS 12 or later, with Apple silicon (M1 or later) or an Intel processor. Each has its own download.</p></div></div></div>
+      <div class="q" data-rise style="--i:3"><button type="button" aria-expanded="false">Do I need VS Code?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>It is recommended: each project opens in VS Code with Claude in its terminal panel. If you prefer, Claude can open in Terminal instead.</p></div></div></div>
+      <div class="q" data-rise style="--i:4"><button type="button" aria-expanded="false">Why does macOS warn me the first time?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>VibePit is not yet signed with an Apple Developer ID. Open System Settings, then Privacy &amp; Security, and press Open Anyway next to VibePit. You only do this once.</p></div></div></div>
+      <div class="q" data-rise style="--i:5"><button type="button" aria-expanded="false">How do updates work?<span class="pm" aria-hidden="true"></span></button><div class="a"><div><p>When a new version is out, VibePit tells you. Press Update now, and it installs the update and opens again. Your projects and settings are kept.</p></div></div></div>
     </div>
   </section>
 
-  <div class="close">
-    <div class="frame grid">
-      <h2 data-rise>Try it on your next task.</h2>
-      <div class="end">
-        <p data-rise style="--i:1">VibePit is free for Mac. Most people are set up in about fifteen minutes.</p>
-        <a class="btn dl" data-rise style="--i:2" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download for Mac</a>
-        <p class="note" data-rise style="--i:3">Or <a href="demo.html">take the tour</a> first.</p>
+  <div class="frame cta">
+    <div class="box" data-rise>
+      <h2>Try VibePit on your next task</h2>
+      <p>Free for Mac. Your data stays on your Mac. Set up in about ten minutes.</p>
+      <div class="acts">
+        <a class="btn dl" data-phone="Send the link to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>Download for Mac</a>
+        <a class="btn quiet" href="demo.html">Take the two-minute tour</a>
       </div>
     </div>
   </div>
 </main>
 
-<footer class="frame">
-  <span>VibePit, a Mac app for Claude Code</span>
-  <nav aria-label="More"><a href="demo.html">Demo</a><a href="setup.html">Setup guide</a><a href="release-notes.html">Release notes</a><a href="https://github.com/Logesh883/vibepit-app/releases">All downloads</a></nav>
-  <span class="end">© 2026 · Not affiliated with Anthropic</span>
+<footer>
+  <div class="frame">
+    <div class="cols">
+      <div class="about">
+        <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="" width="30" height="30">VibePit</a>
+        <p>A free Mac app that keeps every Claude Code session in one window.</p>
+      </div>
+      <div><h3>Product</h3><ul><li><a href="#features">Features</a></li><li><a href="demo.html">Tour</a></li><li><a href="release-notes.html">Release notes</a></li></ul></div>
+      <div><h3>Help</h3><ul><li><a href="setup.html">Setup guide</a></li><li><a href="setup.html#help">If something goes wrong</a></li><li><a href="#faq">Questions</a></li></ul></div>
+      <div><h3>Download</h3><ul><li><a href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Apple silicon</a></li><li><a href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel</a></li><li><a href="https://github.com/Logesh883/vibepit-app/releases">All versions</a></li></ul></div>
+    </div>
+    <div class="small"><span>© 2026 VibePit · Version 1.0</span><span>Not affiliated with Anthropic</span></div>
+  </div>
 </footer>
 
+<div class="getbar" id="getbar"><span><b>VibePit for Mac</b><small>Free · macOS 12 or later</small></span><a class="btn dl" data-phone="Send to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a></div>
+
 <script>
-// Each part of a section rises in once, as it comes into view.
+// Each part of a section rises in once, as it comes into view; the steps' line draws with them.
 const rise = new IntersectionObserver((es) => es.forEach((e) => {
   if (e.isIntersecting) { e.target.classList.add("in"); rise.unobserve(e.target); }
 }), { rootMargin: "0px 0px -8% 0px" });
-document.querySelectorAll("[data-rise], .stage").forEach((el) => rise.observe(el));
+document.querySelectorAll("[data-rise], #steps").forEach((el) => rise.observe(el));
 
-// The live app: drawn as a desktop window, its menu and list cropped off on the left (the Chat
-// is what it shows); on a narrow screen it is drawn narrower and scaled to fit.
+// The steps fragment: its clock counts up while it is on screen.
+(() => {
+  const clock = document.getElementById("clock"); let t = 48, on = false;
+  new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(clock);
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(() => { if (on && !document.hidden) clock.textContent = ++t + "s"; }, 1000);
+})();
+
+// As you scroll: the reading bar fills, the app in the hero settles back, the bubbles drift apart,
+// and the bar lights the link of the part in view.
+(() => {
+  const bar = document.getElementById("progress"), stage = document.querySelector(".stagewrap");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let ticking = false;
+  const draw = () => {
+    ticking = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
+    if (still || matchMedia("(max-width: 860px)").matches) return;   // phones: the app stays put
+    const k = Math.min(1, scrollY / innerHeight);
+    stage.style.transform = `translateY(${k * 60}px) scale(${1 - k * .06})`;
+    stage.style.opacity = String(1 - k * .55);
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(draw); } }, { passive: true });
+  draw();
+  const links = [...document.querySelectorAll('.bar nav a[href^="#"]')];
+  const spy = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.classList.toggle("here", a.getAttribute("href") === "#" + e.target.id));
+  }), { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll("main [id]").forEach((el) => { if (el.matches("section, .how-band > section")) spy.observe(el); });
+})();
+
+// Zoom on scroll: a section in the middle of the screen is at full size; one arriving from below
+// grows from 90%, and one leaving at the top shrinks to 92% and fades. Pictures inside go further.
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const phone = matchMedia("(max-width: 860px)").matches, amt = phone ? .5 : 1;
+  const secs = [...document.querySelectorAll("main .screen:not(.hero)")];
+  const pics = [...document.querySelectorAll(".split figure, .split .frag, .panes, .kit, .compare")];
+  [...secs, ...pics].forEach((el) => el.classList.add("zoomed"));
+  let ticking = false;
+  const place = (el) => { const r = el.getBoundingClientRect(); return (r.top + r.height / 2 - innerHeight / 2) / innerHeight; };
+  const draw = () => {
+    ticking = false;
+    for (const el of secs) {
+      const d = Math.max(-1, Math.min(1, place(el)));
+      const sc = d > 0 ? 1 - .10 * d * amt : 1 + .08 * d * amt;   // below: grow in; above: shrink away
+      el.style.transform = `scale(${sc.toFixed(4)})`;
+      el.style.opacity = String((d < 0 ? 1 + .6 * d : 1 - .25 * d).toFixed(3));
+    }
+    for (const el of pics) {
+      const d = Math.max(-1, Math.min(1, place(el)));
+      el.style.transform = `scale(${(1 - .06 * Math.abs(d) * amt).toFixed(4)}) translateY(${(d * 24 * amt).toFixed(1)}px)`;
+    }
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(draw); } }, { passive: true });
+  addEventListener("resize", draw); draw();
+})();
+
+// Smooth scrolling: the wheel and trackpad set where the page is heading, and the page eases
+// there frame by frame, so every scroll glides and slows into place. From the top of a section, a
+// push of a sixth of a screen or more carries on to the next section (or back to the one before);
+// a scroll that ends within a fifth of a screen of a section's top eases into it. Either way the
+// same glide carries on, without stopping first, and a long scroll is never held back. Keys, the scrollbar and
+// links scroll as usual. On a laptop or larger with a mouse or trackpad; not with reduced motion.
+(() => {
+  const ok = matchMedia("(min-width: 900px) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!ok) return;
+  const root = document.documentElement;
+  let target = scrollY, current = scrollY, running = false, mine = false, quiet = null, last = 0, from = null;
+  const max = () => root.scrollHeight - innerHeight;
+  // where each section begins in the page's own layout (the zoom effect scales them, so not their boxes on screen)
+  const at = (el) => { let y = 0; for (let n = el; n; n = n.offsetParent) y += n.offsetTop; return y; };
+  const tops = () => [...document.querySelectorAll("main .screen")].map((el, i) => i === 0 ? 0 : at(el));
+  const frame = (now) => {
+    const dt = Math.min(48, now - (last || now)); last = now;
+    current += (target - current) * (1 - Math.pow(1 - .1, dt / 16.7));
+    if (Math.abs(target - current) < .5) current = target;
+    mine = true; scrollTo(0, current);
+    if (current !== target) requestAnimationFrame(frame);
+    else { running = false; last = 0; root.style.scrollBehavior = ""; }
+  };
+  const go = () => { if (!running) { running = true; root.style.scrollBehavior = "auto"; requestAnimationFrame(frame); } };
+  addEventListener("wheel", (e) => {
+    if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+    e.preventDefault();
+    if (!running) current = target = scrollY;
+    if (from === null) from = target;   // where this gesture began
+    target = Math.max(0, Math.min(max(), target + e.deltaY * (e.deltaMode === 1 ? 16 : 1)));
+    go();
+    clearTimeout(quiet);
+    quiet = setTimeout(() => {   // the gesture is over
+      const H = innerHeight, all = [...tops(), max()], start = from; from = null;
+      const onTop = all.some((t) => Math.abs(t - start) < H * .1), moved = target - start;
+      let to = null;
+      if (onTop && Math.abs(moved) >= H / 6 && Math.abs(moved) < H * 1.1) {
+        to = moved > 0 ? all.filter((t) => t > start + 4).sort((a, b) => a - b)[0] : all.filter((t) => t < start - 4).sort((a, b) => b - a)[0];
+      } else {
+        const near = all.reduce((b, t) => Math.abs(t - target) < Math.abs(b - target) ? t : b, 0);
+        if (Math.abs(near - target) < H * .2) to = near;
+      }
+      if (to != null) { target = Math.max(0, Math.min(max(), to)); go(); }
+    }, 110);
+  }, { passive: false });
+  // any other scroll (keys, scrollbar, a link) takes over from where it leaves the page
+  addEventListener("scroll", () => { if (mine) { mine = false; return; } if (!running) current = target = scrollY; }, { passive: true });
+})();
+
+
+// Phones. The menu sheet; Download becomes "Send the link to my Mac" (VibePit is a Mac app, so a
+// phone shares the page to AirDrop, Messages or Mail, or copies the link); a bar along the
+// bottom once the first screen's button is out of sight.
+(() => {
+  const phone = matchMedia("(max-width: 860px)");
+  const touch = matchMedia("(hover: none)");
+  const btn = document.getElementById("menuBtn"), sheet = document.getElementById("sheet");
+  const setMenu = (open) => { btn.setAttribute("aria-expanded", String(open)); sheet.classList.toggle("on", open); document.body.classList.toggle("sheet-open", open); };
+  btn.addEventListener("click", () => setMenu(btn.getAttribute("aria-expanded") !== "true"));
+  sheet.addEventListener("click", (e) => { if (e.target.closest("a:not(.dl)")) setMenu(false); });
+  addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+  phone.addEventListener("change", () => { if (!phone.matches) setMenu(false); });
+
+  const bar = document.getElementById("getbar"), heroBtn = document.querySelector(".hero .row .btn"), close = document.querySelector(".cta");
+  let heroSeen = true, closeSeen = false;
+  const show = () => bar.classList.toggle("on", phone.matches && !heroSeen && !closeSeen);
+  new IntersectionObserver((es) => { heroSeen = es[0].isIntersecting || es[0].boundingClientRect.top > 0; show(); }).observe(heroBtn);
+  new IntersectionObserver((es) => { closeSeen = es[0].isIntersecting || es[0].boundingClientRect.top < 0; show(); }, { rootMargin: "0px 0px 0px 0px" }).observe(close);
+})();
+
+// The bar takes a solid ground once the page has scrolled.
+const bar = document.getElementById("top");
+let lastY = scrollY;
+addEventListener("scroll", () => {
+  const y = scrollY;
+  bar.classList.toggle("scrolled", y > 8);
+  if (Math.abs(y - lastY) > 6) { bar.classList.toggle("away", y > lastY && y > 120 && !bar.contains(document.activeElement)); lastY = y; }
+}, { passive: true });
+
+// The live app is drawn at a desktop size and scaled to its place; on a phone, at a narrower size.
 function fit() {
-  const live = document.getElementById("live"), f = document.getElementById("liveApp");
-  const w = live.clientWidth, h = live.clientHeight;
-  if (w >= 600) {  // true size: the 336px of menu and list sit off to the left
-    f.style.width = w + 336 + "px"; f.style.height = h + "px"; f.style.left = "-336px"; f.style.transform = "";
-  } else {  // narrow: the app's own narrow layout (no list), its menu cropped, scaled to fit
-    const logical = 640, k = w / (logical - 60);
-    f.style.width = logical + "px"; f.style.height = h / k + "px"; f.style.left = -60 * k + "px"; f.style.transform = `scale(${k})`;
+  const box = document.getElementById("object"), f = document.getElementById("liveApp");
+  const w = box.clientWidth;
+  if (w < 600) {  // a phone: the app's narrow chat, its menu rail cut off on the left
+    const k = w / 460;
+    f.style.width = "520px"; f.style.height = "560px"; f.style.left = -60 * k + "px"; f.style.transform = `scale(${k})`;
+    return;
   }
+  const logical = 1280, k = w / logical;
+  f.style.left = ""; f.style.width = logical + "px"; f.style.height = "680px"; f.style.transform = `scale(${k})`;
 }
 addEventListener("resize", fit); fit();
 
-// Questions: on a wide screen, the chosen question's answer is the large type on the right.
+// Feature tabs: they move on by themselves every seven seconds, stop for good once you choose
+// one, and pause while the tab is hidden. Arrow keys move between them.
 (() => {
-  const faq = document.getElementById("faq"), all = [...faq.querySelectorAll("details")], out = document.getElementById("faqAnswer");
-  const wide = matchMedia("(min-width: 900px)");
-  const show = (d) => { all.forEach((x) => x.open = x === d); out.textContent = d.querySelector("p").textContent; };
-  all.forEach((d) => {
-    d.querySelector("summary").addEventListener("click", (e) => { if (wide.matches) { e.preventDefault(); show(d); } });
-    d.querySelector("summary").addEventListener("mouseenter", () => { if (wide.matches) show(d); });
-    d.querySelector("summary").addEventListener("focus", () => { if (wide.matches) show(d); });
+  const list = document.getElementById("tabs"), tabs = [...list.querySelectorAll("[role=tab]")];
+  const panes = tabs.map((t) => document.getElementById(t.getAttribute("aria-controls")));
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let at = 0, timer = null;
+  const show = (n, focus) => {
+    at = n;
+    tabs.forEach((t, i) => { t.setAttribute("aria-selected", String(i === n)); t.tabIndex = i === n ? 0 : -1; });
+    panes.forEach((p, i) => p.classList.toggle("on", i === n));
+    if (focus) tabs[n].focus();
+  };
+  const hold = () => { clearInterval(timer); list.classList.add("held"); };
+  tabs.forEach((t, i) => t.addEventListener("click", () => { hold(); show(i); }));
+  list.addEventListener("keydown", (e) => {
+    const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (d) { hold(); show((at + d + tabs.length) % tabs.length, true); }
   });
-  faq.classList.add("paned"); show(all[0]);
+  if (still) list.classList.add("held");
+  else timer = setInterval(() => { if (!document.hidden) show((at + 1) % tabs.length); }, 7000);
 })();
+
+// Questions: one open at a time.
+document.getElementById("faqList").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const q = b.parentElement, open = !q.classList.contains("open");
+  document.querySelectorAll(".q").forEach((x) => { x.classList.remove("open"); x.querySelector("button").setAttribute("aria-expanded", "false"); });
+  if (open) { q.classList.add("open"); b.setAttribute("aria-expanded", "true"); }
+});
 
 // Intel Macs get the Intel download first. Chrome and Edge can tell; Safari and Firefox
 // can't, so they keep Apple silicon (most Macs sold since 2020) with the Intel link beside it.

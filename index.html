@@ -490,6 +490,59 @@ footer .small { margin-top: 64px; padding-top: 24px; display: flex; justify-cont
   footer { padding-bottom: 96px; }
 
 }
+/* The trailer: on a first visit it plays over the page once, with Skip; "Watch the trailer" on the
+   first screen plays it again. Always dark, as the film is. */
+.watch { gap: 10px; }
+.watch small { font-weight: 500; color: var(--muted); transition: color .2s; }
+.watch:hover small { color: inherit; }
+.acts { display: inline-flex; gap: 12px; }
+.bar nav .trailer-link { display: inline-flex; align-items: center; gap: 7px; }
+.bar nav .trailer-link svg { width: 11px; height: 11px; }
+html.intro-open, html.intro-open body { overflow: hidden; }
+.intro { position: fixed; inset: 0; z-index: 100; background: #000; opacity: 0; visibility: hidden; transition: opacity .6s var(--ease-out), visibility 0s linear .6s; }
+.intro.on { opacity: 1; visibility: visible; transition: opacity .6s var(--ease-out); }
+.intro:not(.awake) { cursor: none; }
+/* the film fills the screen, all of it in view (black bars where the screen isn't 16:9) */
+.intro .film { position: absolute; inset: 0; transform: scale(1.02); transition: transform 1.2s var(--ease-out); }
+.intro.on .film { transform: none; }
+.intro video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+/* how far it is: a thin line along the bottom, brighter while the controls show */
+.intro .reel { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, .12); opacity: .5; transition: opacity .4s; }
+.intro.awake .reel { opacity: 1; }
+.intro .reel i { display: block; height: 100%; width: 100%; background: #8fa8ff; transform-origin: left; transform: scaleX(var(--p, 0)); }
+/* the controls: shown when the mouse moves, a key is pressed or the screen is tapped, then they fade */
+.intro .hud { position: absolute; z-index: 1; top: 0; left: 0; right: 0; padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); display: flex; align-items: center; gap: 8px; background: linear-gradient(rgba(0, 0, 0, .62), rgba(0, 0, 0, 0)); opacity: 0; pointer-events: none; transition: opacity .45s var(--ease); }
+.intro.awake .hud { opacity: 1; pointer-events: auto; }
+.intro .name { margin-right: auto; display: flex; align-items: center; gap: 10px; font: 600 15px/1 var(--font); color: #ededee; }
+.intro .name img { width: 26px; height: 26px; }
+.intro .name span { color: #a9a9af; font-weight: 500; }
+.intro .hud button { all: unset; box-sizing: border-box; height: 40px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; font: 600 15px/1 var(--font); color: #ededee; background: rgba(255, 255, 255, .12); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: pointer; transition: background-color .2s, transform .2s var(--ease); }
+.intro .hud button:hover { background: rgba(255, 255, 255, .22); }
+.intro .hud button:active { transform: scale(.97); }
+.intro .hud button:focus-visible { outline: 2px solid #8fa8ff; outline-offset: 2px; }
+.intro .hud button[hidden] { display: none; }
+.intro .hud svg { width: 18px; height: 18px; flex: none; }
+.intro .skip { background: #ededee !important; color: #0e0f11 !important; }
+.intro .skip:hover { background: #ffffff !important; }
+.intro .sound .on, .intro.loud .sound .off { display: none; }
+.intro.loud .sound .on { display: block; }
+.intro .full .out, .intro.fs .full .in { display: none; }
+/* while it is muted: how to hear it */
+.intro .hint { position: absolute; z-index: 1; left: 50%; bottom: max(28px, calc(env(safe-area-inset-bottom) + 16px)); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; font: 600 15px/1 var(--font); color: #ededee; background: rgba(20, 20, 24, .72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); white-space: nowrap; pointer-events: none; animation: hint .6s var(--ease-out) .8s both; }
+.intro .hint svg { width: 18px; height: 18px; flex: none; }
+.intro .hint .touch { display: none; }
+.intro.loud .hint { display: none; }
+@keyframes hint { from { opacity: 0; transform: translate(-50%, 8px); } }
+@media (hover: none) { .intro .hint .mouse { display: none; } .intro .hint .touch { display: inline; } }
+.intro.fs .full .out { display: block; }
+@media (max-width: 860px) {
+  .acts { flex-direction: column; width: 100%; gap: 10px; }
+  .intro .name span, .intro .sound b, .intro .full b { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro, .intro.on, .intro .film, .intro .hud { transition: none; }
+  .intro .hint { animation: none; }
+}
 @media (max-width: 860px) and (prefers-reduced-motion: reduce) {
   .chips-run { overflow-x: auto; } .chips-run .track { animation: none; }
   .sheet, .getbar { transition: none; }
@@ -507,6 +560,7 @@ footer .small { margin-top: 64px; padding-top: 24px; display: flex; justify-cont
     <nav aria-label="Site">
       <a href="#features">Features</a>
       <a href="#how">How it works</a>
+      <a href="#trailer" class="trailer-link" data-trailer><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>Trailer</a>
       <a href="demo.html">Tour</a>
       <a href="setup.html">Setup guide</a>
       <a href="release-notes.html">Release notes</a>
@@ -520,6 +574,7 @@ footer .small { margin-top: 64px; padding-top: 24px; display: flex; justify-cont
   <a href="#features">Features<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
   <a href="#how">How it works<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
   <a href="#faq">Questions<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+  <a href="#trailer" data-trailer>Watch the trailer<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></a>
   <a href="demo.html">Two-minute tour<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
   <a href="setup.html">Setup guide<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
   <a href="release-notes.html">Release notes<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
@@ -545,10 +600,14 @@ footer .small { margin-top: 64px; padding-top: 24px; display: flex; justify-cont
     <p class="idea">One cockpit. Every coding session.</p>
     <div class="row">
       <span class="spec">Free · macOS 12 or later</span>
-      <a class="btn dl" data-phone="Send the link to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
+      <span class="acts"><a class="btn dl" data-phone="Send the link to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
         Download for Mac
       </a>
+      <button type="button" class="btn quiet watch" id="watchTrailer" data-trailer aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>
+        Watch the trailer <small>0:39</small>
+      </button></span>
       <span class="spec send-note" style="display:none">VibePit runs on your Mac. Send yourself the link.</span>
       <span class="spec"><span id="dlChip">Apple silicon</span> · <a class="under" id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></span>
     </div>
@@ -794,13 +853,27 @@ footer .small { margin-top: 64px; padding-top: 24px; display: flex; justify-cont
         <a class="brand" href="index.html"><img src="vibepit-logo.png" alt="" width="30" height="30">VibePit</a>
         <p>A free Mac app that keeps every Claude Code session in one window.</p>
       </div>
-      <div><h3>Product</h3><ul><li><a href="#features">Features</a></li><li><a href="demo.html">Tour</a></li><li><a href="release-notes.html">Release notes</a></li></ul></div>
+      <div><h3>Product</h3><ul><li><a href="#features">Features</a></li><li><a href="#trailer" data-trailer>Trailer</a></li><li><a href="demo.html">Tour</a></li><li><a href="release-notes.html">Release notes</a></li></ul></div>
       <div><h3>Help</h3><ul><li><a href="setup.html">Setup guide</a></li><li><a href="setup.html#help">If something goes wrong</a></li><li><a href="#faq">Questions</a></li></ul></div>
       <div><h3>Download</h3><ul><li><a href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Apple silicon</a></li><li><a href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel</a></li><li><a href="https://github.com/Logesh883/vibepit-app/releases">All versions</a></li></ul></div>
     </div>
     <div class="small"><span>© 2026 VibePit · Version 1.0</span><span>Not affiliated with Anthropic</span></div>
   </div>
 </footer>
+
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="VibePit trailer" hidden>
+  <div class="hud">
+    <span class="name"><img src="vibepit-logo.png" alt="" width="26" height="26">VibePit <span>· Trailer</span></span>
+    <button type="button" class="sound" id="introSound" aria-pressed="false"><svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 9l5 6M22 9l-5 6"/></svg><svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 8.5a5 5 0 010 7M19.5 6a8.5 8.5 0 010 12"/></svg><b>Sound</b></button>
+    <button type="button" class="full" id="introFull" aria-label="Full screen" hidden><svg class="in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg><svg class="out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg><b>Full screen</b></button>
+    <button type="button" class="skip" id="introSkip">Skip<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" aria-hidden="true"><path d="M5 6l7 6-7 6zM15 6v12"/></svg></button>
+  </div>
+  <div class="film">
+    <video id="introFilm" src="trailer/vibepit-trailer.mp4" poster="trailer/poster.jpg" playsinline preload="none" aria-label="VibePit trailer, 39 seconds"></video>
+    <div class="reel" aria-hidden="true"><i></i></div>
+  </div>
+  <p class="hint" aria-live="polite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 9l5 6M22 9l-5 6"/></svg><span class="mouse">Click or press any key for sound</span><span class="touch">Tap for sound</span></p>
+</div>
 
 <div class="getbar" id="getbar"><span><b>VibePit for Mac</b><small>Free · macOS 12 or later</small></span><a class="btn dl" data-phone="Send to my Mac" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">Download</a></div>
 
@@ -848,7 +921,7 @@ document.querySelectorAll("[data-rise], #steps").forEach((el) => rise.observe(el
 // nothing pulls it to a section. Links to a part of the page glide there too. Phones keep their own
 // touch scrolling, and with reduced motion the browser scrolls as usual.
 if (window.Lenis && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  new Lenis({ autoRaf: true, lerp: .1, anchors: true });   // links land below the bar (scroll-padding-top above)
+  window.lenis = new Lenis({ autoRaf: true, lerp: .1, anchors: true });   // links land below the bar (scroll-padding-top above)
 }
 
 
@@ -937,6 +1010,91 @@ document.getElementById("faqList").addEventListener("click", (e) => {
   if (open) { q.classList.add("open"); b.setAttribute("aria-expanded", "true"); }
 });
 
+// The trailer, over the whole screen. A first visit opens on it (with sound if the browser allows,
+// else muted with Sound to turn it on), once: Skip, Esc or its end closes it. "Watch the trailer"
+// plays it again in full screen, with sound; so does a link to #trailer. Browsers allow full screen
+// only after a click, so on a first visit the first click on the film turns it on (iPhones have no
+// full screen for a page: there it fills the screen as it is). The controls show while the mouse
+// moves, a key is pressed or the screen is tapped, and fade after a moment. Space pauses, F is full
+// screen, M is sound. Started muted, the first click, tap or key turns the sound on (a page can't
+// see the Mac's own volume keys; a keyboard that sends a volume key to the browser does too),
+// unless you turned it off yourself. Reduced motion: only on request.
+(() => {
+  const box = document.getElementById("intro"), film = document.getElementById("introFilm"), reel = box.querySelector(".reel i");
+  const sound = document.getElementById("introSound"), skip = document.getElementById("introSkip"), full = document.getElementById("introFull");
+  const canFull = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  const isFull = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  const goFull = () => { try { const r = (box.requestFullscreen || box.webkitRequestFullscreen).call(box); r?.catch?.(() => {}); } catch (e) { /* stays as it is */ } };
+  const leaveFull = () => { if (!isFull()) return; try { const r = (document.exitFullscreen || document.webkitExitFullscreen).call(document); r?.catch?.(() => {}); } catch (e) { /* stays as it is */ } };
+  full.hidden = !canFull;
+  let back = null, idle = 0, asked = false, chose = false;  // chose: you set the sound yourself
+  const wake = (long) => {
+    box.classList.add("awake"); clearTimeout(idle);
+    idle = setTimeout(function rest() {
+      if (box.querySelector(".hud:hover")) { idle = setTimeout(rest, 1200); return; }  // the mouse is on the controls
+      box.classList.remove("awake");
+    }, long ? 3500 : 2200);
+  };
+  const loud = (on) => { film.muted = !on; box.classList.toggle("loud", on); sound.setAttribute("aria-pressed", String(on)); sound.setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on"); };
+  const shut = () => {
+    if (!box.classList.contains("on")) return;
+    box.classList.remove("on", "awake"); film.pause(); leaveFull(); clearTimeout(idle);
+    document.documentElement.classList.remove("intro-open"); window.lenis?.start();
+    document.querySelectorAll("body > :not(.intro)").forEach((el) => { el.inert = false; });
+    setTimeout(() => { if (!box.classList.contains("on")) box.hidden = true; }, 600);
+    back?.focus({ preventScroll: true });
+  };
+  const open = async (clicked) => {
+    back = document.activeElement; asked = clicked; chose = false;
+    if (clicked && canFull) goFull();  // while the click still counts
+    try { localStorage.setItem("vp-trailer", "seen"); } catch (e) { /* shows again next time */ }
+    box.hidden = false; void box.offsetWidth; box.classList.add("on"); wake(true);
+    document.documentElement.classList.add("intro-open"); window.lenis?.stop();
+    document.querySelectorAll("body > :not(.intro)").forEach((el) => { el.inert = true; });
+    skip.focus({ preventScroll: true, focusVisible: false });
+    film.currentTime = 0; loud(true);
+    try { await film.play(); }
+    catch (e) { loud(false); film.play().catch(shut); }  // no sound without a click first: muted, then
+  };
+  const onFull = () => { box.classList.toggle("fs", isFull()); full.setAttribute("aria-label", isFull() ? "Leave full screen" : "Full screen"); full.querySelector("b").textContent = isFull() ? "Exit full screen" : "Full screen"; };
+  document.addEventListener("fullscreenchange", onFull); document.addEventListener("webkitfullscreenchange", onFull);
+  film.addEventListener("timeupdate", () => { reel.style.setProperty("--p", film.duration ? film.currentTime / film.duration : 0); });
+  film.addEventListener("ended", shut);
+  // a tap while the controls are hidden only shows them; else a click pauses or plays. On a first
+  // visit, the first click goes full screen with sound instead.
+  let shown = false;
+  const hear = () => { if (film.muted && !chose) loud(true); };  // in a click or key: the browser lets it play aloud
+  box.addEventListener("pointerdown", (e) => { shown = box.classList.contains("awake"); wake(); if (!e.target.closest(".sound")) hear(); });
+  box.addEventListener("pointermove", (e) => { if (e.pointerType === "mouse") wake(); });
+  film.addEventListener("click", () => {
+    if (!asked) { asked = true; if (canFull) goFull(); film.play().catch(() => {}); return; }
+    if (shown || matchMedia("(hover: hover)").matches) film.paused ? film.play() : film.pause();
+  });
+  sound.addEventListener("click", () => { chose = true; loud(film.muted); });
+  full.addEventListener("click", () => (isFull() ? leaveFull() : goFull()));
+  skip.addEventListener("click", shut);
+  addEventListener("keydown", (e) => {
+    if (!box.classList.contains("on")) return;
+    wake();
+    if (e.key === "Escape") return shut();
+    if (e.key === "m" || e.key === "M" || e.key === "AudioVolumeMute") { chose = true; return loud(film.muted); }
+    if (e.key === "AudioVolumeUp" || e.key === "AudioVolumeDown") return film.muted && loud(true);
+    if (!["Shift", "Control", "Alt", "Meta", "Tab", "CapsLock"].includes(e.key)) hear();
+    if (e.key === "f" || e.key === "F") { if (canFull) isFull() ? leaveFull() : goFull(); }
+    else if (e.key === " " && !e.target.closest("button")) { e.preventDefault(); film.paused ? film.play() : film.pause(); }
+  });
+  // every Trailer link and button on the page (before smooth scrolling looks for a #trailer to go to)
+  addEventListener("click", (e) => {
+    if (!e.target.closest("[data-trailer]")) return;
+    e.preventDefault(); e.stopPropagation();
+    document.getElementById("menuBtn").getAttribute("aria-expanded") === "true" && document.getElementById("menuBtn").click();
+    open(true);
+  }, true);
+  let seen = null;
+  try { seen = localStorage.getItem("vp-trailer"); } catch (e) { /* as a first visit */ }
+  if (location.hash === "#trailer") open(false);
+  else if (!seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) open(false);
+})();
 // Intel Macs get the Intel download first. Chrome and Edge can tell; Safari and Firefox
 // can't, so they keep Apple silicon (most Macs sold since 2020) with the Intel link beside it.
 (async () => {

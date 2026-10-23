@@ -168,12 +168,12 @@ footer a { color: var(--muted); }
 <main>
   <div class="wrap top">
     <p class="eyebrow">Release notes</p>
-    <h1>VibePit 1.0. <em>The pit wall for vibe coders.</em></h1>
-    <p class="lede">The first version of VibePit is here. It brings all your Claude Code sessions together in one calm window. Answer Claude’s questions and plans with a click, read every answer headline first, watch your usage limits, and follow along from your phone. Voice is there too, if you want it.</p>
+    <h1>VibePit 1.1. <em>The pit wall for vibe coders.</em></h1>
+    <p class="lede">VibePit 1.1 gives every project a board of tasks and notes that Claude keeps up to date, and sends the messages Claude writes for your colleagues straight to Microsoft Teams. It also opens lighter, tells you sooner when Claude is done, and tidies the menus.</p>
     <div class="get">
       <a class="btn dl" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-arm64.dmg">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M6 10l6 6 6-6M5 21h14"/></svg>
-        Download VibePit 1.0
+        Download VibePit 1.1
       </a>
       <p class="meta"><span id="dlChip">Apple silicon</span> · macOS 12 or later · free · <a id="dlOther" href="https://github.com/Logesh883/vibepit-app/releases/latest/download/VibePit-x86_64.dmg">Intel Mac?</a></p>
     </div>
@@ -182,6 +182,12 @@ footer a { color: var(--muted); }
   <div class="wrap layout">
     <nav class="toc" aria-label="Versions">
       <p class="eyebrow">Versions</p>
+      <a href="#v1-1-0">VibePit 1.1 <span>Oct 2026</span></a>
+      <a class="sub" href="#tasks">Tasks and notes</a>
+      <a class="sub" href="#teams">Microsoft Teams</a>
+      <a class="sub" href="#improved-1-1">Improvements</a>
+      <a class="sub" href="#fixed-1-1">Fixes</a>
+      <a class="sub" href="#known-1-1">Known issues</a>
       <a href="#v1-0-0">VibePit 1.0 <span>Oct 2026</span></a>
       <a class="sub" href="#chat">The Chat</a>
       <a class="sub" href="#phone">On your phone</a>
@@ -195,6 +201,94 @@ footer a { color: var(--muted); }
     </nav>
 
     <div>
+      <article class="ver" id="v1-1-0">
+        <div class="vhead">
+          <p class="tag"><b>1.1.0</b><span>Released 23 October 2026</span></p>
+          <h2>Tasks, notes and Teams</h2>
+          <p>Each project now has its own Tasks and notes board that Claude keeps up to date as it works. When Claude writes a message for a teammate, you can review it and send it in Microsoft Teams with one click. VibePit also opens lighter, tells you sooner when Claude is done, and puts Settings and Help in tidier menus.</p>
+        </div>
+
+        <div class="glance">
+          <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+            <h3>Tasks and notes for every project</h3>
+            <p>Ask Claude for a plan or a checklist and it adds tasks with clear steps, then ticks them off as it works. You see them on a board, and Claude asks before it changes or deletes anything you wrote.</p>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/></svg>
+            <h3>Send to Teams in one click</h3>
+            <p>When Claude writes a message for someone, press Review and send, check the text, and VibePit posts it in their Teams chat for you.</p>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+            <h3>Lighter and quicker</h3>
+            <p>VibePit no longer uses about 2.5 GB of memory as it opens, and a Claude tab shows it is done as soon as Claude finishes.</p>
+          </div>
+          <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+            <h3>Usage you can refresh</h3>
+            <p>Press Refresh on the usage meters to get your 5-hour and weekly usage right now, with the time the numbers are from.</p>
+          </div>
+        </div>
+
+        <section class="group" id="tasks">
+          <h3>Tasks and notes</h3>
+          <p>Every project has a board of tasks, notes and reminders, under Tasks &amp; notes in the side menu.</p>
+          <div class="items">
+            <div><b>Claude keeps them for you</b><p>Ask Claude for a task list, a plan or a note, and it adds it to the project’s board. Each task has a short, plain description and a checklist of steps, which Claude ticks off as it finishes them.</p></div>
+            <div><b>You stay in charge</b><p>Claude waits for your OK before it writes over something you wrote, deletes an item or removes steps. A small badge in the menu shows when it is waiting.</p></div>
+            <div><b>Easy to read and sort</b><p>Each item is one line; open it to see its details and steps in a sheet beside the board. Pick several rows to group, ungroup or delete them, with Undo. Type @ and a task’s name in the Chat to point Claude at it.</p></div>
+            <div><b>See what changed</b><p>What Claude added or ticked off shows under its answer in the Chat, folded into one See all row when there are more than two.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="teams">
+          <h3>Microsoft Teams</h3>
+          <p>Messages Claude writes for your colleagues can go straight to Teams.</p>
+          <div class="items">
+            <div><b>Review and send</b><p>When Claude writes a message for someone, it gets a Review and send button. A panel slides in with who it is for and the message, which you can change before you press Send.</p></div>
+            <div><b>Sign in once</b><p>On the Teams page in Settings, sign in with your work account on Microsoft’s own page. VibePit never sees your password, and it may only send the messages you review. Your sign-in is kept in your Mac’s Keychain.</p></div>
+            <div><b>Your people and chats</b><p>Add the people and group chats you message, with what each one is for, on the Teams page. Claude is told about them, so it picks the right one.</p></div>
+            <div><b>Without signing in</b><p>VibePit can paste the message into the right chat in the Teams app instead. Without Accessibility, it opens the chat with the message copied.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="improved-1-1">
+          <h3>Improvements</h3>
+          <div class="items">
+            <div><b>Links you asked for, in sight</b><p>Any web address in Claude’s answer now shows as a button under its short answer in the Chat, not only behind Read full answer. A link Claude gives a name shows that name.</p></div>
+            <div><b>Tidier menus</b><p>Settings and Help each fold into one button in the side menu, with their pages beside it. The Chat’s VS Code, Pin and New chat are in a ⋯ menu, and New chat is also at the top of the chat list. The Chat’s header no longer repeats the Claude tabs: switch them in the chat list.</p></div>
+            <div><b>Less memory</b><p>The optional understanding model now loads only while voice is on, or when a typed sentence needs it. It is let go after 10 minutes unused.</p></div>
+            <div><b>Done sooner</b><p>A Claude tab shows it is ready as soon as Claude finishes its turn. If the usual signal is late, VibePit marks the tab done itself after 15 seconds and shows the answer in the Chat.</p></div>
+            <div><b>Refresh your usage</b><p>The usage meters have a Refresh button and say when their numbers are from. They refresh by themselves when you open them and the numbers are more than 5 minutes old.</p></div>
+            <div><b>Turn voice off from the Chat</b><p>Hover over the voice card while voice is on and it shows Turn off.</p></div>
+            <div><b>Notifications that are off</b><p>If macOS keeps VibePit’s notifications off, Get started, the setup checks and the Chat say so, with a button to open the right page in System Settings.</p></div>
+            <div><b>Quieter during calls</b><p>A reminder is not read aloud when you have answers set not to be read aloud.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="fixed-1-1">
+          <h3>Fixes</h3>
+          <div class="items">
+            <div><b>One menu lit at a time</b><p>Settings and Help no longer both look selected after you move from a Settings page to a Help page, or close a menu with Esc.</p></div>
+            <div><b>Empty chats</b><p>A new, empty chat shows its Talk to Claude welcome again.</p></div>
+            <div><b>Sending the same words twice</b><p>A message you send again with the same words, such as “check now”, now stays in its own conversation instead of turning up in the next new chat.</p></div>
+            <div><b>Where VS Code went</b><p>Open in the Chat now says in words where VS Code went, for example “VS Code is showing abc, on the abc-claude tab.”</p></div>
+            <div><b>Accessibility noticed sooner</b><p>VibePit notices within seconds when you turn on Accessibility, so Allow full screen for VS Code ticks without a restart.</p></div>
+          </div>
+        </section>
+
+        <section class="group" id="known-1-1">
+          <h3>Known issues</h3>
+          <ul class="list known">
+            <li><span><b>Teams sends only.</b> VibePit can send messages in Teams, but it does not read or show your Teams chats yet.</span></li>
+            <li><span><b>Some companies need IT.</b> Some work accounts need an admin to approve Microsoft Graph Command Line Tools before you can sign in to Teams. Until then, VibePit can still paste messages into the Teams app.</span></li>
+            <li><span><b>Opening it the first time.</b> macOS may say it cannot check the app. Open System Settings → Privacy &amp; Security and press Open Anyway. You only need to do this once.</span></li>
+          </ul>
+        </section>
+
+      </article>
+
       <article class="ver" id="v1-0-0">
         <div class="vhead">
           <p class="tag"><b>1.0.0</b><span>Released 20 October 2026</span><span>·</span><span>First release</span></p>
